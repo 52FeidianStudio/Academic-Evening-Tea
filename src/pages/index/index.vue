@@ -9,7 +9,6 @@ import HomeContent from './components/HomeContent.vue';
   <scroll-view class="scroll-view" scroll-y>
     <XsSwiper class="swiper"></XsSwiper>
     <HomeContent />
-    <div class="divider"></div>
   </scroll-view>
 </template>
 
@@ -28,17 +27,6 @@ page {
 
   .swiper {
     padding-top: 20px;
-  }
-
-  .divider{
-    // justify-content: center;
-    // position: absolute;
-    // left: 50%; 
-    // transform: translateX(-50%); 
-    width: 90%;
-    height: 1px;
-    background-color: #d6d6d6;
-    margin: 15px auto;
   }
 }
 </style>

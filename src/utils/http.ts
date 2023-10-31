@@ -5,7 +5,7 @@ const httpInterceptor = {
   invoke(options: UniApp.RequestOptions) {
     // 非http开头拼接
     if (!options.url.startsWith('http')) {
-      // options.url = baseURL + options.url
+      options.url = 'http://117.50.163.249:3166' + options.url
     }
     options.timeout = 10000
     // 添加小程序请求头标识
@@ -34,12 +34,12 @@ type Data<T> = {
 }
 
 export const http = <T>(options: UniApp.RequestOptions) => {
-  return new Promise<Data<T>>((resolve, reject) => {
+  return new Promise<T>((resolve, reject) => {
     uni.request({
       ...options,
       success(res) {
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          resolve(res.data as Data<T>)
+          resolve(res.data as T)
         } else if (res.statusCode === 401) {
           // 未登录
           const memberStore = useMemberStore()
