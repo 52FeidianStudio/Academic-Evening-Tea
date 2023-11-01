@@ -1,0 +1,52 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/my/my",
+    "pages/column/column",
+    "pages/activity/activity",
+    "pages/activity/ActivitySignIn",
+    "pages/gift/gift",
+    "pages/recommend/recommend",
+    "pages/recommend/sendrecommend/sendrecommend",
+    "pages/login/login"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#333",
+    "selectedColor": "#428ffb",
+    "backgroundColor": "#fff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "text": "首页",
+        "pagePath": "pages/index/index",
+        "iconPath": "static/bottomBar/home.png",
+        "selectedIconPath": "static/bottomBar/active-home.png"
+      },
+      {
+        "text": "发起活动",
+        "pagePath": "pages/activity/activity",
+        "iconPath": "static/bottomBar/activity.png",
+        "selectedIconPath": "static/bottomBar/active-activity.png"
+      },
+      {
+        "text": "精彩专栏",
+        "pagePath": "pages/column/column",
+        "iconPath": "static/bottomBar/horn.png",
+        "selectedIconPath": "static/bottomBar/active-horn.png"
+      },
+      {
+        "text": "个人中心",
+        "pagePath": "pages/my/my",
+        "iconPath": "static/bottomBar/personal.png",
+        "selectedIconPath": "static/bottomBar/active-personal.png"
+      }
+    ]
+  },
+  "usingComponents": {}
+}
