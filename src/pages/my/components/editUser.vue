@@ -18,7 +18,7 @@
       <view>学院</view>
       <view class="texts">
         <text class="text1" v-if="!isDisabled">{{ user.college }}</text>
-        <uni-easyinput class="text2" v-else v-model="editedUser.college" />
+        <uni-combox :candidates="colleges" class="text2" v-else v-model="editedUser.college" />
         <!-- <image src="../../../static/my/arrow-right.png" /> -->
       </view>
     </view>
@@ -63,13 +63,29 @@ const editedUser = ref<userInfo>({
   college: ''
 })
 
+const colleges = ref<string[]>([
+  "计算机学院",
+  "软件学院",
+  "信息学院",
+  "电子学院",
+])
+
 const changeUserInfo = () => {
   isDisabled.value = !isDisabled.value
 }
 
 const saveEdit = () => {
-  user.value = editedUser.value
+ if(editedUser.value.name && editedUser.value.studentId && editedUser.value.college) {
+  user.value.name = editedUser.value.name
+  user.value.studentId = editedUser.value.studentId
+  user.value.college = editedUser.value.college
   isDisabled.value = !isDisabled.value
+ }else{
+    uni.showToast({
+      title: '请填写完整信息',
+      icon: 'none'
+    })
+ }
   // 传给后端
 }
 
@@ -83,6 +99,8 @@ const logout = () => {
     content: '确定退出登录吗？',
     success: (res) => {
       if (res.confirm) {
+        // 清除token
+        uni.removeStorageSync('token')
         uni.showToast({
           title: '退出成功',
           icon: 'success',

@@ -5,50 +5,147 @@
         <view class="feedback-content-item">
           <view class="feedback-content-item-title">问题描述</view>
           <view class="feedback-content-item-input">
-            <textarea name="" id="" cols="30" rows="10" placeholder="请描述您的问题"></textarea>
+            <textarea name="" id="" cols="30" rows="10" placeholder="请描述您的问题" v-model="feedBack.problem"></textarea>
           </view>
         </view>
         <view class="feedback-content-item">
           <view class="feedback-content-item-title">上传图片</view>
-          <uni-file-picker v-model="feedBack.img" :limit="9" file-mediatype="image" />
+          <uni-file-picker limit="9" mode="grid" file-mediatype="image" @select="select" @delete="deleteImg" />
+        </view>
+        <view class="feedback-content-item">
+          <view class="feedback-content-item-title">联系人姓名</view>
+          <view class="feedback-content-item-input">
+            <uni-easyinput v-model="feedBack.name" type="text" placeholder="请输入您的名字" @confirm="" next />
+          </view>
         </view>
         <view class="feedback-content-item">
           <view class="feedback-content-item-title">联系方式</view>
           <view class="feedback-content-item-input">
-            <uni-easyinput v-model="feedBack.contact" type="text" placeholder="请输入您的联系方式" @confirm="" />
+            <uni-easyinput v-model="feedBack.contact" type="text" placeholder="请输入您的联系方式" @confirm="" done />
           </view>
         </view>
       </view>
       <view class="feedback-btn">
-        <button class="btn" type="primary" size="default" @click="">提交</button>
+        <button class="btn" type="primary" size="default" @tap="submit">提交</button>
       </view>
     </view>
   </view>
 </template>
 
 <script setup lang='ts'>
+import { postFeedbackAPI } from '@/services/feedBack'
 import { ref, reactive } from 'vue'
+type img = {
+  now: string,
+  temp: string
+}
+type postContent = {
+  content: string,
+  phone: string,
+  picture: string,
+  name: string,
+  id:string
+}
 type feedBackContent = {
   problem: string,
   contact: string,
-  img: string
+  img: Array<img>,
+  name: string
 }
 
 const feedBack = ref<feedBackContent>(
   {
     problem: '',
     contact: '',
-    img: ''
+    img: [],
+    name: ''
   }
 )
 
+const validatePhone = (phone: string) => {
+  const reg = /^1\d{10}$/
+  return reg.test(phone)
+}
+
+const deleteImg = (e: any) => {
+  const index = e.index
+  console.log(e)
+  feedBack.value.img.forEach((item, index) => {
+    if (item.temp === e.tempFilePath) {
+      feedBack.value.img.splice(index, 1)
+    }
+  })
+}
+const select = (e: any) => {
+  console.log(e)
+  const tempFilePaths = e.tempFilePaths
+  uploadFiles(tempFilePaths, 0)
+}
+
+const uploadFiles = async (tempFilePaths: any, i: any) => {
+  const res = await uni.uploadFile({
+    url: 'http://117.50.163.249:3166/system/common/upload',
+    filePath: tempFilePaths[i],
+    header: {
+      'Authorization': 'Bearer ' + uni.getStorageSync('token'),
+      'Content-Type': 'multipart/form-data',
+    },
+    name: 'file',
+    success: res => {
+      console.log(res)
+      const resData = JSON.parse(res.data)
+      feedBack.value.img.push({ now: resData.msg, temp: tempFilePaths[i] })
+    },
+    fail: () => {
+      console.log('fail');
+      uni.showToast({
+        title: '上传失败',
+        icon: 'none'
+      })
+    }
+  })
+}
+
+const postFeedback = async (data:postContent) => {
+  const res = await postFeedbackAPI(data)
+  console.log(res)
+}
+
+const submit = () => {
+  console.log(feedBack.value)
+  let imgString = feedBack.value.img.map(item => item.now).join('&')
+  console.log(imgString)
+  if(feedBack.value.problem === ''){
+    uni.showToast({
+      title: '请填写问题描述',
+      icon:'none'
+    })
+    return
+  }else if(feedBack.value.name === ''){
+    uni.showToast({
+      title: '请填写联系人姓名',
+      icon:'none'
+    })
+  }else if(feedBack.value.contact === ''){
+    uni.showToast({
+      title: '请填写联系方式',
+      icon:'none'
+    })
+  }else if(!validatePhone(feedBack.value.contact)){
+    uni.showToast({
+      title: '请填写正确的联系方式',
+      icon:'none'
+    })
+  }else{
+    postFeedback({name:feedBack.value.name,phone:feedBack.value.contact,content:feedBack.value.problem,picture:imgString,id:""})
+  }
+}
 </script>
 <style lang="scss">
 .feedback {
   height: 100vh;
   width: 90%;
   margin: 0 auto;
-  padding-top: 20rpx;
 
   .feedback-item {
     width: 100%;
@@ -64,14 +161,15 @@ const feedBack = ref<feedBackContent>(
       height: 95%;
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content:space-around;
 
       .feedback-content-item {
+        margin-top: 5%;
         width: 100%;
-        height: 100%;
+        flex: 1;
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
+        justify-content: center;
         // margin-bottom: 60rpx;
 
         .feedback-content-item-title {
@@ -118,14 +216,16 @@ const feedBack = ref<feedBackContent>(
       }
     }
 
-    .feedback-btn{
+    .feedback-btn {
       flex: 1;
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
       margin-bottom: 30rpx;
-      .btn{
+
+      .btn {
         width: 40%;
+        font-size: 15%;
       }
     }
   }

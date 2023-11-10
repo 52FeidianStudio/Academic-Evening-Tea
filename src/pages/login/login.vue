@@ -27,7 +27,7 @@ const logIn = () => {
       uni.showToast({
         title: '登录成功',
         icon: 'success',
-        duration: 1000
+        duration: 500
       })
       setTimeout(() => {
         uni.switchTab({
@@ -84,7 +84,7 @@ const onGetphonenumber = (ev: any) => {
         <text class="icon icon-phone"></text>
         登录/注册
       </button>
-      <view class="tips">登录/注册即视为你同意《服务条款》和《小兔鲜儿隐私协议》</view>
+      <view class="tips">登录/注册即视为你同意《服务条款》</view>
     </view>
   </view>
 </template>
@@ -98,6 +98,7 @@ page {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   height: 100%;
   padding: 20rpx 40rpx;
 
@@ -117,7 +118,7 @@ page {
 .logo {
   flex: 1;
   text-align: center;
-
+  margin-bottom: 60rpx;
   image {
     width: 220rpx;
     height: 220rpx;

@@ -15,20 +15,20 @@ const my = ref<person>({
   college: '计算机学院'
 })
 
-const logIn = () =>{
-  console.log('点击了登录')
-  uni.login({
-    provider:'weixin',
-    success:(res)=>{
-      if(res.code){
-        var code = res.code
-        console.log('登录成功！' + res.code)
-      }else{
-        console.log('登录失败！' + res.errMsg)
-      }
-    },
-  })
-}
+// const logIn = () =>{
+//   console.log('点击了登录')
+//   uni.login({
+//     provider:'weixin',
+//     success:(res)=>{
+//       if(res.code){
+//         var code = res.code
+//         console.log('登录成功！' + res.code)
+//       }else{
+//         console.log('登录失败！' + res.errMsg)
+//       }
+//     },
+//   })
+// }
 
 const memberStore = useMemberStore()
 </script>
@@ -77,7 +77,7 @@ const memberStore = useMemberStore()
           <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />
         </view>
       </navigator>
-      <view class="personal-content-item" @tap="logIn">
+      <!-- <view class="personal-content-item" @tap="logIn">
         <view class="personal-content-item-left">
           <image class="personal-content-item-left-img" src="../../static/my/user-wechat.png" />
           <view class="personal-content-item-left-text">
@@ -87,7 +87,7 @@ const memberStore = useMemberStore()
         <view class="personal-content-item-right">
           <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />
         </view>
-      </view>
+      </view> -->
       <navigator class="personal-content-item" url="/pages/my/components/contactUs">
         <view class="personal-content-item-left">
           <image class="personal-content-item-left-img" src="../../static/my/user-call.png" />

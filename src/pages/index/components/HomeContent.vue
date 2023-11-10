@@ -20,7 +20,8 @@
       </view>
     </view>
     <view class="activity-details">
-      <navigator class="activity-details-item" v-for="item in activities" :key="item.id" url="/pages/activity/ActivityDetails">
+      <navigator class="activity-details-item" v-for="item in activities" :key="item.id"
+        :url="`/pages/activity/ActivityDetails?id=${item.id}`">
         <view class="activity-details-item-title">
           <view class="title">{{ item.title }}</view>
         </view>
@@ -38,7 +39,7 @@
           </view>
           <view class="activity-details-item-status">
             <view class="population">
-              <image class="img" src="../../../static/activity/User.png"></image>1/50
+              <image class="img" src="../../../static/activity/User.png"></image>{{ item.population }} / {{ item.limitPopulation }}
             </view>
             <view class="status">
               {{ item.status }}
@@ -51,16 +52,27 @@
 </template>
 
 <script setup lang='ts'>
+import { getHomeContentAPI } from '@/services/HomeContent'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { ref, reactive } from 'vue'
 const status = ref<string>('全部')
 const statusList = ref([
   { value: 0, text: "全部" },
-  { value: 1, text: "待举办" },
-  { value: 2, text: "进行中" },
-  { value: 3, text: "已结束" }
+  { value: 1, text: "进行中" },
+  { value: 2, text: "已结束" },
+  { value: 3, text: "精选" }
 ])
 const change = (e: any) => {
   console.log(e)
+  if (e === 0) {
+    getHomeContent(0, 0, 0)
+  } else if (e === 1) {
+    getHomeContent(1, 2, 1)
+  } else if (e === 2) {
+    getHomeContent(1, 2, 2)
+  } else {
+    getHomeContent(2, 2, 1)
+  }
 }
 type Category = {
   id: number
@@ -80,17 +92,12 @@ type Activity = {
   limitPopulation?: number
   // 发起学院
   sponsorCollege: string
+
 }
 const tapAct = () => {
   uni.switchTab({ url: '/pages/activity/ActivityLaunch' })
 }
 const items = ref<Category[]>([
-  // {
-  //   id: 1,
-  //   text: '活动发起',
-  //   icon: '../../../static/home/activity.png',
-  //   url: ()=>{uni.switchTab({url:'/pages/activity/activity'})}
-  // },
   {
     id: 2,
     text: '活动签到',
@@ -110,24 +117,58 @@ const items = ref<Category[]>([
     url: '/pages/recommend/recommend'
   }
 ])
-const activities = ref<Activity[]>([
-  {
-    id: 1,
-    title: '活动一为日后吉尔菲娜撒旦否为很丰富未付金额我来附加额外',
-    status: '待举办',
-    time: '2021-09-01',
-    address: '学生事务大楼',
-    sponsorCollege: '信息学院'
-  },
-  {
-    id: 2,
-    title: '活动二',
-    status: '进行中',
-    time: '2021-09-01',
-    address: '学生事务大楼',
-    sponsorCollege: '信息学院'
+const activities = ref<Activity[]>([])
+
+const getHomeContent = async (type: number, state: number, isEnd: number) => {
+  // 获取首页内容
+  let res;
+  if (type === 0) {
+    res = await getHomeContentAPI()
+  } else {
+    res = await getHomeContentAPI({ type: type, state: state, isEnd: isEnd })
   }
-])
+  console.log(res)
+  if (res.code === 200) {
+    activities.value = res.rows.map((item: any) => ({
+      id: item.id,
+      title: item.userImg2,
+      status: item.isEnd == 1 ? '进行中' : '已结束',
+      time: item.lat,
+      address: item.address,
+      sponsorCollege: item.hbKeyword,
+      population: item.hbNum,
+      limitPopulation: item.hot,
+    }))
+    if (activities.value.length === 0) {
+      uni.showToast({
+        title: '暂无活动',
+        icon: 'none'
+      })
+    }
+  } else {
+    uni.showToast({
+      title: '查询失败',
+      icon: 'none'
+    })
+  }
+}
+
+
+onLoad(() => {
+  uni.onNetworkStatusChange((res) => {
+    if (!res.isConnected) {
+      uni.showToast({
+        title: '网络已断开',
+        icon: 'none'
+      })
+    }
+  });
+  getHomeContent(0, 0, 0)
+})
+
+onShow(() => {
+  getHomeContent(0, 0, 0)
+})
 
 
 </script>
@@ -184,7 +225,7 @@ const activities = ref<Activity[]>([
     }
 
     .activity-box-select {
-      width: 150rpx;
+      width: 160rpx;
     }
   }
 

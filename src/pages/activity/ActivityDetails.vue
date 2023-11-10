@@ -2,26 +2,26 @@
   <view class="detail">
     <view class="top">
       <view class="detail-title">
-        {{ item.title }}
+        {{ data0.userImg2 }}
       </view>
       <view class="detail-content">
         <view class="status">
-          {{ item.status }}
+          {{ data0.isEnd }}
         </view>
         <view class="population">
-          <image class="img" src="../../static/activity/User.png" />{{ item.population }}/{{ item.limitPopulation }}
+          <image class="img" src="../../static/activity/User.png" />{{ data0.hbNum }}/{{ data0.hot }}
         </view>
       </view>
     </view>
     <view class="middle">
       <view class="sponsor">
-        发起学院：{{ item.sponsorCollege }}
+        发起学院：{{ data0.hbKeyword }}
       </view>
       <view class="time">
-        <image class="img" src="../../static/activity/clock.png" />{{ item.time }}
+        <image class="img" src="../../static/activity/clock.png" />{{ data0.time }}
       </view>
       <view class="address">
-        <image class="img" src="../../static/activity/address.png" />{{ item.address }}
+        <image class="img" src="../../static/activity/address.png" />{{ data0.address }}
       </view>
     </view>
     <view class="bottom">
@@ -30,7 +30,7 @@
           主讲人简介：
         </view>
         <view class="intro">
-          {{ item.sponsorIntroduction }}
+          {{ data0.img }}
         </view>
       </view>
       <view class="activity-intro">
@@ -38,55 +38,119 @@
           活动简介：
         </view>
         <view class="intro">
-          {{ item.activityIntroduction }}
+          {{ data0.details }}
         </view>
       </view>
     </view>
     <view class="footer">
       <view class="activity-btn">
-        <button class="btn">报名</button>
+        <button type="primary" v-if="data0.isApplication.length===0 && data0.isEnd==='进行中'" class="btn" @click="applyon">报名</button>
+        <button type="default" v-else-if="data0.isApplication.length>0 && data0.isEnd==='进行中'" class="btn">已报名</button>
+        <button type="default" v-else class="btn">活动已结束</button>
       </view>
     </view>
+
+
+
   </view>
 </template>
 
 <script setup lang='ts'>
+import { http } from '../../utils/http';
 import { ref, reactive } from 'vue'
-type details = {
+import { onLoad } from '@dcloudio/uni-app';
+type DataProps = {
   id: number
-  title: string
-  status: string
+  userImg2: string
+  isEnd: string
+  hbNum: number
+  hot: number
+  hbKeyword: string
   time: string
   address: string
-  img?: string
-  // 报名人数和限制人数
-  population?: number
-  limitPopulation?: number
-  // 发起学院
-  sponsorCollege: string
-  // 活动简介
-  activityIntroduction: string
-  sponsorIntroduction: string
+  img: string
+  details: string
+  isApplication:Array<any>
+  is_close:number
 }
+const AId = ref<number>()
+const data0 = ref<DataProps>()
+const props = defineProps<{
+  id: number
+}>();
+const getDetailsAPI = (data: any) => {
+  return http<any>({
+    url: data,
+    method: 'GET',
+  })
+}
+const applyAPI = (data: any) => {
+  return http<any>({
+    method: 'POST',
+    url: '/system/useractivity',
+    data
+  })
+}
+const postFeedback = async (url: string) => {
+  const res = await getDetailsAPI(url);
+  data0.value = res.data;
+  data0.value.isEnd = res.data.isEnd == 1 ? "进行中" : "已结束";
+}
+const apply = async (data: any) => {
+  const res = await applyAPI(data);
+  if (res.code === 200) {
+    wx.showToast({
+      title: res.msg,
+      icon: 'success',
+      duration: 2000
+    });
+    data0.value.is_close = 1;
+  } else {
+    wx.showToast({
+      title: res.msg,
+      icon: 'none',
+      duration: 2000
+    });
+  }
+}
+console.log(props.id)
 
-const item = ref<details>({
-  id: 1,
-  title: '活动标题吃的食物i巨款符号位u奥回复爱的是你覅就',
-  status: '进行中',
-  time: '2021-06-01 12:00',
-  address: '活动地址',
-  img: '',
-  population: 1,
-  limitPopulation: 50,
-  sponsorCollege: '发起学院',
-  activityIntroduction: '活动简介的撒娇分化为都符合我发觉伟黄瑞哦沃达丰挖掘的腹黑哦我发的环境而而较为发达后i额外符合维护请围绕覅偶尔玩',
-  sponsorIntroduction: '阿苏的环境恶趣味的核武器违法和我i复合物i培武将军覅偶尔微积分我i而吴炯附加额外覅欧锦二级覅欧文分解哦'
+onLoad(async (query) => {
+  const scene = decodeURIComponent(query.scene)
+  AId.value = Number(scene.split("=")[1])
+  if (props.id !== null) {
+    AId.value = props.id;
+  } else {
+    AId.value = Number(AId.value)
+  }
+  const url = `/system/activity/${AId.value}`;
+  postFeedback(url);
 })
+//报名函数
+const applyon = () => {
+  wx.showModal({
+    title: '确认报名',
+    content: '确定要报名吗？',
+    success(res) {
+      if (res.confirm) {
+        //用户点击了确认按钮
+        apply({
+          activityId: AId.value
+        })
+      } else if (res.cancel) {
+        // 用户点击了取消按钮
+        console.log('用户取消了报名');
+      }
+    }
+  });
+};
+
 
 </script>
 
 <style lang="scss">
 .detail {
+  // overflow-y: scroll;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -127,6 +191,7 @@ const item = ref<details>({
       .population {
         font-size: 30rpx;
         color: #000000;
+
         .img {
           width: 30rpx;
           height: 30rpx;
@@ -214,15 +279,23 @@ const item = ref<details>({
       }
     }
   }
-  .footer{
-    .activity-btn{
+
+  .footer {
+    .activity-btn {
       margin-bottom: 45rpx;
       display: flex;
       justify-content: center;
-      .btn{
+
+      .btn {
         width: 40%;
+        font-size: 38rpx;
       }
     }
   }
+}
+
+.code-view {
+  margin: 20rpx auto;
+  padding-bottom: 30rpx;
 }
 </style>
