@@ -5,17 +5,16 @@ const httpInterceptor = {
   invoke(options: UniApp.RequestOptions) {
     // 非http开头拼接
     if (!options.url.startsWith('http')) {
-      // options.url = baseURL + options.url
+      options.url = 'https://www.academictime.cn:3166' + options.url
     }
     options.timeout = 10000
     // 添加小程序请求头标识
     options.header = {
       ...options.header,
-      'source-client': 'miniapp'
+      // 'source-client': 'miniapp'
     }
     // 添加token请求头标识
-    const memberStore = useMemberStore()
-    const token = memberStore.profile?.token
+    const token = uni.getStorageSync('token')
     if (token) {
       options.header.Authorization = `Bearer ${token}`
     }
@@ -34,16 +33,13 @@ type Data<T> = {
 }
 
 export const http = <T>(options: UniApp.RequestOptions) => {
-  return new Promise<Data<T>>((resolve, reject) => {
+  return new Promise<T>((resolve, reject) => {
     uni.request({
       ...options,
       success(res) {
         if (res.statusCode >= 200 && res.statusCode < 300) {
-          resolve(res.data as Data<T>)
+          resolve(res.data as T)
         } else if (res.statusCode === 401) {
-          // 未登录
-          const memberStore = useMemberStore()
-          memberStore.clearProfile()
           uni.navigateTo({
             url: '/pages/login/login'
           })
