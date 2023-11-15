@@ -1,5 +1,5 @@
 <template>
-  <div>hhh,我是gift</div>
+  <div></div>
 </template>
 
 <script setup lang='ts'>

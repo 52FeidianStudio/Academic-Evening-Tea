@@ -32,7 +32,7 @@ onShow(()=>{
 </script>
 
 <template>
-  <view class="cart">cart</view>
+  <view class="cart"></view>
 </template>
 
 <style lang="scss">
