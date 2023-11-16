@@ -15,7 +15,7 @@
     <view class="activity-box">
       <view class="activity-box-content">活动一览</view>
       <view class="activity-box-select">
-        <uni-data-select v-model="status" :localdata="statusList" @change="change" placeholder="全部" :clear="false">
+        <uni-data-select v-model="status" :localdata="(statusList as any)" @change="change" placeholder="全部" :clear="false">
         </uni-data-select>
       </view>
     </view>
@@ -163,6 +163,7 @@ onLoad(() => {
       })
     }
   });
+  uni.setStorageSync('token','')
   getHomeContent(0, 0, 0)
 })
 

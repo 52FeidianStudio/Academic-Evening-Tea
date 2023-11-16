@@ -7,7 +7,7 @@
     </swiper-item>
   </swiper>
 
-<scroll-view scroll-y="true">
+<scroll-view :scroll-y="true">
   <view class="detail">
     <text class="title">金属书签中国风简约祝福寓意纪念奖励文字页夹索引夹毕业文创礼品</text>
     <text class="price">200积分</text>

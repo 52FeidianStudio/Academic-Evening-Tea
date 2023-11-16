@@ -2,12 +2,12 @@
 //
 import { getCollegeListAPI, launchActivityAPI, getLaunchPermissionAPI } from "@/services/ActivityLaunch";
 import { ref, reactive } from "vue";
-import { onLoad,onShow } from "@dcloudio/uni-app";
+import { onLoad, onShow } from "@dcloudio/uni-app";
+import debounce from "@/utils/tool";
 const rules = {
   studentId: {
     rules: [
-      { required: true, errorMessage: "学号不能为空" },
-      { minLength: 13, maxLength: 20, errorMessage: "学号必须为13-20位数字" }
+      { required: true, errorMessage: "学号不能为空" }
     ]
   },
   phone: {
@@ -128,7 +128,7 @@ const launchActivity = async (data: any) => {
 // 表单校验
 const baseform = ref<any>()
 // 提交
-const submit = () => {
+const submit = debounce(() => {
   baseform.value.validate().then((res: form) => {
     console.log(res)
     if (parseInt(res.population) === 0) {
@@ -156,44 +156,43 @@ const submit = () => {
             })
           }
         })
-        const needContent = {
-          id: '',
-          userImg2: content.value.title,
-          userName: content.value.name,
-          hbKeyword: content.value.college,
-          userTel: content.value.studentId,
-          lat: content.value.time,
-          address: content.value.address,
-          hot: parseInt(content.value.population),
-          qphone: content.value.phone,
-          details: content.value.introduction,
-          cityname: content.value.onlineAddress,
-          speakerName: content.value.sponsorName,
-          img: content.value.sponsorIntroduction,
-          deptNums: newLimit
-        }
-        console.log(needContent)
-        launchActivity(needContent);
-        setTimeout(() => {
-          uni.showToast({
-            title: '提交成功',
-            icon: 'none',
-            duration:1000,
-            complete:()=>{
-               reset()
-        uni.switchTab({
-          url: '/pages/index/index',
-        })
-            }
-          })
-        })
-       
       }
+      const needContent = {
+        id: '',
+        userImg2: content.value.title,
+        userName: content.value.name,
+        hbKeyword: content.value.college,
+        userTel: content.value.studentId,
+        lat: content.value.time,
+        address: content.value.address,
+        hot: parseInt(content.value.population),
+        qphone: content.value.phone,
+        details: content.value.introduction,
+        cityname: content.value.onlineAddress,
+        speakerName: content.value.sponsorName,
+        img: content.value.sponsorIntroduction,
+        deptNums: newLimit
+      }
+      console.log(needContent)
+      launchActivity(needContent);
+      uni.showToast({
+        title: '提交成功',
+        icon: 'success',
+        duration: 2000,
+        complete: () => {
+          reset()
+          setTimeout(() => {
+            uni.switchTab({
+              url: '/pages/index/index'
+            })
+          }, 2000);
+        }
+      })
     }
   })
 
   // console.log(content.value)
-}
+})
 // 重置
 const reset = () => {
   uni.removeStorageSync('content')
@@ -257,11 +256,7 @@ const getLaunchPermission = async () => {
     }
   }
 }
-
-onLoad(() => {
-  getLaunchPermission()
-})
-onShow(()=>{
+onShow(() => {
   getLaunchPermission()
 })
 </script>
@@ -290,7 +285,7 @@ onShow(()=>{
           <uni-easyinput v-model="content.studentId" placeholder="请输入学号"></uni-easyinput>
         </uni-forms-item>
         <uni-forms-item required label="举办时间" name="time">
-          <uni-datetime-picker v-model="content.time"  type="datetime" />
+          <uni-datetime-picker v-model="content.time" type="datetime" />
         </uni-forms-item>
         <uni-forms-item required label="举办地点" name="address">
           <!-- <uni-data-picker :localdata="addresses" popup-title="请选择举办地点" v-model="content.address" /> -->
@@ -299,14 +294,15 @@ onShow(()=>{
         <uni-forms-item required label="人数估计" name="population">
           <uni-easyinput v-model="content.population" placeholder="请输入人数估计"></uni-easyinput>
         </uni-forms-item>
-        <uni-forms-item label="学院限制"  class="checkbox-container" name="colleges">
-          <uni-data-checkbox  :multiple="true" class="checkbox-item" v-model="selectedColleges" :localdata="colleges" mode="default"
-            @change="selectedCollegeChange" />
+        <uni-forms-item label="学院限制" class="checkbox-container" name="colleges">
+          <uni-data-checkbox :multiple="true" class="checkbox-item" v-model="selectedColleges" :localdata="colleges"
+            mode="default" @change="selectedCollegeChange" />
         </uni-forms-item>
         <view name="collegePopulation" label="学院报名人数限制">
           <uni-section v-for="(college, index) in selectedColleges" :key="index" :title="`设置${college}的报名人数`" type="line"
             padding>
-            <uni-number-box :max="1500" v-model="populationLimit.find(item => item.college === college)!.population"></uni-number-box>
+            <uni-number-box :max="1500"
+              v-model="populationLimit.find(item => item.college === college)!.population"></uni-number-box>
           </uni-section>
         </view>
         <uni-forms-item label="线上地址" name="onlineAddress">
@@ -316,15 +312,16 @@ onShow(()=>{
           <uni-easyinput v-model="content.phone" placeholder="请输入发起人电话"></uni-easyinput>
         </uni-forms-item>
         <uni-forms-item required label="活动简介" name="introduction">
-          <textarea  class="text" :maxlength=-1 v-model="content.introduction"></textarea>
+          <textarea class="text" :maxlength=-1 v-model="content.introduction"></textarea>
         </uni-forms-item>
         <!-- 主讲人简介 -->
         <uni-forms-item required label="主讲人简介" name="sponsorIntroduction">
-          <textarea  class="text" :maxlength=-1 v-model="content.sponsorIntroduction"></textarea>
+          <textarea class="text" :maxlength=-1 v-model="content.sponsorIntroduction"></textarea>
         </uni-forms-item>
         <view class="btns">
           <button @tap="submit" class="btn" type="primary">提交</button>
-          <button @tap="save" class="btn" style="color:#fff;background-color: rgba(12, 194, 240, 0.925);" type="default">保存</button>
+          <button @tap="save" class="btn" style="color:#fff;background-color: rgba(12, 194, 240, 0.925);"
+            type="default">保存</button>
           <button @tap="reset" class="btn" type="warn">重置</button>
         </view>
       </uni-forms>
@@ -365,14 +362,16 @@ onShow(()=>{
     }
   }
 }
+
 .checkbox-container {
-  background-color:blue ;
-  width:100%;
+  background-color: blue;
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
 }
-.checkbox-item{
-  width:100%!important;
+
+.checkbox-item {
+  width: 100% !important;
 }
 </style>

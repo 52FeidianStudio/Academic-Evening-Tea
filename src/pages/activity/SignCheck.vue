@@ -9,7 +9,7 @@
       <div class="message">{{ message[result - 1] }}</div>
 
       <view class="tag-view">
-        <uni-tag v-if="result === 1" text="未报名" />
+        <uni-tag v-if="result === 1" @click="toapply" text="未报名 点击报名" />
         <uni-tag v-else-if="result === 4" text="不在报名时间" />
       </view>
 
@@ -23,7 +23,10 @@ import { http } from '../../utils/http';
 import { onLoad } from '@dcloudio/uni-app';
 
 const result = ref<number>(1)
-
+const props = defineProps<{
+  id: number
+}>();
+console.log(props.id)
 const message = ref<string[]>([
   "签到失败",
   "请勿重复签到",
@@ -32,7 +35,7 @@ const message = ref<string[]>([
 ])
 
 const postFeedbackAPI = (data: any) => {
-  return http({
+  return http<any>({
     url: '/system/useractivity/register',
     method: 'PUT',
     data: {
@@ -47,15 +50,14 @@ const postFeedback = async (AId: number) => {
   result.value = res.data
 }
 
+const AId = props.id
 
-onLoad((query)=>{
-  // scene 需要使用 decodeURIComponent 才能获取到生成二维码时传入的 scene
-  console.log(query)
-  const scene = decodeURIComponent(query.scene)
-  console.log(scene.split("=")[1])
-  const AId = Number(scene.split("=")[1])
-  postFeedback(AId)
-})
+const toapply = () => {
+  console.log("去报名！")
+  uni.navigateTo({
+    url: '/pages/activity/ActivityDetails?id=' + AId
+  })
+}
 
 </script>
 

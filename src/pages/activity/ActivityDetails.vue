@@ -44,8 +44,9 @@
     </view>
     <view class="footer">
       <view class="activity-btn">
-        <button type="primary" v-if="data0.isApplication.length===0 && data0.isEnd==='进行中'" class="btn" @click="applyon">报名</button>
-        <button type="default" v-else-if="data0.isApplication.length>0 && data0.isEnd==='进行中'" class="btn">已报名</button>
+        <button type="primary" v-if="data0.isApplication.length === 0 && data0.isEnd === '进行中'" class="btn"
+          @click="applyon">报名</button>
+        <button type="default" v-else-if="data0.isApplication.length > 0 && data0.isEnd === '进行中'" class="btn">已报名</button>
         <button type="default" v-else class="btn">活动已结束</button>
       </view>
     </view>
@@ -70,8 +71,8 @@ type DataProps = {
   address: string
   img: string
   details: string
-  isApplication:Array<any>
-  is_close:number
+  isApplication: Array<any>
+  is_close: number
 }
 const AId = ref<number>()
 const data0 = ref<DataProps>()
@@ -116,46 +117,42 @@ const apply = async (data: any) => {
 }
 console.log(props.id)
 
-onLoad(async (query) => {
-  const scene = decodeURIComponent(query.scene)
-  AId.value = Number(scene.split("=")[1])
-  if (props.id !== null) {
-    AId.value = props.id;
-  } else {
-    AId.value = Number(AId.value)
-  }
+onLoad(async () => {
+  AId.value = props.id;
   const url = `/system/activity/${AId.value}`;
   postFeedback(url);
 })
 //报名函数
 const applyon = () => {
-  if(uni.getStorageSync('token')){
-  wx.showModal({
-    title: '确认报名',
-    content: '确定要报名吗？',
-    success(res) {
-      if (res.confirm) {
-        //用户点击了确认按钮
-        apply({
-          activityId: AId.value
-        });
-        const url = `/system/activity/${AId.value}`;
-       postFeedback(url);
-      } else if (res.cancel) {
-        // 用户点击了取消按钮
-        console.log('用户取消了报名');
+  if (uni.getStorageSync('token')) {
+    wx.showModal({
+      title: '确认报名',
+      content: '确定要报名吗？',
+      success(res) {
+        if (res.confirm) {
+          //用户点击了确认按钮
+          apply({
+            activityId: AId.value
+          });
+          const url = `/system/activity/${AId.value}`;
+          postFeedback(url);
+        } else if (res.cancel) {
+          // 用户点击了取消按钮
+          console.log('用户取消了报名');
+        }
       }
-    }
-  });
-  }else{
+    });
+  } else {
     wx.showToast({
-      title:'您尚未登录，请先登录',
-      icon:'none',
-      duration:1000,
-      complete:()=>{
-        uni.navigateTo({
-          url:'/pages/login/login'
-        })
+      title: '您尚未登录，请先登录',
+      icon: 'none',
+      duration: 1000,
+      complete: () => {
+        setTimeout(() => {
+          uni.navigateTo({
+            url: '/pages/login/login'
+          })
+        }, 1000)
       }
     })
   }

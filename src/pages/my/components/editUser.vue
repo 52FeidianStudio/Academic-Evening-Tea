@@ -1,6 +1,6 @@
 <template>
   <view class="user">
-    <navigator class="avatar item" url="/pages/my/components/userImage">
+    <navigator class="avatar item" :url="`/pages/my/components/userImage?userName=${user.userName}}`">
       <view>头像</view>
       <view class="user-avatar texts">
         <image class="img" :src='user.img' />
@@ -102,10 +102,9 @@ const saveEdit = () => {
  if(editedUser.value.nickName && editedUser.value.studentId && editedUser.value.dept.deptName) {
   console.log(editedUser.value)
    changePersonalInf(editedUser.value).then(res=>{
-     console.log(res)
-    //  if(res.code)
+    console.log(res)
+    getPersonal()
    })
-   getPersonal()
   isDisabled.value = !isDisabled.value
  }else{
     uni.showToast({

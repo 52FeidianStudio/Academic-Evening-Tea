@@ -16,7 +16,7 @@ type HomeContent = {
 }
 
 export const getHomeContentAPI = (data?: HomeContent) => {
-  const requestData = data ? data : {a:1}
+  const requestData = data ? data : {state:2}
   console.log(requestData);
   return http<any>({
     method: "POST",

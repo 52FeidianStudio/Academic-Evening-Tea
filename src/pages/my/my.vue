@@ -10,61 +10,68 @@ type person = {
   // 学院
   college: string
 }
+const islogin = ref(false)
 const my = ref<person>({
   name: '',
   id: '',
-  img: '',
+  img: '../../static/my/headpic.png',
   college: ''
 })
+
+const handleNavigate = () => {
+  if(uni.getStorageSync('token')){
+    uni.navigateTo({
+      url:'/pages/my/components/editUser'
+    })
+  }
+  else{
+    uni.navigateTo({
+      url:'/pages/login/login'
+    })
+  }
+}
 
 const getPersonal = async () => {
   const res = await getPersonalInf()
   console.log(res)
-  my.value.name=res.data.nickName
+  my.value.name = res.data.nickName
   // my.value.img=res.data.img
-  my.value.college=res.data.dept.deptName
+  my.value.college = res.data.dept.deptName
 }
-onShow(()=>{
-  if(uni.getStorageSync('token')){
+onLoad(() => {
+  if (uni.getStorageSync('token')) {
     getPersonal()
-  }else{
+  } else {
     wx.showToast({
-      title:'您尚未登录，请先登录',
-      icon:'none',
-      duration:1000,
-      complete:()=>{
-        uni.navigateTo({
-          url:'/pages/login/login'
-        })
+      title: '您尚未登录，请先登录',
+      icon: 'none',
+      duration: 1000,
+      complete: () => {
+        setTimeout(() => {
+          uni.navigateTo({
+            url: '/pages/login/login'
+          })
+        }, 1000);
       }
     })
   }
 })
 
+onShow(()=>{
+  const token=uni.getStorageSync('token')
+  islogin.value=token?true:false
+  if(token){
+    getPersonal()
+  }
+})
 
-// const logIn = () =>{
-//   console.log('点击了登录')
-//   uni.login({
-//     provider:'weixin',
-//     success:(res)=>{
-//       if(res.code){
-//         var code = res.code
-//         console.log('登录成功！' + res.code)
-//       }else{
-//         console.log('登录失败！' + res.errMsg)
-//       }
-//     },
-//   })
-// }
-
-const memberStore = useMemberStore()
 </script>
 
 <template>
   <!-- 个人中心 -->
   <view class="personal">
-    <navigator class="personal-header" url="/pages/my/components/editUser">
-      <view class="personal-header-left">
+    <navigator class="personal-header" @click="handleNavigate">
+      <view v-if="islogin" class="personal-header-left">
         <image class="personal-header-left-img" :src="my.img" />
         <view class="personal-header-left-text">
           <view class="personal-header-left-text-name">
@@ -74,6 +81,17 @@ const memberStore = useMemberStore()
           <view class="personal-header-left-text-college">
             <!-- 学号：{{ memberStore.memberInfo.id }} -->
             {{ my.college }}
+          </view>
+        </view>
+      </view>
+      <view v-else class="personal-header-left">
+        <image class="personal-header-left-img" src="../../static/my/headpic.png" />
+        <view class="personal-header-left-text">
+          <view class="personal-header-left-text-name">
+            暂未登录
+          </view>
+          <view class="personal-header-left-text-college">
+            去登陆！
           </view>
         </view>
       </view>
@@ -104,17 +122,6 @@ const memberStore = useMemberStore()
           <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />
         </view>
       </navigator>
-      <!-- <view class="personal-content-item" @tap="logIn">
-        <view class="personal-content-item-left">
-          <image class="personal-content-item-left-img" src="../../static/my/user-wechat.png" />
-          <view class="personal-content-item-left-text">
-            绑定微信登录
-          </view>
-        </view>
-        <view class="personal-content-item-right">
-          <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />
-        </view>
-      </view> -->
       <navigator class="personal-content-item" url="/pages/my/components/contactUs">
         <view class="personal-content-item-left">
           <image class="personal-content-item-left-img" src="../../static/my/user-call.png" />

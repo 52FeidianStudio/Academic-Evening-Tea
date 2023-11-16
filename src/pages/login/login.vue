@@ -27,7 +27,7 @@ const logIn = () => {
       uni.showToast({
         title: '登录成功',
         icon: 'success',
-        duration: 500
+        duration: 1000
       })
       setTimeout(() => {
         uni.switchTab({
@@ -77,7 +77,7 @@ const onGetphonenumber = (ev: any) => {
     </view>
     <view class="login-content">
       <uni-easyinput class="input" type="text" v-model="logInInfo.username" placeholder="用户名" />
-      <uni-easyinput class="input" type="text" v-model="logInInfo.password" placeholder="密码"/>
+      <uni-easyinput class="input" type="password" v-model="logInInfo.password" placeholder="密码"/>
     </view>
     <view class="login">
       <button class="button phone" @tap="logIn">
