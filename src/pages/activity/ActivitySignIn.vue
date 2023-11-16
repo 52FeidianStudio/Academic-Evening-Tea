@@ -57,17 +57,36 @@ import { onLoad } from '@dcloudio/uni-app'
 const scan = () => {
   uni.scanCode({
     success: (res) => {
-      
-      console.log(res)
-      var path = res.path
-      //  //微信开发者工具 在开发者工具里出现乱码需要decodeURIComponent转义,真机不需要,可以直接使用
-      console.log("res.path", res.path); //pages/me/me?scene=table_id%3D8%26shop_id%3D1
+
+      //判断当前手机系统
+      wx.getSystemInfo({
+      success: (res22) => {
+         console.log(res)
+         console.log("res.path", res.path); //pages/me/me?scene=table_id%3D8%26shop_id%3D1
+        const platform = res22.platform.toLowerCase();
+        var path = res.path
+        // 判断当前手机系统
+       if (platform.includes('ios')) {
+          console.log('当前手机系统为 iOS');
+         path=decodeURIComponent(path)
+          console.log(path)
+        } 
       const modifiedStr = path.replace("?scene=", "?");
       console.log(modifiedStr);
       uni.navigateTo({
         url: '/' + modifiedStr
       })
 
+        // else if (platform.includes('windows')) {
+        //   console.log('当前手机系统为 Windows Phone');
+        // } else {
+        //   console.log('当前手机系统为其他');
+        // }
+      }
+    });
+      
+      //  //微信开发者工具 在开发者工具里出现乱码需要decodeURIComponent转义,真机不需要,可以直接使用
+    
     }
   })
 }

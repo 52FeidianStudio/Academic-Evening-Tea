@@ -148,9 +148,18 @@ const launchActivity = async (data: any) => {
 
 // 表单校验
 const baseform = ref<any>()
-// 提交
+const isShowPop=ref<any>('')
+const ohShitfadeOut = () => {
+  console.log("xianshi ")
+      const fadeOutTimeout = setTimeout(() => {
+        isShowPop.value = '';
+        clearTimeout(fadeOutTimeout);
+      }, 3000);
+    };
+
 const submit = debounce(() => {
   baseform.value.validate().then((res: form) => {
+   
     // 求学院限制人数总和
     let sum:number=0;
     populationLimit.value.forEach((item:any)=>{
@@ -208,6 +217,9 @@ const submit = debounce(() => {
       console.log(needContent)
       launchActivity(needContent);
     }
+  }).catch((res)=>{
+    isShowPop.value=res[0].errorMessage
+     ohShitfadeOut()
   })
 
   // console.log(content.value)
@@ -285,7 +297,10 @@ onShow(() => {
 </script>
 
 <template>
+  <view class="container">
+  <view class="ad_popError" v-if="isShowPop!==''">{{isShowPop}}</view> 
   <view class="activity">
+    
     <!-- 输入活动相关信息：活动主题、姓名、学院、、学号、举办日期、举办时间、举办地点、人数估计、线上地址、发起人电话、发起人简介，使用uniapp的uni-form组件 -->
     <!-- 使用uni-form -->
     <view class="forms">
@@ -293,12 +308,18 @@ onShow(() => {
         <uni-forms-item required label="活动主题" name="title">
           <uni-easyinput v-model="content.title" placeholder="请输入活动主题"></uni-easyinput>
         </uni-forms-item>
+        <uni-forms-item required label="活动简介" name="introduction">
+          <textarea class="text" :maxlength=100 v-model="content.introduction"></textarea>
+        </uni-forms-item>
         <uni-forms-item required label="发布者姓名" name="name">
           <uni-easyinput v-model="content.name" placeholder="请输入姓名"></uni-easyinput>
         </uni-forms-item>
         <!-- 主讲人姓名 -->
         <uni-forms-item required label="主讲人姓名" name="sponsorName">
           <uni-easyinput v-model="content.sponsorName" placeholder="请输入主讲人姓名"></uni-easyinput>
+        </uni-forms-item>
+        <uni-forms-item required label="主讲人简介" name="sponsorIntroduction">
+          <textarea class="text" :maxlength=100 v-model="content.sponsorIntroduction"></textarea>
         </uni-forms-item>
         <uni-forms-item required label="学院" name="college">
           <uni-combox :candidates="colleges.map((item) => (item.value))" placeholder="请选择所在学院"
@@ -337,13 +358,8 @@ onShow(() => {
         <uni-forms-item required label="电话" name="phone" style="white-space: nowrap;width: 30rpx;">
           <uni-easyinput v-model="content.phone" placeholder="请输入发起人电话"></uni-easyinput>
         </uni-forms-item>
-        <uni-forms-item required label="活动简介" name="introduction">
-          <textarea class="text" :maxlength=-1 v-model="content.introduction"></textarea>
-        </uni-forms-item>
-        <!-- 主讲人简介 -->
-        <uni-forms-item required label="主讲人简介" name="sponsorIntroduction">
-          <textarea class="text" :maxlength=-1 v-model="content.sponsorIntroduction"></textarea>
-        </uni-forms-item>
+  
+     
         <view class="btns">
           <button @tap="submit" class="btn" type="primary">提交</button>
           <button @tap="save" class="btn" style="color:#fff;background-color: rgba(12, 194, 240, 0.925);"
@@ -352,6 +368,7 @@ onShow(() => {
         </view>
       </uni-forms>
     </view>
+  </view>
   </view>
 </template>
 
@@ -399,5 +416,15 @@ onShow(() => {
 
 .checkbox-item {
   width: 100% !important;
+}
+.ad_popError{ background: #de352d; 
+  color: #fff; height: 58rpx;
+   line-height: 58rpx; font-size: 24rpx;
+    text-align: center; position: fixed;
+  top: 0;
+  left: 0;
+   width: 100%; z-index:3;}
+.container{
+  position: relative;
 }
 </style>
