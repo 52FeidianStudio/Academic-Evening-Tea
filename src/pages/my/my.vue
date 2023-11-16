@@ -37,6 +37,7 @@ const getPersonal = async () => {
   my.value.name = res.data.nickName
   // my.value.img=res.data.img
   my.value.college = res.data.dept.deptName
+  my.value.img = res.data.avatar===''?'../../static/my/headpic.png':res.data.avatar
 }
 onLoad(() => {
   if (uni.getStorageSync('token')) {

@@ -1,7 +1,7 @@
 <template>
   <view class="userImage">
     <view class="img" @tap="doImg">
-      <image :src="avatar == '' ? '../../../static/my/headpic.png' : avatar" />
+      <image :src="avatar" />
     </view>
   </view>
   <uni-popup ref="popup">
@@ -24,14 +24,14 @@ const popup = ref<{
   close: () => void
 }>() 
 const props = defineProps<{
-  userName: string
+  userAvatar: string
 }>();
 
-const avatar = ref<string>('')
+const avatar = ref<string>(props.userAvatar)
 
 const editUserImg = async (imgUrl: string) => {
   const res = await changePersonalInf({
-    userName: props.userName,
+    // userName: props.userName,
     avatar: imgUrl
   })
   console.log(res)

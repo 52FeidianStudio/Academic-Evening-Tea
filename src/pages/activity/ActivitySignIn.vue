@@ -57,6 +57,7 @@ import { onLoad } from '@dcloudio/uni-app'
 const scan = () => {
   uni.scanCode({
     success: (res) => {
+      
       console.log(res)
       var path = res.path
       //  //微信开发者工具 在开发者工具里出现乱码需要decodeURIComponent转义,真机不需要,可以直接使用

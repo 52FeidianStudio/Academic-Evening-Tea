@@ -44,10 +44,9 @@
     </view>
     <view class="footer">
       <view class="activity-btn">
-        <button type="primary" v-if="data0.isApplication.length === 0 && data0.isEnd === '进行中'" class="btn"
-          @click="applyon">报名</button>
-        <button type="default" v-else-if="data0.isApplication.length > 0 && data0.isEnd === '进行中'" class="btn">已报名</button>
-        <button type="default" v-else class="btn">活动已结束</button>
+          <button type="primary" v-if="data0.isApplication.length === 0 && data0.isEnd === '进行中'" class="btn" @click="applyon">报名</button>
+          <button type="default" v-else-if="data0.isApplication.length > 0 && data0.isEnd === '进行中'" class="btn">已报名</button>
+          <button type="default" v-else class="btn">活动已结束</button>
       </view>
     </view>
 
@@ -59,7 +58,7 @@
 <script setup lang='ts'>
 import { http } from '../../utils/http';
 import { ref, reactive } from 'vue'
-import { onLoad } from '@dcloudio/uni-app';
+import { onHide, onLoad } from '@dcloudio/uni-app';
 type DataProps = {
   id: number
   userImg2: string
@@ -92,11 +91,12 @@ const applyAPI = (data: any) => {
     data
   })
 }
-const postFeedback = async (url: string) => {
+const getDetails = async (url: string) => {
   const res = await getDetailsAPI(url);
   console.log(res)
   data0.value = res.data;
-  data0.value.isEnd = res.data.isEnd == 1 ? "进行中" : "已结束";
+  data0.value.isEnd = res.data.isEnd === 1 ? "进行中" : "已结束";
+  data0.value.isApplication = res.data.isApplication === null ? []:res.data.isApplication
 }
 const apply = async (data: any) => {
   const res = await applyAPI(data);
@@ -104,7 +104,14 @@ const apply = async (data: any) => {
     wx.showToast({
       title: res.msg,
       icon: 'success',
-      duration: 2000
+      duration: 2000,
+      success:()=>{
+        setTimeout(()=>{
+          uni.switchTab({
+            url:'/pages/index/index'
+          })
+        },2000)
+      }
     });
     data0.value.is_close = 1;
   } else {
@@ -117,10 +124,15 @@ const apply = async (data: any) => {
 }
 console.log(props.id)
 
-onLoad(async () => {
+onLoad(async (options) => {
+  
   AId.value = props.id;
   const url = `/system/activity/${AId.value}`;
-  postFeedback(url);
+  getDetails(url);
+ 
+});
+onHide(()=>{
+
 })
 //报名函数
 const applyon = () => {
@@ -135,7 +147,7 @@ const applyon = () => {
             activityId: AId.value
           });
           const url = `/system/activity/${AId.value}`;
-          postFeedback(url);
+          getDetails(url);
         } else if (res.cancel) {
           // 用户点击了取消按钮
           console.log('用户取消了报名');

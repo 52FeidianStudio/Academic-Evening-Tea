@@ -118,11 +118,32 @@ const selectedCollegeChange: UniHelper.UniDataCheckboxMultipleOnChange = (e) => 
 }
 
 const populationLimit = ref<limit[]>([])
-let newLimit: Array<object> = []
+let newLimit = ref<any>([])
 
 const launchActivity = async (data: any) => {
   const res = await launchActivityAPI(data)
   console.log(res)
+  if(res.code===200){
+    uni.showToast({
+        title: '提交成功',
+        icon: 'success',
+        duration: 1000,
+        complete: () => {
+          setTimeout(() => {
+            uni.switchTab({
+              url: '/pages/index/index'
+            })
+            reset()
+          }, 1000);
+
+        }
+      })
+  }else{
+    uni.showToast({
+      title:'活动发起失败',
+      icon:'none'
+    })
+  }
 }
 
 // 表单校验
@@ -130,6 +151,11 @@ const baseform = ref<any>()
 // 提交
 const submit = debounce(() => {
   baseform.value.validate().then((res: form) => {
+    // 求学院限制人数总和
+    let sum:number=0;
+    populationLimit.value.forEach((item:any)=>{
+      sum += item.population
+    })
     console.log(res)
     if (parseInt(res.population) === 0) {
       uni.showToast({
@@ -140,17 +166,23 @@ const submit = debounce(() => {
     }
     if (res) {
       if (selectedColleges.value.length === 0) {
-        newLimit = []
+        newLimit.value = []
       } else if (populationLimit.value.every(item => item.population === 0)) {
         uni.showToast({
           title: '学院限制人数不能为0',
           icon: 'none'
         })
         return
+      } else if(sum>parseInt(content.value.population)){
+        uni.showToast({
+          title:'学院限制人数之和不能超过总限制人数',
+          icon:'none'
+        })
+        return
       } else {
         populationLimit.value.forEach(item => {
           if (item.population !== 0) {
-            newLimit.push({
+            newLimit.value.push({
               deptId: item.id,
               maxNum: item.population
             })
@@ -171,23 +203,10 @@ const submit = debounce(() => {
         cityname: content.value.onlineAddress,
         speakerName: content.value.sponsorName,
         img: content.value.sponsorIntroduction,
-        deptNums: newLimit
+        deptNums: newLimit.value
       }
       console.log(needContent)
       launchActivity(needContent);
-      uni.showToast({
-        title: '提交成功',
-        icon: 'success',
-        duration: 2000,
-        complete: () => {
-          reset()
-          setTimeout(() => {
-            uni.switchTab({
-              url: '/pages/index/index'
-            })
-          }, 2000);
-        }
-      })
     }
   })
 
@@ -219,6 +238,10 @@ const reset = () => {
 // 保存
 const save = () => {
   uni.setStorageSync('content', content.value)
+  uni.showToast({
+    title:'已保存！',
+    icon:'success'
+  })
 }
 // 获取学院列表
 const getCollegeList = async () => {
@@ -266,7 +289,7 @@ onShow(() => {
     <!-- 输入活动相关信息：活动主题、姓名、学院、、学号、举办日期、举办时间、举办地点、人数估计、线上地址、发起人电话、发起人简介，使用uniapp的uni-form组件 -->
     <!-- 使用uni-form -->
     <view class="forms">
-      <uni-forms ref="baseform" label-position="top" :rules="rules" :modelValue="content" label-width="100%">
+      <uni-forms ref="baseform" label-position="top" :rules="rules" :model="content" label-width="100%">
         <uni-forms-item required label="活动主题" name="title">
           <uni-easyinput v-model="content.title" placeholder="请输入活动主题"></uni-easyinput>
         </uni-forms-item>
@@ -291,20 +314,23 @@ onShow(() => {
           <!-- <uni-data-picker :localdata="addresses" popup-title="请选择举办地点" v-model="content.address" /> -->
           <uni-easyinput v-model="content.address" placeholder="请输入举办地点"></uni-easyinput>
         </uni-forms-item>
-        <uni-forms-item required label="人数估计" name="population">
-          <uni-easyinput v-model="content.population" placeholder="请输入人数估计"></uni-easyinput>
+        <uni-forms-item required label="人数限制" name="population">
+          <uni-easyinput v-model="content.population" placeholder="请输入人数限制"></uni-easyinput>
         </uni-forms-item>
-        <uni-forms-item label="学院限制" class="checkbox-container" name="colleges">
+        <uni-forms-item label="学院限制" class="checkbox-container">
           <uni-data-checkbox :multiple="true" class="checkbox-item" v-model="selectedColleges" :localdata="colleges"
             mode="default" @change="selectedCollegeChange" />
         </uni-forms-item>
-        <view name="collegePopulation" label="学院报名人数限制">
+        <uni-forms-item>
+        <view label="学院报名人数限制">
           <uni-section v-for="(college, index) in selectedColleges" :key="index" :title="`设置${college}的报名人数`" type="line"
             padding>
             <uni-number-box :max="1500"
-              v-model="populationLimit.find(item => item.college === college)!.population"></uni-number-box>
+              v-model="populationLimit.find(item => item.college === college).population">
+            </uni-number-box>
           </uni-section>
         </view>
+        </uni-forms-item>
         <uni-forms-item label="线上地址" name="onlineAddress">
           <uni-easyinput v-model="content.onlineAddress" placeholder="请输入线上地址，没有则不填"></uni-easyinput>
         </uni-forms-item>

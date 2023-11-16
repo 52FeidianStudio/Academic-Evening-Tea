@@ -54,11 +54,15 @@ const AId = props.id
 
 const toapply = () => {
   console.log("去报名！")
+  uni.redirectTo({
+    url:'/pages/index/index'
+  })
   uni.navigateTo({
     url: '/pages/activity/ActivityDetails?id=' + AId
   })
 }
-
+onLoad(()=>{
+  postFeedback(AId)})
 </script>
 
 <style>

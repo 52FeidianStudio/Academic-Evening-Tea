@@ -1,6 +1,6 @@
 <template>
   <view class="user">
-    <navigator class="avatar item" :url="`/pages/my/components/userImage?userName=${user.userName}}`">
+    <navigator class="avatar item" :url="`/pages/my/components/userImage?userAvatar=${user.img}`">
       <view>头像</view>
       <view class="user-avatar texts">
         <image class="img" :src='user.img' />
@@ -52,7 +52,7 @@
 
 <script setup lang='ts'>
 import { ref, reactive } from 'vue';
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad, onShow } from '@dcloudio/uni-app';
 import { getPersonalInf,changePersonalInf } from '@/services/personalInf'
 // type userInfo = {
 //   name: string
@@ -62,14 +62,7 @@ import { getPersonalInf,changePersonalInf } from '@/services/personalInf'
 //   college: string
 // }
 const isDisabled = ref<Boolean>(false)
-const user = ref<any>({
-  name: '张三',
-  studentId: '2018111111',
-  img: '../../../static//my/headpic.png',
-  college: '计算机学院',
-  nickName:'',
-  phonenumber:''
-})
+const user = ref<any>({})
 
 const editedUser = ref<any>({
 
@@ -85,11 +78,12 @@ const getPersonal = async () => {
   user.value.studentId=res.data.userName
   user.value.nickName=res.data.nickName
   user.value.phonenumber=res.data.phonenumber
+  user.value.img = res.data.avatar===""?'../../../static/my/headpic.png':res.data.avatar
   editedUser.value=res.data
 }
 
 
-onLoad(() => {
+onShow(() => {
   getPersonal()
 })
 

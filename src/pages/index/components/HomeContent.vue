@@ -163,7 +163,6 @@ onLoad(() => {
       })
     }
   });
-  uni.setStorageSync('token','')
   getHomeContent(0, 0, 0)
 })
 
