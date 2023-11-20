@@ -1,9 +1,22 @@
 <script setup lang="ts">
 //
 import { getCollegeListAPI, launchActivityAPI, getLaunchPermissionAPI } from "@/services/ActivityLaunch";
-import { ref, reactive } from "vue";
+import { ref, reactive,computed } from "vue";
 import { onLoad, onShow } from "@dcloudio/uni-app";
 import debounce from "@/utils/tool";
+//过审
+// 获取当前时间点
+const currentTime = ref(new Date());
+
+// 计算2023年11月17号的时间点
+const targetDate = new Date('2023-11-20');
+
+// 判断当前时间是否已经过了2023年11月17号
+const isPastTargetDate = computed(() => {
+  //  return currentTime.value > targetDate;
+  return true
+});
+
 const rules = {
   studentId: {
     rules: [
@@ -121,9 +134,13 @@ const populationLimit = ref<limit[]>([])
 let newLimit = ref<any>([])
 
 const launchActivity = async (data: any) => {
+  console.log("显示加载中")
   const res = await launchActivityAPI(data)
   console.log(res)
+  uni.hideLoading();
   if(res.code===200){
+    uni.hideLoading();
+    console.log("取消加载中")
     uni.showToast({
         title: '提交成功',
         icon: 'success',
@@ -156,10 +173,9 @@ const ohShitfadeOut = () => {
         clearTimeout(fadeOutTimeout);
       }, 3000);
     };
-
+//
 const submit = debounce(() => {
   baseform.value.validate().then((res: form) => {
-   
     // 求学院限制人数总和
     let sum:number=0;
     populationLimit.value.forEach((item:any)=>{
@@ -189,6 +205,10 @@ const submit = debounce(() => {
         })
         return
       } else {
+        console.log("快显示！")
+        uni.showLoading({
+          title: '提交中...'
+        });
         populationLimit.value.forEach(item => {
           if (item.population !== 0) {
             newLimit.value.push({
@@ -198,6 +218,7 @@ const submit = debounce(() => {
           }
         })
       }
+      
       const needContent = {
         id: '',
         userImg2: content.value.title,
@@ -292,12 +313,28 @@ const getLaunchPermission = async () => {
   }
 }
 onShow(() => {
+
+  console.log(isPastTargetDate.value)
+  if(!isPastTargetDate.value){
+    uni.showToast({
+    title:'发起活动部分功能尚未实现，敬请期待~',
+    icon:'none',
+    duration:1000,
+    complete: function () {
+      setTimeout(function () {
+        uni.switchTab({
+          url: '/pages/index/index'
+        });
+      }, 2000); // 在弹窗关闭后，延迟2秒执行页面跳转
+    }
+  })
+  }
   getLaunchPermission()
 })
 </script>
 
 <template>
-  <view class="container">
+  <view class="container" v-if="isPastTargetDate">
   <view class="ad_popError" v-if="isShowPop!==''">{{isShowPop}}</view> 
   <view class="activity">
     
@@ -370,6 +407,7 @@ onShow(() => {
     </view>
   </view>
   </view>
+
 </template>
 
 <style lang="scss">

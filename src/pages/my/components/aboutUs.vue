@@ -4,7 +4,7 @@
       <image src="../../../static/log.png"></image>
     </view>
     <view class="content">
-      学术晚茶，打造身边的学术交流平台。不搞大水漫灌，现在还是这样，但是特殊时期要有特殊的政策，我们叫做放水养鱼。中国经济保持稳定、稳住基本盘，本身就是对世界的贡献，而且会为世界经济恢复增长、实现发展作出积极贡献。</view>
+      学术晚茶，打造身边的学术交流平台。学术晚茶是提供学术攻略的平台，分享高质量的学术活动信息，还提供丰富有趣的学术活动报道和科普文章供用户阅读。</view>
   </view>
 </template>
 huodong
@@ -34,7 +34,7 @@ import { ref, reactive } from 'vue'
   }
 
   .content {
-    margin-top: 40rpx;
+    margin: 40rpx;
     line-height: 1.5;
     color: rgb(74, 73, 73);
   }

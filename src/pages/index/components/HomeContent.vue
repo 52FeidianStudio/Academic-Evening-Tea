@@ -108,7 +108,7 @@ const items = ref<Category[]>([
     id: 3,
     text: '礼品中心',
     icon: '../../../static/home/sy-article.png',
-    url: '/pages/gift/gift'
+    url: '/pages/gift/giftCenter'
   },
   {
     id: 4,

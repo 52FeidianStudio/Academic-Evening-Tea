@@ -1,23 +1,31 @@
 <template>
 
  <div>
+  <view class="myCredit">
+    <uni-icons class="myC" type="person-filled" size="30"></uni-icons>
+    <view class="myC">我的积分：</view>
+    <view class="myC creditNum">{{ credit }}</view>
+  </view>
+  <view class="separate"></view>
   <view class="aboutUs">
+    
     <view class="img">
-      <image src="../../../static/log.png"></image>
+      <uni-icons type="list" size="80"></uni-icons>
     </view>
+    <view class="content title">-------积分规则-------</view>
     <view class="content">签到后获得1积分</view>
     <view class="content">填写详细信息后可以获得1积分</view>
       
       <view class="content"> 完成一次意见反馈可以获得1 积分</view>
-      <view class="content">推荐可积1分，内容采纳再积2分</view>
+      <view class="content">有效推荐可积1分，内容采纳再积2分</view>
   </view>
  </div>
 
 </template>
 
 <script setup lang='ts'>
-// import { ref,reactive } from 'vue'
-// import { onLoad } from '@dcloudio/uni-app';
+import { ref,reactive } from 'vue'
+import { onLoad } from '@dcloudio/uni-app';
 
 // onLoad(()=>{
 //   uni.showToast({
@@ -33,6 +41,17 @@
 //     }
 //   })
 // })
+
+import { getPersonalInf } from '@/services/personalInf'
+const credit=ref(0)
+const getPersonal = async () => {
+  const res = await getPersonalInf()
+  console.log(res)
+ credit.value=res.data.credit;
+}
+onLoad(()=>{
+  getPersonal()
+})
 </script>
 <style  lang="scss">
 .aboutUs {
@@ -45,14 +64,6 @@
     width: 100%;
     text-align: center;
     margin-top: 60rpx;
-
-    image {
-      width: 200rpx;
-      height: 200rpx;
-      background: rgb(25, 178, 243);
-      opacity: 1;
-      border-radius: 16px;
-    }
   }
 
   .content {
@@ -61,4 +72,31 @@
     text-align: center;
     color: rgb(74, 73, 73);
   }}
+  .separate{
+  height:20rpx;
+  background-color: whitesmoke;
+  margin:10rpx 0;
+  width:100%;
+}
+.title {
+  font-size: 40rpx;
+  font-family:Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+  color: black;
+  text-align: justify;
+  font-weight: bold;
+ text-shadow: #558ABB 1px 0 10px;
+}
+.myCredit{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  height:200rpx;
+}
+.myC{
+  line-height: 200rpx;
+}
+.creditNum{
+  font-size:25px;
+  text-shadow: 1px 1px 2px #558ABB, 0 0 1em #558ABB, 0 0 0.2em #558ABB;
+}
 </style>

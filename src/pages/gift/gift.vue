@@ -1,30 +1,47 @@
 <template>
-  <div>
-  
-  <swiper :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration">
-    <swiper-item v-for="(url, index) in imgUrls" :key="index">
-      <image :src="url" :data-src="url" @click="previewImage(url)" />
-    </swiper-item>
-  </swiper>
+  <div :style="{ paddingBottom: safeAreaInsets?.bottom!+ 0 + 'px' }">
+    <view class="ad_popError" v-if="mycredit==0">您的积分为零</view> 
+      <swiper :indicator-dots="indicatorDots" :autoplay="autoplay" :interval="interval" :duration="duration">
+        <swiper-item v-for="(url, index) in goodsdata.imgs" :key="index">
+          <image :src="url" :data-src="url" @click="previewImage" />
+        </swiper-item>
+      </swiper>
 
-<scroll-view :scroll-y="true">
-  <view class="detail">
-    <text class="title">金属书签中国风简约祝福寓意纪念奖励文字页夹索引夹毕业文创礼品</text>
-    <text class="price">200积分</text>
-  </view>
-  <view class="separate"></view>
-  <!-- sku选择 -->
-  <!-- <text bindtap="toggleDialog">请选择购买数量</text> -->
-  <!-- <view class="separate"></view>
-  <text>商品评价</text>
-  
-  <view class="separate"></view> -->
-  <text>礼品详情</text>
-  <text class="text-remark">黄铜金属书签中国风文创产品批发创意古风立体文字镂空书签定制
-</text>
-  <image style="width:100%;height:500rpx" v-for="(url, index) in imgUrls"  :key="index" :src="url"/>
-  <view class="temp"></view>
-</scroll-view>
+      <scroll-view :scroll-y="true">
+        
+        <view class="detail">
+        <text class="price">{{ goodsdata.price }}积分</text>
+        <text class="title">{{ goodsdata.name }}</text>
+        <text class="text-remark">{{ goodsdata.introduce }}</text>
+        </view>
+
+        <view class="separate"></view>
+        <!-- sku选择 -->
+        <view class="num-box">
+          <text bindtap="toggleDialog">请选择兑换数量</text> 
+          <uni-number-box class="numchooseBox" :max="maxNum" v-model="goodsnum"></uni-number-box>
+        </view>
+        
+        <view class="separate"></view>
+        <text>礼品详情图：</text>
+        <image style="width:100%;height:500rpx" v-for="(url, index) in goodsdata.imgs"  :key="index" :src="url"/>
+        <view class="temp"></view>
+      </scroll-view >
+
+      <view class="detail-nav"  :style="{ bottom: safeAreaInsets?.bottom!+ 0 + 'px' }">
+      <!-- <image bindtap="toCar" src="../../static/gifts/R-C.jpg" /> -->
+      <view class="line_nav"  :style="{ height: safeAreaInsets?.bottom!+ 1 + 'px' }" ></view>
+      <!-- <image bindtap="addLike" src="../../static/gifts/R-C.jpg" /> -->
+        <view class="score-box">
+          
+        <view class=" scorenum" >所需积分：</view>
+        <image style="border-radius: 20rpx;width: 40rpx;
+          height: 40rpx;margin-top: 10rpx;;" src="../../static/gifts/R-C.jpg" />
+          <view class="scorenum">{{ scoreres }}</view>
+        </view>
+          <!-- <button class="button-green" bindtap="addCar" formType="submit">加入购物车</button> -->
+          <button :disabled="goodsnum==0" class="button-red" @click="immeBuy" formType="submit">立即兑换</button>
+    </view>
   </div>
 </template>
 
@@ -47,60 +64,139 @@
 //   })
 // })
 
-  // data: {
-  //   isLike: true,
-  //   // banner
-  //   imgUrls: [
-  //     "static/gifts/p1.jpg"
-  //   ],
-  //   indicatorDots: true, //是否显示面板指示点
-  //   autoplay: true, //是否自动切换
-  //   interval: 3000, //自动切换时间间隔,3s
-  //   duration: 1000, //	滑动动画时长1s
+import { onLoad, onShow } from '@dcloudio/uni-app';
+import { ref, computed ,watch} from 'vue';
+import {getGiftDetail,exchangeGift} from '@/services/gift'
+import {getPersonalInf} from '@/services/personalInf'
+// 获取屏幕边界到安全区域距离
+const { safeAreaInsets } = uni.getSystemInfoSync()
 
-  //   // 商品详情介绍
-  //   detailImg: [
-  //   "static/gifts/p1.jpg"
-  //   ],
-  // },
-//   methods:{
-//  //预览图片
-//   previewImage: function (e) {
-//     var current = e.target.dataset.src;
 
-//     wx.previewImage({
-//       current: current, // 当前显示图片的http链接  
-//       urls: this.data.imgUrls // 需要预览的图片http链接列表  
-//     })
-//   },
-//   }
- 
-  import { ref } from 'vue';
+const props = defineProps<{
+  id: number
+}>();
 
-const isLike = ref(true);
-const imgUrls = [
-"../../static/gifts/p1.jpg",
-"../../static/gifts/p2.jpg",
-"../../static/gifts/p3.jpg",
-"../../static/gifts/p4.jpg"
-];
+const getGiftDetails = async (id) => {
+  const res = await getGiftDetail(id)
+  console.log(res.data)
+  goodsdata.value=res.data
+}
+const getMyCredit=async()=>{
+  const res =await getPersonalInf()
+  console.log(res.data.credit)
+  mycredit.value=res.data.credit
+}
+const mycredit=ref<number>(0)
+const maxNum = computed(() => {
+  // 假设商品价格为200，这里做整除计算
+  return Math.floor(mycredit.value / goodsdata.value.price);
+});
+const scoreres=computed(() => {
+  return goodsnum.value*goodsdata.value.price;
+});
+// watch([goodsnum.value, () => goodsdata.value.price], ([newgoodsnum]) => {
+//   scoreres.value = newgoodsnum * goodsdata.value.price;
+// });
+const goodsdata=ref({})
+const goodsnum=ref<number>(0)
+onShow(()=>{
+  if (uni.getStorageSync('token')) {
+  getMyCredit()}
+})
+onLoad(()=>
+{
+  if (uni.getStorageSync('token')) {
+  console.log(props.id)
+  getGiftDetails(props.id)
+  getMyCredit()}
+  else{
+    wx.showToast({
+      title: '您尚未登录，请先登录',
+      icon: 'none',
+      duration: 1000,
+      complete: () => {
+        setTimeout(() => {
+          uni.navigateTo({
+            url: '/pages/login/login'
+          })
+        }, 1000);
+      }
+    })
+  }
+})
+
 const indicatorDots = true;
 const autoplay = true;
 const interval = 3000;
 const duration = 1000;
-// const detailImg = [
-// "../../static/gifts/p1.jpg",
-// "../../static/gifts/p2.jpg",
-// "../../static/gifts/p3.jpg",
-// "../../static/gifts/p4.jpg"
-// ];
 
-const previewImage = (current: string) => {
+
+const previewImage = (e) => {
+  var current = e.target.dataset.src;
+  console.log(current)
   wx.previewImage({
     current: current,
-    urls: imgUrls
+    urls: goodsdata.value.imgs
   });
 };
+
+const applyExchange=async(data)=>{
+  const res=await exchangeGift(data)
+  console.log(res)
+  if(res.code==200){
+    if(res.data==3){
+      uni.showToast({
+      title:"兑换成功！",
+      icon:"success",
+      duration: 2000,
+    complete: function () {
+      setTimeout(function () {
+        uni.navigateTo({
+          url: '/pages/gift/giftCenter'
+        });
+      }, 2000); // 在弹窗关闭后，延迟2秒执行页面跳转
+    }
+    })
+    }
+    if(res.data==2){
+      uni.showToast({
+        title:"余额不足！",
+      icon:"error",
+      duration: 2000,
+      })
+    }
+    if(res.data==1){
+      uni.showToast({
+        title:"库存不足！",
+      icon:"error",
+      duration: 2000,
+      })
+    }
+   
+  }
+}
+const immeBuy=()=>{
+  console.log("购买")
+  wx.showModal({
+      title: '确认兑换',
+      content: '确定要兑换吗？',
+      success(res) {
+
+        if (res.confirm) {
+          //用户点击了确认按钮
+           applyExchange({
+            id:null,
+            goodsId:goodsdata.value.id,
+            nums:goodsnum.value
+          })
+         
+        } else if (res.cancel) {
+          // 用户点击了取消按钮
+          console.log('用户取消了兑换');
+        }
+      }
+    });
+}
 //   // 收藏
 //   addLike() {
 //     this.setData({
@@ -138,15 +234,26 @@ swiper-item image {
   width: 100%;
   height: 100%;
 }
+.separate{
+  height:20rpx;
+  background-color: whitesmoke;
+  margin:10rpx 0;
+  width:100%;
+}
+.ad_popError{ background: #de352d; 
+  color: #fff; height: 58rpx;
+   line-height: 58rpx; font-size: 24rpx;
+    text-align: center; position: fixed;
+  top: 0;
+  left: 0;
+   width: 100%; z-index:3;}
 .detail {
   display: flex;
   flex-direction: column;
-  margin-top: 15rpx;
-  margin-bottom: 0rpx;
+  margin: 15rpx 10rpx 0;
 }
 .detail .title {
   font-size: 40rpx;
-  margin: 20rpx;
   color: black;
   text-align: justify;
 }
@@ -185,9 +292,7 @@ swiper-item image {
   width: 100%;
   height: 100rpx;
 }
-.button-green {
-  background-color: #4caf50; /* Green */
-}
+
 .button-red {
   background-color: #f44336; /* 红色 */
 }
@@ -211,9 +316,10 @@ button {
   margin: 20rpx 40rpx;
 }
 .line_nav {
-  width: 5rpx;
-  height: 100%;
-  background-color: gainsboro;
+  width:100%;
+  background-color: #fff;
+  position: fixed;
+  bottom: 0;
 }
 /* 占位 */
 .temp {
@@ -221,14 +327,31 @@ button {
 }
 text {
   display: block;
-  height: 60rpx;
-  line-height: 60rpx;
-  font-size: 30rpx;
+  height: 50rpx;
+  line-height: 50rpx;
+  /* font-size: 30rpx; */
   margin: 10rpx;
 }
 .text-remark {
   display: block;
-  font-size: 25rpx;
+  font-size: 27rpx;
+}
+.num-box{
+  display: flex;
+  flex-direction: row;
+  justify-content:center;
+}
+.score-box{
+  display: flex;
+  flex-direction: row;
+}
+.scorenum{
+  color: #f44336;
+  display: block;
+  font-size: 30rpx;
   margin: 10rpx;
+}
+.numchooseBox{
+ margin-top:10rpx;
 }
 </style>

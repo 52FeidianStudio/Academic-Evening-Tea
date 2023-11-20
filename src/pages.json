@@ -37,6 +37,12 @@
       }
     },
     {
+      "path": "pages/column/components/article",
+      "style": {
+        "navigationBarTitleText": "文章详情"
+      }
+    },
+    {
       "path": "pages/activity/ActivityLaunch",
       "style": {
         "navigationBarTitleText": "发起活动"
@@ -49,15 +55,27 @@
       }
     },
     {
-      "path": "pages/gift/gift",
+      "path": "pages/gift/giftCenter",
       "style": {
         "navigationBarTitleText": "礼品中心"
+      }
+    },
+    {
+      "path": "pages/gift/gift",
+      "style": {
+        "navigationBarTitleText": "礼品详情"
       }
     },
     {
       "path": "pages/recommend/recommend",
       "style": {
         "navigationBarTitleText": "我要推荐"
+      }
+    },
+    {
+      "path": "pages/recommend/recommendDetail",
+      "style": {
+        "navigationBarTitleText": "推荐详情"
       }
     },
     {
@@ -76,6 +94,12 @@
       "path": "pages/my/components/integral",
       "style": {
         "navigationBarTitleText": "我的积分"
+      }
+    },
+    {
+      "path": "pages/recommend/makeRecd",
+      "style": {
+        "navigationBarTitleText": "发起推荐"
       }
     },
     {

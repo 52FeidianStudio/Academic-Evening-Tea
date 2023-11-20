@@ -93,10 +93,24 @@ const changeUserInfo = () => {
 }
 
 const saveEdit = () => {
- if(editedUser.value.nickName && editedUser.value.studentId && editedUser.value.dept.deptName) {
+  if (!/^1[3456789]\d{9}$/.test(editedUser.value.phonenumber)) {        
+                    uni.showToast({
+                       title: '请输入正确的手机号',
+                       icon: 'none'
+                         });
+                      return false;
+     }
+ if(editedUser.value.nickName && editedUser.value.phonenumber) {
   console.log(editedUser.value)
    changePersonalInf(editedUser.value).then(res=>{
     console.log(res)
+    if(res.code==500){
+      uni.showToast({
+                       title: '违规操作！',
+                       icon: 'none'
+                         });
+                      return false;
+    }
     getPersonal()
    })
   isDisabled.value = !isDisabled.value

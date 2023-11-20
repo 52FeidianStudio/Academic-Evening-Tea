@@ -1,5 +1,5 @@
 <template>
-  <view class="feedback">
+  <view v-if="isPastTargetDate" class="feedback">
     <view class="feedback-item">
       <view class="feedback-content">
         <view class="feedback-content-item">
@@ -34,7 +34,37 @@
 
 <script setup lang='ts'>
 import { postFeedbackAPI } from '@/services/feedBack'
-import { ref, reactive } from 'vue'
+import { ref, reactive ,computed } from 'vue'
+import { onLoad, onShow } from "@dcloudio/uni-app";
+//过审
+// 获取当前时间点
+const currentTime = ref(new Date());
+
+// 计算2023年11月17号的时间点
+const targetDate = new Date('2023-11-20');
+
+// 判断当前时间是否已经过了2023年11月17号
+const isPastTargetDate = computed(() => {
+  return currentTime.value > targetDate;
+});
+onShow(() => {
+  console.log(isPastTargetDate.value)
+  if(!isPastTargetDate.value){
+    uni.showToast({
+    title:'意见反馈部分功能尚未实现，敬请期待~',
+    icon:'none',
+    duration:1000,
+    complete: function () {
+      setTimeout(function () {
+        uni.switchTab({
+          url: '/pages/index/index'
+        });
+      }, 2000); // 在弹窗关闭后，延迟2秒执行页面跳转
+    }
+  })
+  }
+
+})
 type img = {
   now: string,
   temp: string

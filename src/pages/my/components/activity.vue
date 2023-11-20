@@ -1,5 +1,5 @@
 <template>
-  <view class="my-activity">
+  <view v-if="isLogin" class="my-activity">
     <navigator class="activity-details-item" v-for="item in activities" :key="item.id" :url="`/pages/activity/ActivityDetails?id=${item.id}`">
       <view class="activity-details-item-title">
         <view class="title">{{ item.title }}</view>
@@ -26,6 +26,11 @@
         </view>
       </view>
     </navigator>
+  </view>
+
+  <view class="noLogin" v-else>
+    <uni-icons type="person"  size="90"></uni-icons>
+    <view @click="goLogin">尚未登陆 , 点击登录</view>
   </view>
 </template>
 
@@ -57,7 +62,7 @@ const getMyActivity = async () => {
       activities.value.push({
         id: item.activityId,
         title: item.userImg2,
-        status: item.status,
+        status: item.status==1?'进行中':'已结束',
         time: item.lat,
         address: item.address,
         sponsorCollege: item.hbKeyword,
@@ -72,10 +77,20 @@ const getMyActivity = async () => {
     })
   }
 }
-
+const isLogin=ref<boolean>(true)
 onLoad(() => {
-  getMyActivity()
+  if(uni.getStorageSync('token')){
+    getMyActivity()}
+  else{
+    isLogin.value=false
+  }
+ 
 })
+const goLogin=()=>{
+  uni.navigateTo({
+            url: '/pages/login/login'
+          })
+}
 </script>
 <style lang="scss">
 .my-activity {
@@ -168,5 +183,9 @@ onLoad(() => {
       }
     }
   }
+}
+.noLogin{
+ padding:40px ;
+ text-align: center;
 }
 </style>

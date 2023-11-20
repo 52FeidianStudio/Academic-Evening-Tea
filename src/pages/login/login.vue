@@ -17,7 +17,24 @@ const logInInfo = ref<logInInfo>({
 // 暂时登录
 const logIn = () => {
   console.log(logInInfo.value);
-  logInAPI({
+  if(logInInfo.value.username==''){
+    uni.showToast({
+        title: '用户名不能为空！',
+        icon: 'none',
+        duration: 1000
+      })
+      return
+  }
+  if(logInInfo.value.password==''){
+    uni.showToast({
+        title: '密码不能为空！',
+        icon: 'none',
+        duration: 1000
+      })
+      return
+  }
+  else{
+    logInAPI({
     username: logInInfo.value.username,
     password: logInInfo.value.password
   }).then(res => {
@@ -38,12 +55,14 @@ const logIn = () => {
       uni.setStorageSync('token', res.token)
     } else {
       uni.showToast({
-        title: '登录失败',
+        title: '密码错误',
         icon: 'error',
         duration: 1000
       })
     }
   })
+  }
+
   // uni.showToast({
   //   title: '登录成功',
   //   icon: 'success',

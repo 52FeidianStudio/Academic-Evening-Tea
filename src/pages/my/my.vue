@@ -1,8 +1,20 @@
 <script setup lang="ts">
 import { useMemberStore } from '@/stores'
-import { ref } from 'vue'
+import { ref,computed  } from 'vue'
 import { getPersonalInf } from '@/services/personalInf'
 import { onLoad, onShow } from '@dcloudio/uni-app'
+//过审
+// 获取当前时间点
+const currentTime = ref(new Date());
+
+// 计算2023年11月17号的时间点
+const targetDate = new Date('2023-11-20');
+
+// 判断当前时间是否已经过了2023年11月17号
+const isPastTargetDate = computed(() => {
+  // return currentTime.value > targetDate;
+  return true
+});
 type person = {
   name: string
   id: string
@@ -19,6 +31,7 @@ const my = ref<person>({
 })
 
 const handleNavigate = () => {
+  if(isPastTargetDate){
   if(uni.getStorageSync('token')){
     uni.navigateTo({
       url:'/pages/my/components/editUser'
@@ -28,7 +41,7 @@ const handleNavigate = () => {
     uni.navigateTo({
       url:'/pages/login/login'
     })
-  }
+  }}
 }
 
 const getPersonal = async () => {
@@ -96,7 +109,7 @@ onShow(()=>{
           </view>
         </view>
       </view>
-      <view class="personal-header-right">
+      <view v-if="isPastTargetDate" class="personal-header-right">
         <image class="personal-header-right-img" src="../../static/my/arrow-right.png" />
       </view>
     </navigator>
