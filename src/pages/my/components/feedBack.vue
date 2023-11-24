@@ -5,23 +5,48 @@
         <view class="feedback-content-item">
           <view class="feedback-content-item-title">问题描述</view>
           <view class="feedback-content-item-input">
-            <textarea name="" id="" cols="30" rows="10" placeholder="请描述您的问题" v-model="feedBack.problem"></textarea>
+            <textarea
+              name=""
+              id=""
+              cols="30"
+              rows="10"
+              placeholder="请描述您的问题"
+              v-model="feedBack.problem"
+            ></textarea>
           </view>
         </view>
         <view class="feedback-content-item">
           <view class="feedback-content-item-title">上传图片</view>
-          <uni-file-picker limit="9" mode="grid" file-mediatype="image" @select="select" @delete="deleteImg" />
+          <uni-file-picker
+            limit="9"
+            mode="grid"
+            file-mediatype="image"
+            @select="select"
+            @delete="deleteImg"
+          />
         </view>
         <view class="feedback-content-item">
           <view class="feedback-content-item-title">联系人姓名</view>
           <view class="feedback-content-item-input">
-            <uni-easyinput v-model="feedBack.name" type="text" placeholder="请输入您的名字" @confirm="" next />
+            <uni-easyinput
+              v-model="feedBack.name"
+              type="text"
+              placeholder="请输入您的名字"
+              @confirm=""
+              next
+            />
           </view>
         </view>
         <view class="feedback-content-item">
           <view class="feedback-content-item-title">联系方式</view>
           <view class="feedback-content-item-input">
-            <uni-easyinput v-model="feedBack.contact" type="text" placeholder="请输入您的联系方式" @confirm="" done />
+            <uni-easyinput
+              v-model="feedBack.contact"
+              type="text"
+              placeholder="请输入您的联系方式"
+              @confirm=""
+              done
+            />
           </view>
         </view>
       </view>
@@ -32,65 +57,70 @@
   </view>
 </template>
 
-<script setup lang='ts'>
+<script setup lang="ts">
 import { postFeedbackAPI } from '@/services/feedBack'
-import { ref, reactive ,computed } from 'vue'
-import { onLoad, onShow } from "@dcloudio/uni-app";
+import { ref, reactive, computed } from 'vue'
+import { onLoad, onShow } from '@dcloudio/uni-app'
 //过审
 // 获取当前时间点
-const currentTime = ref(new Date());
+const currentTime = ref(new Date())
 
 // 计算2023年11月17号的时间点
-const targetDate = new Date('2023-11-20');
+const targetDate = new Date('2023-11-23')
 
 // 判断当前时间是否已经过了2023年11月17号
-const isPastTargetDate = computed(() => {
-  return currentTime.value > targetDate;
-});
+import { getAudit } from '@/services/Audit'
+const isPastTargetDate = ref<boolean>(true)
+const getA = async () => {
+  const res = await getAudit()
+  console.log(res)
+  isPastTargetDate.value = res.data
+   if (!isPastTargetDate.value) {
+    uni.showToast({
+      title: '意见反馈部分功能尚未实现，敬请期待~',
+      icon: 'none',
+      duration: 1000,
+      complete: function () {
+        setTimeout(function () {
+          uni.switchTab({
+            url: '/pages/index/index',
+          })
+        }, 2000) // 在弹窗关闭后，延迟2秒执行页面跳转
+      },
+    })
+  }
+}
+onLoad(() => {
+  getA()
+})
 onShow(() => {
   console.log(isPastTargetDate.value)
-  if(!isPastTargetDate.value){
-    uni.showToast({
-    title:'意见反馈部分功能尚未实现，敬请期待~',
-    icon:'none',
-    duration:1000,
-    complete: function () {
-      setTimeout(function () {
-        uni.switchTab({
-          url: '/pages/index/index'
-        });
-      }, 2000); // 在弹窗关闭后，延迟2秒执行页面跳转
-    }
-  })
-  }
 
 })
 type img = {
-  now: string,
+  now: string
   temp: string
 }
 type postContent = {
-  content: string,
-  phone: string,
-  picture: string,
-  name: string,
-  id:string
+  content: string
+  phone: string
+  picture: string
+  name: string
+  id: string
 }
 type feedBackContent = {
-  problem: string,
-  contact: string,
-  img: Array<img>,
+  problem: string
+  contact: string
+  img: Array<img>
   name: string
 }
 
-const feedBack = ref<feedBackContent>(
-  {
-    problem: '',
-    contact: '',
-    img: [],
-    name: ''
-  }
-)
+const feedBack = ref<feedBackContent>({
+  problem: '',
+  contact: '',
+  img: [],
+  name: '',
+})
 
 const validatePhone = (phone: string) => {
   const reg = /^1\d{10}$/
@@ -117,79 +147,83 @@ const uploadFiles = async (tempFilePaths: any, i: any) => {
     url: 'https://www.academictime.cn:3166/system/common/upload',
     filePath: tempFilePaths[i],
     header: {
-      'Authorization': 'Bearer ' + uni.getStorageSync('token'),
+      Authorization: 'Bearer ' + uni.getStorageSync('token'),
       'Content-Type': 'multipart/form-data',
     },
     name: 'file',
-    success: res => {
+    success: (res) => {
       console.log(res)
       const resData = JSON.parse(res.data)
       feedBack.value.img.push({ now: resData.msg, temp: tempFilePaths[i] })
     },
     fail: () => {
-      console.log('fail');
+      console.log('fail')
       uni.showToast({
         title: '上传失败',
-        icon: 'none'
+        icon: 'none',
       })
-    }
+    },
   })
 }
 
-const postFeedback = async (data:postContent) => {
+const postFeedback = async (data: postContent) => {
   const res = await postFeedbackAPI(data)
   console.log(res)
-  if(res.code==200){
+  if (res.code == 200) {
     wx.showToast({
       title: res.msg,
       icon: 'success',
-      duration: 2000 ,
+      duration: 2000,
       complete: function () {
         setTimeout(function () {
-        uni.switchTab({
-          url: '/pages/index/index'
-        });
-      },2000);
-    }
-    });
-   
-  }
-  else {
+          uni.switchTab({
+            url: '/pages/index/index',
+          })
+        }, 2000)
+      },
+    })
+  } else {
     wx.showToast({
       title: res.msg,
       icon: 'none',
-      duration: 2000
-    });
+      duration: 2000,
+    })
   }
 }
 
 const submit = () => {
   console.log(feedBack.value)
-  let imgString = feedBack.value.img.map(item => item.now).join('&')
+  let imgString = feedBack.value.img.map((item) => item.now).join('&')
   console.log(imgString)
-  if(feedBack.value.problem === ''){
+  if (feedBack.value.problem === '') {
     uni.showToast({
       title: '请填写问题描述',
-      icon:'none'
+      icon: 'none',
     })
     return
-  }else if(feedBack.value.name === ''){
+  } else if (feedBack.value.name === '') {
     uni.showToast({
       title: '请填写联系人姓名',
-      icon:'none'
+      icon: 'none',
     })
-  }else if(feedBack.value.contact === ''){
+  } else if (feedBack.value.contact === '') {
     uni.showToast({
       title: '请填写联系方式',
-      icon:'none'
+      icon: 'none',
     })
-  }else if(!validatePhone(feedBack.value.contact)){
+  } else if (!validatePhone(feedBack.value.contact)) {
     uni.showToast({
       title: '请填写正确的联系方式',
-      icon:'none'
+      icon: 'none',
     })
-  }else{
-    postFeedback({name:feedBack.value.name,phone:feedBack.value.contact,content:feedBack.value.problem,picture:imgString,id:""})
+  } else {
+    postFeedback({
+      name: feedBack.value.name,
+      phone: feedBack.value.contact,
+      content: feedBack.value.problem,
+      picture: imgString,
+      id: '',
+    })
   }
 }
 </script>
@@ -214,7 +248,7 @@ const submit = () => {
       height: 95%;
       display: flex;
       flex-direction: column;
-      justify-content:space-around;
+      justify-content: space-around;
 
       .feedback-content-item {
         margin-top: 5%;
@@ -277,7 +311,7 @@ const submit = () => {
       margin-bottom: 30rpx;
 
       .btn {
-        margin-top:70rpx;
+        margin-top: 70rpx;
         width: 40%;
         font-size: 35rpx;
       }

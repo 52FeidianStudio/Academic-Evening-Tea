@@ -1,14 +1,17 @@
 <template>
   <view v-if="isLogin" class="my-activity">
-    <navigator class="activity-details-item" v-for="item in activities" :key="item.id" :url="`/pages/activity/ActivityDetails?id=${item.id}`">
+    <navigator
+      class="activity-details-item"
+      v-for="item in activities"
+      :key="item.id"
+      :url="`/pages/activity/ActivityDetails?id=${item.id}`"
+    >
       <view class="activity-details-item-title">
         <view class="title">{{ item.title }}</view>
       </view>
-      <view class='activity-details-item-contents'>
+      <view class="activity-details-item-contents">
         <view class="activity-details-item-content">
-          <view class="sponsor">
-            发起学院：{{ item.sponsorCollege }}
-          </view>
+          <view class="sponsor"> 发起学院：{{ item.sponsorCollege }} </view>
           <view class="activity-details-item-content-time">
             <image class="img" src="../../../static/activity/clock.png" />{{ item.time }}
           </view>
@@ -18,7 +21,8 @@
         </view>
         <view class="activity-details-item-status">
           <view class="population">
-            <image class="img" src="../../../static/activity/User.png"></image> {{ item.population }} / {{ item.limitPopulation }}
+            <image class="img" src="../../../static/activity/User.png"></image>
+            {{ item.population }} / {{ item.limitPopulation }}
           </view>
           <view class="status">
             {{ item.status }}
@@ -29,12 +33,12 @@
   </view>
 
   <view class="noLogin" v-else>
-    <uni-icons type="person"  size="90"></uni-icons>
+    <uni-icons type="person" size="90"></uni-icons>
     <view @click="goLogin">尚未登陆 , 点击登录</view>
   </view>
 </template>
 
-<script setup lang='ts'>
+<script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { onLoad } from '@dcloudio/uni-app'
 import { getMyActivityAPI } from '@/services/my'
@@ -50,7 +54,6 @@ type Activity = {
   limitPopulation?: number
   // 发起学院
   sponsorCollege: string
-
 }
 const activities = ref<Activity[]>([])
 
@@ -62,7 +65,7 @@ const getMyActivity = async () => {
       activities.value.push({
         id: item.activityId,
         title: item.userImg2,
-        status: item.status==1?'进行中':'已结束',
+        status: item.status == 1 ? '进行中' : '已结束',
         time: item.lat,
         address: item.address,
         sponsorCollege: item.hbKeyword,
@@ -70,26 +73,25 @@ const getMyActivity = async () => {
         limitPopulation: item.hot,
       })
     })
-  }else{
+  } else {
     uni.showToast({
       title: '暂无活动',
-      icon: 'none'
+      icon: 'none',
     })
   }
 }
-const isLogin=ref<boolean>(true)
+const isLogin = ref<boolean>(true)
 onLoad(() => {
-  if(uni.getStorageSync('token')){
-    getMyActivity()}
-  else{
-    isLogin.value=false
+  if (uni.getStorageSync('token')) {
+    getMyActivity()
+  } else {
+    isLogin.value = false
   }
- 
 })
-const goLogin=()=>{
+const goLogin = () => {
   uni.navigateTo({
-            url: '/pages/login/login'
-          })
+    url: '/pages/login/login',
+  })
 }
 </script>
 <style lang="scss">
@@ -184,8 +186,8 @@ const goLogin=()=>{
     }
   }
 }
-.noLogin{
- padding:40px ;
- text-align: center;
+.noLogin {
+  padding: 40px;
+  text-align: center;
 }
 </style>

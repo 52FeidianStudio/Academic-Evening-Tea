@@ -8,33 +8,36 @@
   </view>
 </template>
 
-<script setup lang='ts'>
-import "@/styles/quill.bubble.css"
-import "@/styles/quill.snow.css"
-import "@/styles/quill.core.css"
+<script setup lang="ts">
+import '@/styles/quill.bubble.css'
+import '@/styles/quill.snow.css'
+import '@/styles/quill.core.css'
 import { ref, reactive } from 'vue'
-import { onLoad } from '@dcloudio/uni-app';
+import { onLoad } from '@dcloudio/uni-app'
 import { getColumnsDetailAPI } from '@/services/column'
-const contentRef = ref<HTMLElement | null>(null);
+const contentRef = ref<HTMLElement | null>(null)
 type details = {
-  title: string,
-  createTime: string,
+  title: string
+  createTime: string
   content: string
 }
 const props = defineProps<{
-  id: number,
+  id: number
   kind: number
-}>();
+}>()
 const item = ref<details>({
   title: '',
   createTime: '',
-  content: ''
+  content: '',
 })
 const getColumnsDetail = async (id: number) => {
-  const res = await getColumnsDetailAPI(id);
+  const res = await getColumnsDetailAPI(id)
   console.log(res.data)
-  item.value = res.data;
-  item.value.content = item.value.content.replace(/\<img/g, '<img style="max-width:100%;height:auto" ')
+  item.value = res.data
+  item.value.content = item.value.content.replace(
+    /\<img/g,
+    '<img style="max-width:100%;height:auto" ',
+  )
 }
 onLoad(() => {
   console.log(props.id)
@@ -66,7 +69,7 @@ onLoad(() => {
       padding-left: 15rpx;
     }
   }
-  .content{
+  .content {
     width: 100%;
   }
 }

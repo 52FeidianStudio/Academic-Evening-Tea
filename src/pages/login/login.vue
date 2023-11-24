@@ -1,66 +1,65 @@
 <script setup lang="ts">
 //
-import { onLoad } from '@dcloudio/uni-app';
-import { ref } from 'vue';
-import { logInAPI } from '@/services/logIn';
+import { onLoad } from '@dcloudio/uni-app'
+import { ref } from 'vue'
+import { logInAPI } from '@/services/logIn'
 
 type logInInfo = {
-  username: string,
+  username: string
   password: string
 }
 
 const logInInfo = ref<logInInfo>({
   username: '',
-  password: ''
+  password: '',
 })
 
 // 暂时登录
 const logIn = () => {
-  console.log(logInInfo.value);
-  if(logInInfo.value.username==''){
+  console.log(logInInfo.value)
+  if (logInInfo.value.username == '') {
     uni.showToast({
-        title: '用户名不能为空！',
-        icon: 'none',
-        duration: 1000
-      })
-      return
+      title: '用户名不能为空！',
+      icon: 'none',
+      duration: 1000,
+    })
+    return
   }
-  if(logInInfo.value.password==''){
+  if (logInInfo.value.password == '') {
     uni.showToast({
-        title: '密码不能为空！',
-        icon: 'none',
-        duration: 1000
-      })
-      return
-  }
-  else{
+      title: '密码不能为空！',
+      icon: 'none',
+      duration: 1000,
+    })
+    return
+  } else {
     logInAPI({
-    username: logInInfo.value.username,
-    password: logInInfo.value.password
-  }).then(res => {
-    console.log(logInInfo.value);
-    console.log(res);
-    if (res.code === 200) {
-      uni.showToast({
-        title: '登录成功',
-        icon: 'success',
-        duration: 1000
-      })
-      setTimeout(() => {
-        uni.switchTab({
-          url: '/pages/index/index'
+      username: logInInfo.value.username,
+      password: logInInfo.value.password,
+    }).then((res) => {
+      console.log(logInInfo.value)
+      console.log(res)
+      if (res.code === 200) {
+        uni.showToast({
+          title: '登录成功',
+          icon: 'success',
+          duration: 1000,
         })
-      }, 2000)
-      // 存储token
-      uni.setStorageSync('token', res.token)
-    } else {
-      uni.showToast({
-        title: '密码错误',
-        icon: 'error',
-        duration: 1000
-      })
-    }
-  })
+        setTimeout(() => {
+          uni.switchTab({
+            url: '/pages/index/index',
+          })
+        }, 2000)
+        // 存储token
+        uni.setStorageSync('token', res.token)
+      } else {
+        uni.showToast({
+          title: '密码错误',
+          icon: 'error',
+          duration: 1000,
+        })
+      }
+    })
   }
 
   // uni.showToast({
@@ -76,16 +75,16 @@ const logIn = () => {
 }
 
 // 获取code登陆凭证
-let code = '';
+let code = ''
 onLoad(async () => {
-  const res = await wx.login();
-  console.log(res);
-  code = res.code;
+  const res = await wx.login()
+  console.log(res)
+  code = res.code
 })
 
 // 获取用户手机号码
 const onGetphonenumber = (ev: any) => {
-  console.log(ev);
+  console.log(ev)
 }
 </script>
 
@@ -96,7 +95,12 @@ const onGetphonenumber = (ev: any) => {
     </view>
     <view class="login-content">
       <uni-easyinput class="input" type="text" v-model="logInInfo.username" placeholder="用户名" />
-      <uni-easyinput class="input" type="password" v-model="logInInfo.password" placeholder="密码"/>
+      <uni-easyinput
+        class="input"
+        type="password"
+        v-model="logInInfo.password"
+        placeholder="密码"
+      />
     </view>
     <view class="login">
       <button class="button phone" @tap="logIn">
@@ -174,7 +178,6 @@ page {
 
   .wechat {
     background-color: #06c05f;
-  
 
     .options {
       display: flex;
@@ -223,4 +226,5 @@ page {
   font-size: 23rpx;
   color: #999;
   text-align: center;
-}</style>
+}
+</style>

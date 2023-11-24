@@ -1,18 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { getIndexImg } from "@/services/index.ts" 
+import { getIndexImg } from '@/services/index.ts'
 import { onLoad } from '@dcloudio/uni-app'
-const getImg = async()=>{
+const getImg = async () => {
   const res = await getIndexImg()
   console.log(res.rows)
-  List.value=res.rows
+  List.value = res.rows
 }
-onLoad(()=>{
+onLoad(() => {
   getImg()
 })
-const List =ref([])
+const List = ref([])
 const activeIndex = ref(0)
-const onChange:UniHelper.SwiperOnChange = (e) => {
+const onChange: UniHelper.SwiperOnChange = (e) => {
   activeIndex.value = e.detail.current
 }
 </script>
@@ -20,16 +20,30 @@ const onChange:UniHelper.SwiperOnChange = (e) => {
 <template>
   <view class="carousel">
     <swiper :circular="true" :autoplay="false" :interval="3000">
-      <swiper-item :v-for="(item,index) in List" :key="index">
-        <navigator
-          url="/pages/index/index"
-          hover-class="none"
-          class="navigator"
-        >
+      <swiper-item>
+        <navigator url="/pages/index/index" hover-class="none" class="navigator">
           <image
             mode="aspectFill"
             class="image"
-            :src="item.img"
+            src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/uploads/slider_1.jpg"
+          ></image>
+        </navigator>
+      </swiper-item>
+      <swiper-item>
+        <navigator url="/pages/index/index" hover-class="none" class="navigator">
+          <image
+            mode="aspectFill"
+            class="image"
+            src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/uploads/slider_2.jpg"
+          ></image>
+        </navigator>
+      </swiper-item>
+      <swiper-item>
+        <navigator url="/pages/index/index" hover-class="none" class="navigator">
+          <image
+            mode="aspectFill"
+            class="image"
+            src="https://pcapi-xiaotuxian-front-devtest.itheima.net/miniapp/uploads/slider_3.jpg"
           ></image>
         </navigator>
       </swiper-item>

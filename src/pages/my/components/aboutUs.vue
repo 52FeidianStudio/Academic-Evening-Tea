@@ -4,13 +4,13 @@
       <image src="../../../static/log.png"></image>
     </view>
     <view class="content">
-      学术晚茶，打造身边的学术交流平台。学术晚茶是提供学术攻略的平台，分享高质量的学术活动信息，还提供丰富有趣的学术活动报道和科普文章供用户阅读。</view>
+      学术晚茶，打造身边的学术交流平台。学术晚茶是提供学术攻略的平台，分享高质量的学术活动信息，还提供丰富有趣的学术活动报道和科普文章供用户阅读。</view
+    >
   </view>
 </template>
 huodong
-<script setup lang='ts'>
+<script setup lang="ts">
 import { ref, reactive } from 'vue'
-
 </script>
 <style lang="scss">
 .aboutUs {
@@ -38,4 +38,5 @@ import { ref, reactive } from 'vue'
     line-height: 1.5;
     color: rgb(74, 73, 73);
   }
-}</style>
+}
+</style>

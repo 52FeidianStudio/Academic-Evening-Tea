@@ -1,20 +1,24 @@
 <script setup lang="ts">
 import { useMemberStore } from '@/stores'
-import { ref,computed  } from 'vue'
+import { ref, computed } from 'vue'
 import { getPersonalInf } from '@/services/personalInf'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 //过审
 // 获取当前时间点
-const currentTime = ref(new Date());
+const currentTime = ref(new Date())
 
 // 计算2023年11月17号的时间点
-const targetDate = new Date('2023-11-20');
+const targetDate = new Date('2023-11-23')
 
 // 判断当前时间是否已经过了2023年11月17号
-const isPastTargetDate = computed(() => {
-  // return currentTime.value > targetDate;
-  return true
-});
+import { getAudit } from '@/services/Audit'
+const isPastTargetDate = ref<boolean>(true)
+const getA = async () => {
+  const res = await getAudit()
+  console.log(res)
+  isPastTargetDate.value = res.data
+}
+
 type person = {
   name: string
   id: string
@@ -27,21 +31,21 @@ const my = ref<person>({
   name: '',
   id: '',
   img: '../../static/my/headpic.png',
-  college: ''
+  college: '',
 })
 
 const handleNavigate = () => {
-  if(isPastTargetDate){
-  if(uni.getStorageSync('token')){
-    uni.navigateTo({
-      url:'/pages/my/components/editUser'
-    })
+  if (isPastTargetDate.value) {
+    if (uni.getStorageSync('token')) {
+      uni.navigateTo({
+        url: '/pages/my/components/editUser',
+      })
+    } else {
+      uni.navigateTo({
+        url: '/pages/login/login',
+      })
+    }
   }
-  else{
-    uni.navigateTo({
-      url:'/pages/login/login'
-    })
-  }}
 }
 
 const getPersonal = async () => {
@@ -50,7 +54,7 @@ const getPersonal = async () => {
   my.value.name = res.data.nickName
   // my.value.img=res.data.img
   my.value.college = res.data.dept.deptName
-  my.value.img = res.data.avatar===''?'../../static/my/headpic.png':res.data.avatar
+  my.value.img = res.data.avatar === '' ? '../../static/my/headpic.png' : res.data.avatar
 }
 onLoad(() => {
   if (uni.getStorageSync('token')) {
@@ -63,22 +67,22 @@ onLoad(() => {
       complete: () => {
         setTimeout(() => {
           uni.navigateTo({
-            url: '/pages/login/login'
+            url: '/pages/login/login',
           })
-        }, 1000);
-      }
+        }, 1000)
+      },
     })
   }
 })
 
-onShow(()=>{
-  const token=uni.getStorageSync('token')
-  islogin.value=token?true:false
-  if(token){
+onShow(() => {
+  getA()
+  const token = uni.getStorageSync('token')
+  islogin.value = token ? true : false
+  if (token) {
     getPersonal()
   }
 })
-
 </script>
 
 <template>
@@ -101,12 +105,8 @@ onShow(()=>{
       <view v-else class="personal-header-left">
         <image class="personal-header-left-img" src="../../static/my/headpic.png" />
         <view class="personal-header-left-text">
-          <view class="personal-header-left-text-name">
-            暂未登录
-          </view>
-          <view class="personal-header-left-text-college">
-            去登陆！
-          </view>
+          <view class="personal-header-left-text-name"> 暂未登录 </view>
+          <view class="personal-header-left-text-college"> 去登陆！ </view>
         </view>
       </view>
       <view v-if="isPastTargetDate" class="personal-header-right">
@@ -117,9 +117,7 @@ onShow(()=>{
       <navigator class="personal-content-item" url="/pages/my/components/activity">
         <view class="personal-content-item-left">
           <image class="personal-content-item-left-img" src="../../static/my/user-activity.png" />
-          <view class="personal-content-item-left-text">
-            我的活动
-          </view>
+          <view class="personal-content-item-left-text"> 我的活动 </view>
         </view>
         <view class="personal-content-item-right">
           <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />
@@ -128,9 +126,7 @@ onShow(()=>{
       <navigator class="personal-content-item" url="/pages/my/components/integral">
         <view class="personal-content-item-left">
           <image class="personal-content-item-left-img" src="../../static/my/user-integral.png" />
-          <view class="personal-content-item-left-text">
-            积分规则
-          </view>
+          <view class="personal-content-item-left-text"> 积分规则 </view>
         </view>
         <view class="personal-content-item-right">
           <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />
@@ -139,9 +135,7 @@ onShow(()=>{
       <navigator class="personal-content-item" url="/pages/my/components/contactUs">
         <view class="personal-content-item-left">
           <image class="personal-content-item-left-img" src="../../static/my/user-call.png" />
-          <view class="personal-content-item-left-text">
-            联系我们
-          </view>
+          <view class="personal-content-item-left-text"> 联系我们 </view>
         </view>
         <view class="personal-content-item-right">
           <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />
@@ -150,9 +144,7 @@ onShow(()=>{
       <navigator class="personal-content-item" url="/pages/my/components/aboutUs">
         <view class="personal-content-item-left">
           <image class="personal-content-item-left-img" src="../../static/my/user-us.png" />
-          <view class="personal-content-item-left-text">
-            关于我们
-          </view>
+          <view class="personal-content-item-left-text"> 关于我们 </view>
         </view>
         <view class="personal-content-item-right">
           <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />
@@ -161,9 +153,7 @@ onShow(()=>{
       <navigator class="personal-content-item" url="/pages/my/components/feedBack">
         <view class="personal-content-item-left">
           <image class="personal-content-item-left-img" src="../../static/my/user-email.png" />
-          <view class="personal-content-item-left-text">
-            意见反馈
-          </view>
+          <view class="personal-content-item-left-text"> 意见反馈 </view>
         </view>
         <view class="personal-content-item-right">
           <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />

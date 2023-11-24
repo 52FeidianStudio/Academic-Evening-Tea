@@ -1,6 +1,5 @@
 /* 函数节流 */
 function debounce(handler, interval) {
-
   // let timer
   const wait = interval || 1500 // 间隔时间，如果interval不传，则默认1000ms
   // return function () {
@@ -12,17 +11,15 @@ function debounce(handler, interval) {
   //   }, gapTime)
   //   console.log('防抖成功!')
   // }
-  var lastTime = 0;
+  var lastTime = 0
 
   return function () {
-
-    var nowTime = new Date().getTime();
+    var nowTime = new Date().getTime()
 
     if (nowTime - lastTime > wait) {
-      handler.apply(this, arguments);
-      lastTime = nowTime;
+      handler.apply(this, arguments)
+      lastTime = nowTime
     }
-
   }
 }
 

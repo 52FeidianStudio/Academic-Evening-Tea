@@ -4,8 +4,14 @@
       <image src="../../../static/home/activity.png" class="icon" />
       <text class="text">活动发起</text>
     </view>
-    <navigator :url="item.url" class="category-item" hover-class="none" v-for="item in items" :key="item.id"
-      open-type="navigate">
+    <navigator
+      :url="item.url"
+      class="category-item"
+      hover-class="none"
+      v-for="item in items"
+      :key="item.id"
+      open-type="navigate"
+    >
       <image :src="item.icon" class="icon" />
       <text class="text">{{ item.text }}</text>
     </navigator>
@@ -15,21 +21,29 @@
     <view class="activity-box">
       <view class="activity-box-content">活动一览</view>
       <view class="activity-box-select">
-        <uni-data-select v-model="status" :localdata="(statusList as any)" @change="change" placeholder="全部" :clear="false">
+        <uni-data-select
+          v-model="status"
+          :localdata="(statusList as any)"
+          @change="change"
+          placeholder="全部"
+          :clear="false"
+        >
         </uni-data-select>
       </view>
     </view>
     <view class="activity-details">
-      <navigator class="activity-details-item" v-for="item in activities" :key="item.id"
-        :url="`/pages/activity/ActivityDetails?id=${item.id}`">
+      <navigator
+        class="activity-details-item"
+        v-for="item in activities"
+        :key="item.id"
+        :url="`/pages/activity/ActivityDetails?id=${item.id}`"
+      >
         <view class="activity-details-item-title">
           <view class="title">{{ item.title }}</view>
         </view>
-        <view class='activity-details-item-contents'>
+        <view class="activity-details-item-contents">
           <view class="activity-details-item-content">
-            <view class="sponsor">
-              发起学院：{{ item.sponsorCollege }}
-            </view>
+            <view class="sponsor"> 发起学院：{{ item.sponsorCollege }} </view>
             <view class="activity-details-item-content-time">
               <image class="img" src="../../../static/activity/clock.png" />{{ item.time }}
             </view>
@@ -39,7 +53,8 @@
           </view>
           <view class="activity-details-item-status">
             <view class="population">
-              <image class="img" src="../../../static/activity/User.png"></image>{{ item.population }} / {{ item.limitPopulation }}
+              <image class="img" src="../../../static/activity/User.png"></image
+              >{{ item.population }} / {{ item.limitPopulation }}
             </view>
             <view class="status">
               {{ item.status }}
@@ -51,16 +66,16 @@
   </view>
 </template>
 
-<script setup lang='ts'>
+<script setup lang="ts">
 import { getHomeContentAPI } from '@/services/HomeContent'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import { ref, reactive } from 'vue'
 const status = ref<string>('全部')
 const statusList = ref([
-  { value: 0, text: "全部" },
-  { value: 1, text: "进行中" },
-  { value: 2, text: "已结束" },
-  { value: 3, text: "精选" }
+  { value: 0, text: '全部' },
+  { value: 1, text: '进行中' },
+  { value: 2, text: '已结束' },
+  { value: 3, text: '精选' },
 ])
 const change = (e: any) => {
   console.log(e)
@@ -92,7 +107,6 @@ type Activity = {
   limitPopulation?: number
   // 发起学院
   sponsorCollege: string
-
 }
 const tapAct = () => {
   uni.switchTab({ url: '/pages/activity/ActivityLaunch' })
@@ -102,26 +116,26 @@ const items = ref<Category[]>([
     id: 2,
     text: '活动签到',
     icon: '../../../static/home/sy-sign_in.png',
-    url: '/pages/activity/ActivitySignIn'
+    url: '/pages/activity/ActivitySignIn',
   },
   {
     id: 3,
     text: '礼品中心',
     icon: '../../../static/home/sy-article.png',
-    url: '/pages/gift/giftCenter'
+    url: '/pages/gift/giftCenter',
   },
   {
     id: 4,
     text: '我要推荐',
     icon: '../../../static/home/sy-video.png',
-    url: '/pages/recommend/recommend'
-  }
+    url: '/pages/recommend/recommend',
+  },
 ])
 const activities = ref<Activity[]>([])
 
 const getHomeContent = async (type: number, state: number, isEnd: number) => {
   // 获取首页内容
-  let res;
+  let res
   if (type === 0) {
     res = await getHomeContentAPI()
   } else {
@@ -142,35 +156,32 @@ const getHomeContent = async (type: number, state: number, isEnd: number) => {
     if (activities.value.length === 0) {
       uni.showToast({
         title: '暂无活动',
-        icon: 'none'
+        icon: 'none',
       })
     }
   } else {
     uni.showToast({
       title: '查询失败',
-      icon: 'none'
+      icon: 'none',
     })
   }
 }
-
 
 onLoad(() => {
   uni.onNetworkStatusChange((res) => {
     if (!res.isConnected) {
       uni.showToast({
         title: '网络已断开',
-        icon: 'none'
+        icon: 'none',
       })
     }
-  });
+  })
   getHomeContent(0, 0, 0)
 })
 
 onShow(() => {
   getHomeContent(0, 0, 0)
 })
-
-
 </script>
 
 <style lang="scss">

@@ -10,24 +10,24 @@
   </view>
 </template>
 
-<script setup lang='ts'>
+<script setup lang="ts">
 import { ref, reactive } from 'vue'
 type contactContent = {
-  name: string,
-  phone: string,
+  name: string
+  phone: string
   email: string
 }
 const content = ref<contactContent[]>([
   {
     name: '张三',
     phone: '123456789',
-    email: '1256151263@qq.com'
+    email: '1256151263@qq.com',
   },
   {
     name: '李四',
     phone: '123456789',
-    email: '32649238@yeah.net'
-  }
+    email: '32649238@yeah.net',
+  },
 ])
 </script>
 <style lang="scss">
@@ -39,7 +39,7 @@ const content = ref<contactContent[]>([
   .contact-item {
     display: flex;
     flex-direction: column;
-    justify-content:space-around;
+    justify-content: space-around;
     width: 100%;
     height: 200rpx;
     background-color: #fff;
@@ -54,7 +54,7 @@ const content = ref<contactContent[]>([
       justify-content: space-between;
       .name {
         font-size: 38rpx;
-        font-weight:600;
+        font-weight: 600;
         color: #5d5c5c;
         margin-bottom: 20rpx;
       }
@@ -62,7 +62,7 @@ const content = ref<contactContent[]>([
       .phone {
         font-size: 28rpx;
         margin-bottom: 20rpx;
-        color:rgb(117, 186, 216);
+        color: rgb(117, 186, 216);
       }
     }
 
@@ -71,4 +71,5 @@ const content = ref<contactContent[]>([
       color: #9f9d9d;
     }
   }
-}</style>
+}
+</style>

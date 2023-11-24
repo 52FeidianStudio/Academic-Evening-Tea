@@ -1,169 +1,180 @@
 <template v-if="isPastTargetDate">
   <view v-if="isPastTargetDate">
-<view class='page' :style="{ paddingBottom: safeAreaInsets?.bottom!+ 40+ 'px' }">
-  <!-- 列表 -->
-  <view
-  class='CircleList'
-  v-for='(item0, index0) in DataSource'
-   :key="index0">
-    <!-- 头像、昵称、内容 -->
-    <view class='body-view'>
-      <!-- 头像 -->
-      <view class='left-view'>
-       <image class='user-icon' :src="item0.avatar"></image>
-      </view>
-      <view @tap="gotoRD(item0.id)" class='right-view'>
-        <!-- 昵称 -->
-        <view class='user-name-view'>
-          <label class='user-name'>{{ item0.nickName }}</label>
-        </view>
-        <!-- 内容 -->
-        <view class='user-content-view'>
-          <text class="theme">主题:{{ item0.theme }}</text>
-          <text class="lecturename">主讲人:{{ item0.lecturerName }}</text>
-          <text class='user-content'>{{item0.content}}</text>
-        </view>
-
-        <!-- 时间、转发、点赞评论按钮 -->
-        <view class='TDD-view'>
-          <label>{{ item0.createTime }}</label>
-        </view>
-
-
-        <!-- 点赞 -->
-        <view class='zan-view'>
-          <view class='trigon-view'>
-          <view class="zhuanfa" >
-            <uni-icons v-if="item0.status==1" type="email-filled" size="20"></uni-icons>
-            <uni-icons v-if="item0.status==2" type="auth" size="20"></uni-icons>
-            <uni-icons v-else-if="item0.status==3" type="vip-filled" size="20"></uni-icons>
-            
-            <view v-if="item0.status==1" class="dianzannum">已推荐</view>
-            <view v-if="item0.status==2" class="dianzannum">已采纳</view>
-            <view v-else-if="item0.status==3" class="dianzannum">有效推荐</view>
-
+    <view class="page" :style="{ paddingBottom: safeAreaInsets?.bottom!+ 40+ 'px' }">
+      <!-- 列表 -->
+      <view class="CircleList" v-for="(item0, index0) in DataSource" :key="index0">
+        <!-- 头像、昵称、内容 -->
+        <view class="body-view">
+          <!-- 头像 -->
+          <view class="left-view">
+            <image class="user-icon" :src="item0.avatar"></image>
           </view>
+          <view @tap="gotoRD(item0.id)" class="right-view">
+            <!-- 昵称 -->
+            <view class="user-name-view">
+              <label class="user-name">{{ item0.nickName }}</label>
+            </view>
+            <!-- 内容 -->
+            <view class="user-content-view">
+              <text class="theme">主题:{{ item0.theme }}</text>
+              <text class="lecturename">主讲人:{{ item0.lecturerName }}</text>
+              <text class="user-content">{{ item0.content }}</text>
+            </view>
 
-          <view class="dianzan" @tap.stop="iLike(item0.id,item0.tblLike)">
-            <uni-icons v-if="item0.tblLike==null" type="heart" size="20"></uni-icons>
-            <uni-icons v-else type="heart-filled" size="20"></uni-icons>
-           <view class="dianzannum">{{ item0.likeCount }}</view>
-          </view>
+            <!-- 时间、转发、点赞评论按钮 -->
+            <view class="TDD-view">
+              <label>{{ item0.createTime }}</label>
+            </view>
 
-          <view class="pinglun" @tap.stop="showInputBox(item0.id)">
-            <uni-icons type="chat" size="20"></uni-icons>
-          </view>
-        <!-- <uni-fav :checked="IsChecked" class="favBtn" @click="favClick()" /> -->
-          </view>
+            <!-- 点赞 -->
+            <view class="zan-view">
+              <view class="trigon-view">
+                <view class="zhuanfa">
+                  <uni-icons v-if="item0.status == 1" type="email-filled" size="20"></uni-icons>
+                  <uni-icons v-if="item0.status == 2" type="auth" size="20"></uni-icons>
+                  <uni-icons v-else-if="item0.status == 3" type="vip-filled" size="20"></uni-icons>
 
-          <!-- 点赞 -->
-         <view class='zan-bg-view' v-if="item0.likes.length!==0">
-          <uni-icons class="zan-icon-view" type="heart-filled" size="15"></uni-icons>
-            <view
-            class='zan-user-view'
-            v-for='(item2,index2) in item0.likes'
-             :key="index2">
-              <label bindtap='TouchZanUser' :data-name='item2.nickName' class='zan-user'>{{item2.nickName}},</label>
+                  <view v-if="item0.status == 1" class="dianzannum">已推荐</view>
+                  <view v-if="item0.status == 2" class="dianzannum">已采纳</view>
+                  <view v-else-if="item0.status == 3" class="dianzannum">有效推荐</view>
+                </view>
+
+                <view class="dianzan" @tap.stop="iLike(item0.id, item0.tblLike)">
+                  <uni-icons v-if="item0.tblLike == null" type="heart" size="20"></uni-icons>
+                  <uni-icons v-else type="heart-filled" size="20"></uni-icons>
+                  <view class="dianzannum">{{ item0.likeCount }}</view>
+                </view>
+
+                <view class="pinglun" @tap.stop="showInputBox(item0.id)">
+                  <uni-icons type="chat" size="20"></uni-icons>
+                </view>
+                <!-- <uni-fav :checked="IsChecked" class="favBtn" @click="favClick()" /> -->
+              </view>
+
+              <!-- 点赞 -->
+              <view class="zan-bg-view" v-if="item0.likes.length !== 0">
+                <uni-icons class="zan-icon-view" type="heart-filled" size="15"></uni-icons>
+                <view class="zan-user-view" v-for="(item2, index2) in item0.likes" :key="index2">
+                  <label bindtap="TouchZanUser" :data-name="item2.nickName" class="zan-user"
+                    >{{ item2.nickName }},</label
+                  >
+                </view>
+              </view>
+
+              <view class="line"></view>
+              <!-- 评论 -->
+              <view class="discuss-view">
+                <view
+                  class="discuss"
+                  v-for="(item3, index3) in item0.tblRecommendCommnets"
+                  :key="index3"
+                >
+                  <label
+                    v-if="index3 < 4"
+                    bindtap="TouchZanUser"
+                    :data-name="item3.nickName"
+                    class="discuss-user"
+                    >{{ item3.nickName }}</label
+                  >
+                  <label v-if="index3 < 4" class="content">{{ item3.comment }}</label>
+                </view>
+              </view>
             </view>
           </view>
-
-          <view class='line'></view>
-          <!-- 评论 -->
-          <view class='discuss-view'>
-            <view
-            class='discuss'
-            v-for='(item3,index3) in item0.tblRecommendCommnets'
-             :key="index3" >
-              <label v-if="index3<4" bindtap='TouchZanUser' :data-name='item3.nickName' class='discuss-user'>{{item3.nickName}}</label>
-              <label v-if="index3<4" class='content'>{{item3.comment}}</label>
-            </view>
-          </view>
         </view>
       </view>
-    
-  </view>
     </view>
   </view>
-</view>
 
-<view  class="rbutton-view">
-  <button class="rbutton" @click="rclick">
-    <uni-icons type="plusempty" class="plusIcon" size="20"></uni-icons>
-</button>
-</view>
-<view class="input-view" v-if="showInput">
+  <view v-if="isPastTargetDate" class="rbutton-view">
+    <button class="rbutton" @click="rclick">
+      <uni-icons type="plusempty" class="plusIcon" size="20"></uni-icons>
+    </button>
+  </view>
+  <view class="input-view" v-if="showInput">
     <input
-       class="inputstyle"
-         v-model="comment"
-        type="text" 
-        :focus="isInputFocused"
-         placeholder="请输入评论"
-         @blur="hideInput"
-         />
-      <button class="btn-view" :disabled="comment === ''" @click="sendcomment">发送</button>
-    </view>
-<!-- </view> -->
+      class="inputstyle"
+      v-model="comment"
+      type="text"
+      :focus="isInputFocused"
+      placeholder="请输入评论"
+      @blur="hideInput"
+    />
+    <button class="btn-view" :disabled="comment === ''" @click="sendcomment">发送</button>
+  </view>
+  <!-- </view> -->
 </template>
 
-<script setup lang='ts'>
+<script setup lang="ts">
 import { onLaunch, onLoad, onPullDownRefresh, onShow } from '@dcloudio/uni-app'
-import { ref,reactive ,computed } from 'vue'
-import {getRecommedList,sendLike,deletLike,sendcommen,getRecommedDetail} from '@/services/recommed'
+import { ref, reactive, computed } from 'vue'
+import {
+  getRecommedList,
+  sendLike,
+  deletLike,
+  sendcommen,
+  getRecommedDetail,
+} from '@/services/recommed'
 
 //过审
 // 获取当前时间点
-const currentTime = ref(new Date());
+const currentTime = ref(new Date())
 
 // 计算2023年11月17号的时间点
-const targetDate = new Date('2023-11-20');
+const targetDate = new Date('2023-11-23')
 
 // 判断当前时间是否已经过了2023年11月18号
-const isPastTargetDate = computed(() => {
-  //  return currentTime.value > targetDate;
-   return true;
-});
-onLoad(()=>{
-  if(!isPastTargetDate.value){
-  uni.showToast({
-    title:'推荐部分功能尚未实现，敬请期待~',
-    icon:'none',
-    duration:2000,
-    complete: function () {
-      setTimeout(function () {
-        uni.switchTab({
-          url: '/pages/index/index'
-        });
-      }, 2000); // 在弹窗关闭后，延迟2秒执行页面跳转
-    }
-  })}
-  else{
+import { getAudit } from '@/services/Audit'
+const isPastTargetDate = ref<boolean>(true)
+const getA = async () => {
+  const res = await getAudit()
+  console.log(res)
+  isPastTargetDate.value = res.data
+  console.log(isPastTargetDate.value)
+  if (isPastTargetDate.value) {
     getRecommed()
+  } else {
+    console.log(isPastTargetDate.value)
+    uni.showToast({
+      title: '推荐部分功能尚未实现，敬请期待~',
+      icon: 'none',
+      duration: 2000,
+      complete: function () {
+        setTimeout(function () {
+          uni.switchTab({
+            url: '/pages/index/index',
+          })
+        }, 2000) // 在弹窗关闭后，延迟2秒执行页面跳转
+      },
+    })
   }
+}
+
+onLoad(() => {
+  getA()
 })
 
 // 获取屏幕边界到安全区域距离
 const { safeAreaInsets } = uni.getSystemInfoSync()
 
-
-
 //获取页面初始数据
-const DataSource =ref( [ ])
-const getRecommed=async()=>{
-  const res=await getRecommedList()
+const DataSource = ref([])
+const getRecommed = async () => {
+  const res = await getRecommedList()
   console.log(res.rows)
-  DataSource.value=res.rows
+  DataSource.value = res.rows
 }
-onShow(()=>{
+onShow(() => {
   getRecommed()
 })
 //去详情页
-const rclick=()=>{
+const rclick = () => {
   if (uni.getStorageSync('token')) {
-  console.log("我要推荐")
-  uni.navigateTo({
-    url:'/pages/recommend/makeRecd'
-  })}
-  else{
+    console.log('我要推荐')
+    uni.navigateTo({
+      url: '/pages/recommend/makeRecd',
+    })
+  } else {
     wx.showToast({
       title: '您尚未登录，请先登录',
       icon: 'none',
@@ -171,40 +182,38 @@ const rclick=()=>{
       complete: () => {
         setTimeout(() => {
           uni.navigateTo({
-            url: '/pages/login/login'
+            url: '/pages/login/login',
           })
-        }, 1000);
-      }
+        }, 1000)
+      },
     })
   }
 }
 //点赞
-const sendLikeTo= async (id)=>{
-  const res=await sendLike(id);
+const sendLikeTo = async (id) => {
+  const res = await sendLike(id)
   console.log(res)
- if(res.code==200){
-  getRecommed()
- }
- 
+  if (res.code == 200) {
+    getRecommed()
+  }
 }
-const delLike=async(id)=>{
-  const res=await deletLike(id)
+const delLike = async (id) => {
+  const res = await deletLike(id)
   console.log(res)
-  if(res.code==200){
-  getRecommed()
- }
+  if (res.code == 200) {
+    getRecommed()
+  }
 }
-const iLike=(id,tblLike)=>{
-  if(uni.getStorageSync('token')){
-    if(tblLike){
-    console.log("取消点赞！")
-    delLike(id)
-  }
-      else{
-      console.log("点赞")
-      sendLikeTo(id)}
-  }
-  else{
+const iLike = (id, tblLike) => {
+  if (uni.getStorageSync('token')) {
+    if (tblLike) {
+      console.log('取消点赞！')
+      delLike(id)
+    } else {
+      console.log('点赞')
+      sendLikeTo(id)
+    }
+  } else {
     wx.showToast({
       title: '您尚未登录，请先登录',
       icon: 'none',
@@ -212,29 +221,27 @@ const iLike=(id,tblLike)=>{
       complete: () => {
         setTimeout(() => {
           uni.navigateTo({
-            url: '/pages/login/login'
+            url: '/pages/login/login',
           })
-        }, 1000);
-      }
+        }, 1000)
+      },
     })
   }
- 
 }
 
 //评论
-const showInput = ref(false);
-const comment = ref('');
-const currentItemId =ref<number>();
+const showInput = ref(false)
+const comment = ref('')
+const currentItemId = ref<number>()
 // 自动弹出键盘
-const isInputFocused = ref(true);
+const isInputFocused = ref(true)
 const showInputBox = (itemId) => {
-  if(uni.getStorageSync('token')){
-    console.log("评论")
+  if (uni.getStorageSync('token')) {
+    console.log('评论')
     console.log(itemId)
-    showInput.value = true;
-    currentItemId.value = itemId;
-  }
-  else{
+    showInput.value = true
+    currentItemId.value = itemId
+  } else {
     uni.showToast({
       title: '您尚未登录，请先登录',
       icon: 'none',
@@ -242,151 +249,147 @@ const showInputBox = (itemId) => {
       complete: () => {
         setTimeout(() => {
           uni.navigateTo({
-            url: '/pages/login/login'
+            url: '/pages/login/login',
           })
-        }, 1000);
-      }
+        }, 1000)
+      },
     })
   }
-};
-const sendC=async()=>{
-  const res =await sendcommen({
-    comment:comment.value,
-    recommendId:currentItemId.value
+}
+const sendC = async () => {
+  const res = await sendcommen({
+    comment: comment.value,
+    recommendId: currentItemId.value,
   })
   console.log(res)
-  if(res.code==200){
+  if (res.code == 200) {
     // 发送评论后隐藏输入框
-    showInput.value = false;
-  // 清空评论内容
-  comment.value = '';
-  getRecommed()
+    showInput.value = false
+    // 清空评论内容
+    comment.value = ''
+    getRecommed()
   }
 }
-const sendcomment=()=>{
-  console.log("点击了发送")
+const sendcomment = () => {
+  console.log('点击了发送')
   console.log(currentItemId.value)
   console.log(comment.value)
-  sendC() 
+  sendC()
 }
-const hideInput=()=>{
+const hideInput = () => {
   // 发送评论后隐藏输入框
-  showInput.value = false;
+  showInput.value = false
 }
 
 // 去recommend详情
-const goRD=async(id)=>{
-  const res=await getRecommedDetail(id);
+const goRD = async (id) => {
+  const res = await getRecommedDetail(id)
   console.log(res)
   uni.navigateTo({
-    url:'/pages/recommend/recommendDetail?id='+id
+    url: '/pages/recommend/recommendDetail?id=' + id,
   })
 }
-const gotoRD=(id)=>{
-console.log("去详情！")
-goRD(id)
+const gotoRD = (id) => {
+  console.log('去详情！')
+  goRD(id)
 }
-
 </script>
 <style scoped>
 /* pages/posts/post-detail/post-detail.wxss */
 
-page{
-    background: whitesmoke;
-  }
-
-  .page{
-    width: 100%;
-    padding-bottom: 100rpx;
-    /* overflow-x: hidden */
-  }
-
-  /* 列表 */
-  .CircleList{
-    background: white;
-    margin-bottom: 1px;
-    border-bottom: 1px solid whitesmoke;
-    border-top: 1px solid whitesmoke;
-   
-  }
-
-  .body-view{
-    display: flex;
-  }
-
-  .left-view{
-    width: 20%;
-  }
-  .right-view{
-    width:75%
-  }
-  /* 头像 */
-  .user-icon{
-    width:100rpx;
-    height: 100rpx;
-    margin-left: 20rpx;
-    margin-top: 30rpx;
-    margin-right: 20rpx;
- 
-  }
-
-  /* 昵称 */
-  .user-name{
-    display: flex;
-    height: 50rpx;
-    line-height: 50rpx;
-    font-size: 16px;
-    color: rgb(88, 103, 138);
-    margin-top: 30rpx;
-    margin-left: 10rpx;
-  }
-
-  /* 内容 */
-  .theme,
-  .lecturename,
-  .user-content{
-    display: flex;
-    font-size: 18px;
-    line-height: 50rpx;
-    margin-left: 10rpx;
-    font-family: "Verdana", sans-serif;
-  }
-  .theme{
-    font-family: "Times New Roman", serif;
-    font-size:small;
-  }
-.lecturename{
-  font-family: "Times New Roman", serif;
- 
-  font-size:x-small;
+page {
+  background: whitesmoke;
 }
-  /* 图片 */
-  .photo-view{
-    background: rebeccapurple;
-    margin-left: 10rpx;
-    margin-bottom: 20rpx;
-  }
-  .photo{
-    background: rgb(255, 166, 0);
-    float: left;
-    margin-right: 10rpx;
-    margin-top: 10rpx;
-  }
 
+.page {
+  width: 100%;
+  padding-bottom: 100rpx;
+  /* overflow-x: hidden */
+}
 
-  /* 时间、删除、点赞评论 */
-  .TDD-view{
-    width: 100%;
-    height: 60rpx;
-    display: flex;
-    align-items: center;
-    background: white;
-    pointer-events: none;
-  }
-  .TDD-view label{
-    font-size: 13px;
-    margin-left: 10rpx;
-  }
+/* 列表 */
+.CircleList {
+  background: white;
+  margin-bottom: 1px;
+  border-bottom: 1px solid whitesmoke;
+  border-top: 1px solid whitesmoke;
+}
+
+.body-view {
+  display: flex;
+}
+
+.left-view {
+  width: 20%;
+}
+.right-view {
+  width: 75%;
+}
+/* 头像 */
+.user-icon {
+  width: 100rpx;
+  height: 100rpx;
+  margin-left: 20rpx;
+  margin-top: 30rpx;
+  margin-right: 20rpx;
+}
+
+/* 昵称 */
+.user-name {
+  display: flex;
+  height: 50rpx;
+  line-height: 50rpx;
+  font-size: 16px;
+  color: rgb(88, 103, 138);
+  margin-top: 30rpx;
+  margin-left: 10rpx;
+}
+
+/* 内容 */
+.theme,
+.lecturename,
+.user-content {
+  display: flex;
+  font-size: 18px;
+  line-height: 50rpx;
+  margin-left: 10rpx;
+  font-family: 'Verdana', sans-serif;
+}
+.theme {
+  font-family: 'Times New Roman', serif;
+  font-size: small;
+}
+.lecturename {
+  font-family: 'Times New Roman', serif;
+
+  font-size: x-small;
+}
+/* 图片 */
+.photo-view {
+  background: rebeccapurple;
+  margin-left: 10rpx;
+  margin-bottom: 20rpx;
+}
+.photo {
+  background: rgb(255, 166, 0);
+  float: left;
+  margin-right: 10rpx;
+  margin-top: 10rpx;
+}
+
+/* 时间、删除、点赞评论 */
+.TDD-view {
+  width: 100%;
+  height: 60rpx;
+  display: flex;
+  align-items: center;
+  background: white;
+  pointer-events: none;
+}
+.TDD-view label {
+  font-size: 13px;
+  margin-left: 10rpx;
+}
 /*  .TDD-view button{
     font-size: 13px;
     margin-left: 20rpx;
@@ -403,156 +406,155 @@ page{
     margin-right: 20rpx;
   } */
 
-  /* 点赞 */
- .zan-view {
-    margin-top: 20rpx;
-    width: 100%;
-    background: white;
-    margin-bottom: 20rpx;
-  }
-  /* .zan-view{
+/* 点赞 */
+.zan-view {
+  margin-top: 20rpx;
+  width: 100%;
+  background: white;
+  margin-bottom: 20rpx;
+}
+/* .zan-view{
     width:100%;
     background-color: aqua;
   } */
-  .trigon-view{
-    display: flex;
-    flex-direction: row;
-    padding: 3rpx 10rpx;
-    width: 100%;
-    justify-content: space-between;
-    background-color: rgb(235, 235, 235);
-  }
- .zhuanfa{
+.trigon-view {
+  display: flex;
+  flex-direction: row;
+  padding: 3rpx 10rpx;
+  width: 100%;
+  justify-content: space-between;
+  background-color: rgb(235, 235, 235);
+}
+.zhuanfa {
   display: flex;
   flex-direction: row;
 
-    height:50rpx;
-    /* width:50rpx; */
-  }
-  .dianzan{
-    display: flex;
-    flex-direction: row;
-    font-size: 13px;
-  }
- .dianzannum{
-    margin:auto 0 auto 15rpx;
-  }
-  .trigon{
-    display: flex;
-    width: 40rpx;
-    height: 20rpx;
-    margin-top: 10rpx;
-    margin-left: 10rpx;
-  }
-  .zan-bg-view{
-    display: inline-block;
-    width: 100%;
-    background: rgb(235, 235, 235);
-    margin-right: 20rpx;
-    margin-bottom: -11rpx;
-    border-top-left-radius: 7rpx;
-    border-top-right-radius: 7rpx;
-  }
-  .zan-icon-view{
-    display: flex;
-    float: left;
-    margin-right:3rpx;
-  }
-  .zan-user-view{
-    display: flex;
-    float: left;
-    height: 40rpx;
-    margin-left: 10rpx;
-    /* margin-top: 5rpx; */
-    align-content: center;
-  }
-  .zan-user{
-    font-size: 12px;
-    line-height: 40rpx;
-    height: 40rpx;
-    color: rgb(88, 103, 138);
-  }
+  height: 50rpx;
+  /* width:50rpx; */
+}
+.dianzan {
+  display: flex;
+  flex-direction: row;
+  font-size: 13px;
+}
+.dianzannum {
+  margin: auto 0 auto 15rpx;
+}
+.trigon {
+  display: flex;
+  width: 40rpx;
+  height: 20rpx;
+  margin-top: 10rpx;
+  margin-left: 10rpx;
+}
+.zan-bg-view {
+  display: inline-block;
+  width: 100%;
+  background: rgb(235, 235, 235);
+  margin-right: 20rpx;
+  margin-bottom: -11rpx;
+  border-top-left-radius: 7rpx;
+  border-top-right-radius: 7rpx;
+}
+.zan-icon-view {
+  display: flex;
+  float: left;
+  margin-right: 3rpx;
+}
+.zan-user-view {
+  display: flex;
+  float: left;
+  height: 40rpx;
+  margin-left: 10rpx;
+  /* margin-top: 5rpx; */
+  align-content: center;
+}
+.zan-user {
+  font-size: 12px;
+  line-height: 40rpx;
+  height: 40rpx;
+  color: rgb(88, 103, 138);
+}
 
-  .line{
-    width: 97%;
-    height: 1px;
-    background: white;
-  }
+.line {
+  width: 97%;
+  height: 1px;
+  background: white;
+}
 
-  /* 评论 */
-  .discuss-view{
-    background: white;
-    width: 100%;
-  }
+/* 评论 */
+.discuss-view {
+  background: white;
+  width: 100%;
+}
 
-  .discuss{
-    background: rgb(235, 235, 235);
-    line-height: 35rpx;
-  }
+.discuss {
+  background: rgb(235, 235, 235);
+  line-height: 35rpx;
+}
 
-  .discuss label{
-    font-size: 12px;
-  }
+.discuss label {
+  font-size: 12px;
+}
 
-  .discuss-user{
-    color: rgb(88, 103, 138);
-    margin-left: 10rpx;
-  }
+.discuss-user {
+  color: rgb(88, 103, 138);
+  margin-left: 10rpx;
+}
 
-  .content{
-    margin-left: 10rpx;
-  }
+.content {
+  margin-left: 10rpx;
+}
 
-  /* 弹出框 */
-  .pop-up-box{
-    position: absolute;
-    height: 60rpx;
-    border-radius: 10rpx;
-    right: 90rpx;
-    background: rgba(0, 0, 0, 0.7)
-  }
-  .rbutton-view{
-    background-color: rgba(0,0,0,0);
-     position: fixed;
-      bottom: 3%;
-    left: 50%;
-    transform: translateX(-50%);
-  }
-  .rbutton {
-  		border-radius: 50%;
-      height:100rpx;
-      width:100rpx;
-      line-height: 100rpx;
-      background-color:  rgb(235, 235, 235);
-      margin:2rpx;
-      position: relative;
-      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  	}
-    .plusIcon{
-      position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    }
-   .input-view{
-      display: flex;
-    position:sticky;
-    bottom: 0;
-    width:100%;
- 
-    background-color:white ;
-    }
-     .inputstyle{
+/* 弹出框 */
+.pop-up-box {
+  position: absolute;
+  height: 60rpx;
+  border-radius: 10rpx;
+  right: 90rpx;
+  background: rgba(0, 0, 0, 0.7);
+}
+.rbutton-view {
+  background-color: rgba(0, 0, 0, 0);
+  position: fixed;
+  bottom: 3%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.rbutton {
+  border-radius: 50%;
+  height: 100rpx;
+  width: 100rpx;
+  line-height: 100rpx;
+  background-color: rgb(235, 235, 235);
+  margin: 2rpx;
+  position: relative;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.plusIcon {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.input-view {
+  display: flex;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
 
-      width:80%;
-      height: 40px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+  background-color: white;
+}
+.inputstyle {
+  width: 80%;
+  height: 40px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
 
-    padding-left: 5px;
-    }
-    .btn-view{
-      height: 40px;
-      font-size:medium;
-      border: 1px solid #ccc;
-    }
+  padding-left: 5px;
+}
+.btn-view {
+  height: 40px;
+  font-size: medium;
+  border: 1px solid #ccc;
+}
 </style>

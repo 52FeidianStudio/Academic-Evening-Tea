@@ -3,20 +3,20 @@
     <navigator class="avatar item" :url="`/pages/my/components/userImage?userAvatar=${user.img}`">
       <view>头像</view>
       <view class="user-avatar texts">
-        <image class="img" :src='user.img' />
+        <image class="img" :src="user.img" />
         <image src="../../../static/my/arrow-right.png" />
       </view>
     </navigator>
     <view class="item">
       <view>名字</view>
       <view class="texts">
-        <text class="text1" >{{ user.name }}</text>
+        <text class="text1">{{ user.name }}</text>
       </view>
     </view>
     <view class="item">
       <view>学院</view>
       <view class="texts">
-        <text class="text1" >{{ user.college }}</text>
+        <text class="text1">{{ user.college }}</text>
       </view>
     </view>
     <view class="item">
@@ -50,10 +50,10 @@
   </view>
 </template>
 
-<script setup lang='ts'>
-import { ref, reactive } from 'vue';
-import { onLoad, onShow } from '@dcloudio/uni-app';
-import { getPersonalInf,changePersonalInf } from '@/services/personalInf'
+<script setup lang="ts">
+import { ref, reactive } from 'vue'
+import { onLoad, onShow } from '@dcloudio/uni-app'
+import { getPersonalInf, changePersonalInf } from '@/services/personalInf'
 // type userInfo = {
 //   name: string
 //   studentId: string
@@ -64,62 +64,58 @@ import { getPersonalInf,changePersonalInf } from '@/services/personalInf'
 const isDisabled = ref<Boolean>(false)
 const user = ref<any>({})
 
-const editedUser = ref<any>({
-
-})
+const editedUser = ref<any>({})
 
 const colleges = ref<any>([])
 const getPersonal = async () => {
   const res = await getPersonalInf()
   console.log(res)
-  user.value.name=res.data.name
+  user.value.name = res.data.name
   // user.value.img=res.data.img
-  user.value.college=res.data.dept.deptName
-  user.value.studentId=res.data.userName
-  user.value.nickName=res.data.nickName
-  user.value.phonenumber=res.data.phonenumber
-  user.value.img = res.data.avatar===""?'../../../static/my/headpic.png':res.data.avatar
-  editedUser.value=res.data
+  user.value.college = res.data.dept.deptName
+  user.value.studentId = res.data.userName
+  user.value.nickName = res.data.nickName
+  user.value.phonenumber = res.data.phonenumber
+  user.value.img = res.data.avatar === '' ? '../../../static/my/headpic.png' : res.data.avatar
+  editedUser.value = res.data
 }
-
 
 onShow(() => {
   getPersonal()
 })
-
 
 const changeUserInfo = () => {
   isDisabled.value = !isDisabled.value
 }
 
 const saveEdit = () => {
-  if (!/^1[3456789]\d{9}$/.test(editedUser.value.phonenumber)) {        
-                    uni.showToast({
-                       title: '请输入正确的手机号',
-                       icon: 'none'
-                         });
-                      return false;
-     }
- if(editedUser.value.nickName && editedUser.value.phonenumber) {
-  console.log(editedUser.value)
-   changePersonalInf(editedUser.value).then(res=>{
-    console.log(res)
-    if(res.code==500){
-      uni.showToast({
-                       title: '违规操作！',
-                       icon: 'none'
-                         });
-                      return false;
-    }
-    getPersonal()
-   })
-  isDisabled.value = !isDisabled.value
- }else{
+  if (!/^1[3456789]\d{9}$/.test(editedUser.value.phonenumber)) {
+    uni.showToast({
+      title: '请输入正确的手机号',
+      icon: 'none',
+    })
+    return false
+  }
+  if (editedUser.value.nickName && editedUser.value.phonenumber) {
+    console.log(editedUser.value)
+    changePersonalInf(editedUser.value).then((res) => {
+      console.log(res)
+      if (res.code == 500) {
+        uni.showToast({
+          title: '违规操作！',
+          icon: 'none',
+        })
+        return false
+      }
+      getPersonal()
+    })
+    isDisabled.value = !isDisabled.value
+  } else {
     uni.showToast({
       title: '请填写完整信息',
-      icon: 'none'
+      icon: 'none',
     })
- }
+  }
 }
 
 const cancelEdit = () => {
@@ -137,17 +133,17 @@ const logout = () => {
         uni.showToast({
           title: '退出成功',
           icon: 'success',
-          duration: 2000
+          duration: 2000,
         })
         setTimeout(() => {
           uni.reLaunch({
-            url: '/pages/login/login'
+            url: '/pages/login/login',
           })
         }, 2000)
       } else if (res.cancel) {
         console.log('用户点击取消')
       }
-    }
+    },
   })
 }
 </script>
@@ -170,7 +166,7 @@ const logout = () => {
       flex-wrap: nowrap;
       align-items: center;
 
-      .text1{
+      .text1 {
         margin-right: 5rpx;
         color: #8e8d8d;
       }
@@ -193,11 +189,11 @@ const logout = () => {
     }
   }
 
-  .btns{
+  .btns {
     border-bottom: none;
     display: flex;
     flex-direction: column;
-    button{
+    button {
       margin-top: 20rpx;
       width: 100%;
       background-color: #eeeded;

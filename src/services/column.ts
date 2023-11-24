@@ -1,10 +1,10 @@
-import { http } from "@/utils/http";
+import { http } from '@/utils/http'
 
 export const getColumnsAPI = (data: any) => {
   return http<any>({
-    url: "/system/column/list",
-    method: "GET",
-    data
+    url: '/system/column/list',
+    method: 'GET',
+    data,
   })
 }
 
@@ -15,10 +15,10 @@ export const likeUpAPI = (id: number) => {
   })
 }
 
-export const likeDownAPI = (id:number) => {
+export const likeDownAPI = (id: number) => {
   return http<any>({
-    url:`/system/column/like/${id}`,
-    method:'DELETE'
+    url: `/system/column/like/${id}`,
+    method: 'DELETE',
   })
 }
 

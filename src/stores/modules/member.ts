@@ -47,7 +47,7 @@ export const useMemberStore = defineStore(
         getItem(key) {
           return uni.getStorageSync(key)
         },
-      }
-    }
+      },
+    },
   },
 )

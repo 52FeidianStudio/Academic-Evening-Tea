@@ -1,7 +1,7 @@
 <script setup lang="ts">
 //
-import CustomNavbar from './components/CustomNavbar.vue';
-import HomeContent from './components/HomeContent.vue';
+import CustomNavbar from './components/CustomNavbar.vue'
+import HomeContent from './components/HomeContent.vue'
 </script>
 
 <template>

@@ -5,8 +5,6 @@
 
     <!-- <button type="primary" @click="qrsigncode()" id="token">签到码</button> -->
     <!-- <button type="primary" @click="qrapplycode()" id="token">报名码</button> -->
-
-
   </div>
 </template>
 
@@ -57,52 +55,50 @@ import { onLoad } from '@dcloudio/uni-app'
 const scan = () => {
   uni.scanCode({
     success: (res) => {
-
       //判断当前手机系统
       wx.getSystemInfo({
-      success: (res22) => {
-         console.log(res)
-         console.log("res.path", res.path); //pages/me/me?scene=table_id%3D8%26shop_id%3D1
-        const platform = res22.platform.toLowerCase();
-        var path = res.path
-        // 判断当前手机系统
-       if (platform.includes('ios')) {
-          console.log('当前手机系统为 iOS');
-         path=decodeURIComponent(path)
-          console.log(path)
-        } 
-      const modifiedStr = path.replace("?scene=", "?");
-      console.log(modifiedStr);
-      uni.navigateTo({
-        url: '/' + modifiedStr
+        success: (res22) => {
+          console.log(res)
+          console.log('res.path', res.path) //pages/me/me?scene=table_id%3D8%26shop_id%3D1
+          const platform = res22.platform.toLowerCase()
+          var path = res.path
+          // 判断当前手机系统
+          if (platform.includes('ios')) {
+            console.log('当前手机系统为 iOS')
+            path = decodeURIComponent(path)
+            console.log(path)
+          }
+          const modifiedStr = path.replace('?scene=', '?')
+          console.log(modifiedStr)
+          uni.navigateTo({
+            url: '/' + modifiedStr,
+          })
+
+          // else if (platform.includes('windows')) {
+          //   console.log('当前手机系统为 Windows Phone');
+          // } else {
+          //   console.log('当前手机系统为其他');
+          // }
+        },
       })
 
-        // else if (platform.includes('windows')) {
-        //   console.log('当前手机系统为 Windows Phone');
-        // } else {
-        //   console.log('当前手机系统为其他');
-        // }
-      }
-    });
-      
       //  //微信开发者工具 在开发者工具里出现乱码需要decodeURIComponent转义,真机不需要,可以直接使用
-    
-    }
+    },
   })
 }
-onLoad(()=>{
-  if(!uni.getStorageSync('token')){
+onLoad(() => {
+  if (!uni.getStorageSync('token')) {
     uni.showToast({
-      title:'请先登录',
-      icon:'none',
-      duration:1000,
-      complete:(res)=>{
-        setTimeout(()=>{
+      title: '请先登录',
+      icon: 'none',
+      duration: 1000,
+      complete: (res) => {
+        setTimeout(() => {
           uni.navigateTo({
-            url:'/pages/login/login'
+            url: '/pages/login/login',
           })
-        },1000)
-      }
+        }, 1000)
+      },
     })
   }
 })
@@ -141,12 +137,6 @@ onLoad(()=>{
 //    })
 //    }})
 //  },
-
-
-
-
-
-
 </script>
 <style scoped>
 .scan-img {

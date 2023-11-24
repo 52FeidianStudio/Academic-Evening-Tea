@@ -1,4 +1,4 @@
-import { useMemberStore } from "@/stores"
+import { useMemberStore } from '@/stores'
 
 const httpInterceptor = {
   // 拦截前触发
@@ -18,7 +18,7 @@ const httpInterceptor = {
     if (token) {
       options.header.Authorization = `Bearer ${token}`
     }
-  }
+  },
 }
 
 // 拦截request请求
@@ -27,8 +27,8 @@ uni.addInterceptor('request', httpInterceptor)
 uni.addInterceptor('uploadFile', httpInterceptor)
 
 type Data<T> = {
-  code: string,
-  msg: string,
+  code: string
+  msg: string
   result: T
 }
 
@@ -41,13 +41,13 @@ export const http = <T>(options: UniApp.RequestOptions) => {
           resolve(res.data as T)
         } else if (res.statusCode === 401) {
           uni.navigateTo({
-            url: '/pages/login/login'
+            url: '/pages/login/login',
           })
           reject(res)
         } else {
           uni.showToast({
             icon: 'none',
-            title: (res.data as Data<T>).msg || '请求失败'
+            title: (res.data as Data<T>).msg || '请求失败',
           })
           reject(res)
         }
@@ -55,10 +55,10 @@ export const http = <T>(options: UniApp.RequestOptions) => {
       fail(err) {
         uni.showToast({
           icon: 'none',
-          title: err.errMsg || '网络错误，请换个网络试试'
+          title: err.errMsg || '网络错误，请换个网络试试',
         })
         reject(err)
-      }
+      },
     })
   })
 }

@@ -9,14 +9,14 @@
           {{ data0.isEnd }}
         </view>
         <view class="population">
-          <image class="img" src="../../static/activity/User.png" />{{ data0.hbNum }}/{{ data0.hot }}
+          <image class="img" src="../../static/activity/User.png" />{{ data0.hbNum }}/{{
+            data0.hot
+          }}
         </view>
       </view>
     </view>
     <view class="middle">
-      <view class="sponsor">
-        发起学院：{{ data0.hbKeyword }}
-      </view>
+      <view class="sponsor"> 发起学院：{{ data0.hbKeyword }} </view>
       <view class="time">
         <image class="img" src="../../static/activity/clock.png" />{{ data0.lat }}
       </view>
@@ -26,17 +26,13 @@
     </view>
     <view class="bottom">
       <view class="sponsor-intro">
-        <view class="title">
-          主讲人简介：
-        </view>
+        <view class="title"> 主讲人简介： </view>
         <view class="intro">
           {{ data0.img }}
         </view>
       </view>
       <view class="activity-intro">
-        <view class="title">
-          活动简介：
-        </view>
+        <view class="title"> 活动简介： </view>
         <view class="intro">
           {{ data0.details }}
         </view>
@@ -44,21 +40,31 @@
     </view>
     <view class="footer">
       <view class="activity-btn">
-          <button type="primary" v-if="data0.isApplication.length === 0 && data0.isEnd === '进行中'" class="btn" @click="applyon">报名</button>
-          <button type="default" v-else-if="data0.isApplication.length > 0 && data0.isEnd === '进行中'" class="btn">已报名</button>
-          <button type="default" v-else class="btn">活动已结束</button>
+        <button
+          type="primary"
+          v-if="data0.isApplication.length === 0 && data0.isEnd === '进行中'"
+          class="btn"
+          @click="applyon"
+        >
+          报名
+        </button>
+        <button
+          type="default"
+          v-else-if="data0.isApplication.length > 0 && data0.isEnd === '进行中'"
+          class="btn"
+        >
+          已报名
+        </button>
+        <button type="default" v-else class="btn">活动已结束</button>
       </view>
     </view>
-
-
-
   </view>
 </template>
 
-<script setup lang='ts'>
-import { http } from '../../utils/http';
+<script setup lang="ts">
+import { http } from '../../utils/http'
 import { ref, reactive } from 'vue'
-import { onHide, onLoad } from '@dcloudio/uni-app';
+import { onHide, onLoad } from '@dcloudio/uni-app'
 type DataProps = {
   id: number
   userImg2: string
@@ -77,7 +83,7 @@ const AId = ref<number>()
 const data0 = ref<DataProps>()
 const props = defineProps<{
   id: number
-}>();
+}>()
 const getDetailsAPI = (data: any) => {
   return http<any>({
     url: data,
@@ -88,52 +94,48 @@ const applyAPI = (data: any) => {
   return http<any>({
     method: 'POST',
     url: '/system/useractivity',
-    data
+    data,
   })
 }
 const getDetails = async (url: string) => {
-  const res = await getDetailsAPI(url);
+  const res = await getDetailsAPI(url)
   console.log(res)
-  data0.value = res.data;
-  data0.value.isEnd = res.data.isEnd === 1 ? "进行中" : "已结束";
-  data0.value.isApplication = res.data.isApplication === null ? []:res.data.isApplication
+  data0.value = res.data
+  data0.value.isEnd = res.data.isEnd === 1 ? '进行中' : '已结束'
+  data0.value.isApplication = res.data.isApplication === null ? [] : res.data.isApplication
 }
 const apply = async (data: any) => {
-  const res = await applyAPI(data);
+  const res = await applyAPI(data)
   if (res.code === 200) {
     wx.showToast({
       title: res.msg,
       icon: 'success',
       duration: 2000,
-      success:()=>{
-        setTimeout(()=>{
+      success: () => {
+        setTimeout(() => {
           uni.switchTab({
-            url:'/pages/index/index'
+            url: '/pages/index/index',
           })
-        },2000)
-      }
-    });
-    data0.value.is_close = 1;
+        }, 2000)
+      },
+    })
+    data0.value.is_close = 1
   } else {
     wx.showToast({
       title: res.msg,
       icon: 'none',
-      duration: 2000
-    });
+      duration: 2000,
+    })
   }
 }
 console.log(props.id)
 
 onLoad(async (options) => {
-  
-  AId.value = props.id;
-  const url = `/system/activity/${AId.value}`;
-  getDetails(url);
- 
-});
-onHide(()=>{
-
+  AId.value = props.id
+  const url = `/system/activity/${AId.value}`
+  getDetails(url)
 })
+onHide(() => {})
 //报名函数
 const applyon = () => {
   if (uni.getStorageSync('token')) {
@@ -144,16 +146,16 @@ const applyon = () => {
         if (res.confirm) {
           //用户点击了确认按钮
           apply({
-            activityId: AId.value
-          });
-          const url = `/system/activity/${AId.value}`;
-          getDetails(url);
+            activityId: AId.value,
+          })
+          const url = `/system/activity/${AId.value}`
+          getDetails(url)
         } else if (res.cancel) {
           // 用户点击了取消按钮
-          console.log('用户取消了报名');
+          console.log('用户取消了报名')
         }
-      }
-    });
+      },
+    })
   } else {
     wx.showToast({
       title: '您尚未登录，请先登录',
@@ -162,15 +164,13 @@ const applyon = () => {
       complete: () => {
         setTimeout(() => {
           uni.navigateTo({
-            url: '/pages/login/login'
+            url: '/pages/login/login',
           })
         }, 1000)
-      }
+      },
     })
   }
-};
-
-
+}
 </script>
 
 <style lang="scss">
@@ -203,13 +203,12 @@ const applyon = () => {
 
       .status {
         font-size: 30rpx;
-        color: #FF0000;
+        color: #ff0000;
 
         .img {
           width: 30rpx;
           height: 30rpx;
           margin-right: 10rpx;
-
         }
       }
 

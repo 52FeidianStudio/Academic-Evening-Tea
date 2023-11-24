@@ -1,8 +1,8 @@
 import { http } from '@/utils/http'
 
-export const getMyActivityAPI = () => {
+export const getAudit = () => {
   return http<any>({
     method: 'GET',
-    url: '/system/useractivity/myactivity',
+    url: '/system/xswc',
   })
 }

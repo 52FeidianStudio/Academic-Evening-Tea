@@ -1,6 +1,10 @@
 <template>
-  <navigator :url="`/pages/column/components/article?kind=${item.kind}&id=${item.id}`" class="post-container"
-    v-for="(item, index) in columnContents" :key="item.id">
+  <navigator
+    :url="`/pages/column/components/article?kind=${item.kind}&id=${item.id}`"
+    class="post-container"
+    v-for="(item, index) in columnContents"
+    :key="item.id"
+  >
     <image class="post-image" :src="item.img"></image>
     <text class="post-title">{{ item.title }}</text>
     <text class="post-content">{{ item.summary }}</text>
@@ -10,8 +14,12 @@
       </view>
       <view class="hit">
         <view>
-          <uni-icons type="heart-filled" size="20" @tap.stop="likeUp(item.id, item.tblLike)"
-            :color="item.tblLike ? 'red' : 'black'"></uni-icons>
+          <uni-icons
+            type="heart-filled"
+            size="20"
+            @tap.stop="likeUp(item.id, item.tblLike)"
+            :color="item.tblLike ? 'red' : 'black'"
+          ></uni-icons>
           <text class="post-like-font">{{ item.likeCount }}</text>
         </view>
         <view>
@@ -52,8 +60,8 @@ type columnItem = {
 const props = defineProps({
   kind: {
     type: Number,
-    default: 1
-  }
+    default: 1,
+  },
 })
 const columnContents = ref<columnItem[]>([])
 // 点赞或取消点赞
@@ -65,7 +73,7 @@ const likeUp = (id: number, tblLike: object) => {
       likeDownAPI(id).then((res) => {
         console.log(res)
         if (res.code === 200) {
-          getColumns(props.kind);
+          getColumns(props.kind)
           console.log('取消点赞成功')
         }
       })
@@ -74,12 +82,12 @@ const likeUp = (id: number, tblLike: object) => {
       likeUpAPI(id).then((res) => {
         console.log(res)
         if (res.code === 200) {
-          getColumns(props.kind);
+          getColumns(props.kind)
           console.log('点赞成功')
         }
       })
     }
-  }else{
+  } else {
     wx.showToast({
       title: '您尚未登录，请先登录',
       icon: 'none',
@@ -87,10 +95,10 @@ const likeUp = (id: number, tblLike: object) => {
       complete: () => {
         setTimeout(() => {
           uni.navigateTo({
-            url: '/pages/login/login'
+            url: '/pages/login/login',
           })
-        }, 1000);
-      }
+        }, 1000)
+      },
     })
   }
 }
@@ -103,7 +111,7 @@ const getColumns = async (kind: Number) => {
   } else {
     uni.showToast({
       title: '获取数据失败',
-      icon: 'none'
+      icon: 'none',
     })
   }
 }
@@ -125,7 +133,6 @@ onMounted(() => {
   border-bottom: 1px solid #b5b5b5;
   padding-bottom: 5px;
 }
-
 
 .post-author {
   width: 60rpx;
