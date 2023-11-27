@@ -39,7 +39,7 @@ const getA = async () => {
   }
 }
 onLoad(() => {
-  getA()
+
 })
 const rules = {
   studentId: {
@@ -321,6 +321,7 @@ const getLaunchPermission = async () => {
   }
 }
 onShow(() => {
+  getA()
   getLaunchPermission()
 })
 </script>

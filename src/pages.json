@@ -67,6 +67,12 @@
       }
     },
     {
+      "path": "pages/my/components/editPassword",
+      "style": {
+        "navigationBarTitleText": "修改密码"
+      }
+    },
+    {
       "path": "pages/recommend/recommend",
       "style": {
         "navigationBarTitleText": "我要推荐"

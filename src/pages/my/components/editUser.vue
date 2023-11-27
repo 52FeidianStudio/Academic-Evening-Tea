@@ -45,6 +45,7 @@
         <button @tap="saveEdit">保存</button>
         <button @tap="cancelEdit">取消修改</button>
       </view>
+      <button @click="editPassword">修改密码</button>
       <button @tap="logout">退出登录</button>
     </view>
   </view>
@@ -144,6 +145,11 @@ const logout = () => {
         console.log('用户点击取消')
       }
     },
+  })
+}
+const editPassword = () => {
+  uni.navigateTo({
+    url: '/pages/my/components/editPassword'
   })
 }
 </script>
