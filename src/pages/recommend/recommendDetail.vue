@@ -3,52 +3,71 @@
     <!--pages/posts/post-detail/post-detail.wxml-->
     <view class="container">
       <view class="author-date">
+
         <image class="avatar" :src="details.avatar"></image>
+        <view class="author-view">
         <text class="author">{{ details.nickName }}</text>
         <text class="const-text">推荐于</text>
         <text class="date">{{ details.createTime }}</text>
       </view>
+      </view>
 
-      <view>
+      <view class="activityD">
         <text class="title">{{ details.theme }}</text>
-        <text class="date">{{ details.lecturerName }}</text>
+        <text class="date">主讲人：{{ details.lecturerName }}</text>
       </view>
 
       <view class="tool">
         <text>{{ details.content }}</text>
       </view>
-      <view class="TLC">
-        <view>
-          <uni-icons v-if="details.status == 1" type="email-filled" size="20"></uni-icons>
-          <uni-icons v-if="details.status == 2" type="auth" size="20"></uni-icons>
-          <uni-icons v-else-if="details.status == 3" type="vip-filled" size="20"></uni-icons>
+      <view class="wrapper">
+        <view class="TLC">
+          <view>
+            <uni-icons v-if="details.status == 1" type="email-filled" size="20"></uni-icons>
+            <uni-icons v-if="details.status == 2" type="auth" size="20"></uni-icons>
+            <uni-icons v-else-if="details.status == 3" type="vip-filled" size="20"></uni-icons>
 
-          <text v-if="details.status == 1">已推荐</text>
-          <text v-if="details.status == 2">已采纳</text>
-          <text v-else-if="details.status == 3">有效推荐</text>
-        </view>
+            <text v-if="details.status == 1">已推荐</text>
+            <text v-if="details.status == 2">已采纳</text>
+            <text v-else-if="details.status == 3">有效推荐</text>
+          </view>
 
-        <view class="dianzannum" @click="iLike(details.id, details.tblLike)">
-          <uni-icons v-if="details.tblLike == null" type="heart" size="20"></uni-icons>
-          <uni-icons v-else type="heart-filled" size="20"></uni-icons>
-          <view>{{ details.likeCount }}</view>
-        </view>
+          <view class="dianzannum" @click="iLike(details.id, details.tblLike)">
+            <uni-icons v-if="details.tblLike == null" type="heart" size="20"></uni-icons>
+            <uni-icons v-else type="heart-filled" size="20"></uni-icons>
+            <view>{{ details.likeCount }}</view>
+          </view>
 
-        <view>
-          <view @tap="showInputBox(details.id)">
-            <uni-icons type="chat" size="20"></uni-icons>
-            <text>评论</text>
+          <view>
+            <view @tap="showInputBox(details.id)">
+              <uni-icons type="chat" size="20"></uni-icons>
+              <text>评论</text>
+            </view>
           </view>
         </view>
-      </view>
 
-      <view class="discuss-view">
-        <view class="discuss" v-for="(item3, index3) in details.tblRecommendCommnets" :key="index3">
-          <label bindtap="TouchZanUser" :data-name="item3.nickName" class="discuss-user">{{
-            item3.nickName
-          }}</label>
-          <label class="content">{{ item3.comment }}</label>
-          <view class="date">{{ item3.createTime }}</view>
+        <view class="zan-name-view" v-if="details.likes.length !== 0">
+              <uni-icons type="heart-filled" size="20"></uni-icons>
+                <block  v-for="(item2, index2) in details.likes" :key="index2">
+                  <text bindtap="TouchZanUser" :data-name="item2.nickName" class="zan-user">{{
+                    item2.nickName
+                  }}</text>
+                  <text class="zan-user" v-if="index2 !== details.likes.length - 1">,</text>
+                </block>
+        </view>
+
+        <view class="discuss-view">
+          <view
+            class="discuss"
+            v-for="(item3, index3) in details.tblRecommendCommnets"
+            :key="index3"
+          >
+            <label bindtap="TouchZanUser" :data-name="item3.nickName" class="discuss-user"
+              >{{ item3.nickName }}：</label
+            >
+            <label class="content">{{ item3.comment }}</label>
+            <view class="date">{{ item3.createTime }}</view>
+          </view>
         </view>
       </view>
     </view>
@@ -93,6 +112,9 @@ const sendLikeTo = async (id) => {
 const delLike = async (id) => {
   const res = await deletLike(id)
   console.log(res)
+  if (res.code == 200) {
+    getD(props.id)
+  }
 }
 const iLike = (id, tblLike) => {
   if (uni.getStorageSync('token')) {
@@ -178,7 +200,7 @@ const hideInput = () => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding-top: 0rpx;
+  justify-content:center;
 }
 .head-container {
   width: 100%;
@@ -202,47 +224,50 @@ const hideInput = () => {
 .author-date {
   display: flex;
   flex-direction: row;
-  margin-top: 20rpx;
+  margin: 3vh auto 0;
   width: 100%;
-  height: 64rpx;
-  line-height: 64rpx;
+}
+.author-view{
+  display: flex;
+  flex-direction: column;
+  width:75%;
+  margin-left:5%;
 }
 .avatar {
-  height: 64rpx;
-  width: 64rpx;
+  /* height:100%; */
+  width:80rpx;
+  height:80rpx;
+  overflow: hidden;
   vertical-align: middle;
   margin-left: 20rpx;
 }
 .author {
   font-size: 30rpx;
   font-weight: 300;
-  margin-left: 20rpx;
   vertical-align: middle;
   color: #666;
 }
 .const-text {
   font-size: 24rpx;
   color: #999;
-  margin-left: 20rpx;
 }
 
 .date {
+  margin-top:2rpx;
   font-size: 24rpx;
-  margin-left: 30rpx;
   vertical-align: middle;
   color: #999;
 }
 .title {
-  width: 100%;
-  padding-left: 35rpx;
   font-size: 36rpx;
   font-weight: 700;
-  margin-top: 30rpx;
   letter-spacing: 2px;
+  margin-bottom: 5rpx;
   color: #4b556c;
 }
 .tool {
-  margin: 15px;
+  width: 90%;
+  margin: 3vh auto 0;
 }
 .circle-img {
   float: right;
@@ -257,7 +282,13 @@ const hideInput = () => {
 .share-img{
   margin-left: 30rpx;
 } */
-
+.activityD {
+  display: flex;
+  flex-direction: column;
+  width: 90%;
+  margin: 3vh auto 0;
+  /* margin:10px 0; */
+}
 .horizon {
   width: 660rpx;
   height: 1px;
@@ -280,41 +311,73 @@ const hideInput = () => {
 
 /* 评论 */
 .discuss-view {
-  background: white;
+  background: rgb(241, 241, 241);
   width: 100%;
+  margin-top: 10rpx;
+  border-top: 1px solid rgb(213, 213, 213);
 }
 
 .discuss {
-  background: rgb(235, 235, 235);
-  line-height: 35rpx;
-  margin: 10rpx;
+  background: rgb(241, 241, 241);
+  width:90%;
+  margin:0 auto;
+  padding-top: 10rpx;
+  padding-bottom: 8rpx;
 }
 
 .discuss label {
-  font-size: 12px;
+  font-size: 32rpx;
 }
 
 .discuss-user {
   color: rgb(88, 103, 138);
-  margin-left: 10rpx;
 }
 
 .content {
   margin-left: 10rpx;
 }
+.wrapper {
+  border-radius: 10rpx;
+  width: 90%;
+  margin:3vh auto;
+  background-color: rgb(241, 241, 241);
+}
 .TLC {
-  margin: 20rpx;
-  height: 35px;
-  line-height: 35px;
+  width:90%;
+  margin:0 auto;
+  padding-bottom: 10rpx;
+  /* border-bottom: 1px solid rgb(213, 213, 213); */
+  height: 70rpx;
+  line-height: 70rpx;
   display: flex;
   flex-wrap: row;
-  justify-content: space-evenly;
-  background-color: #e5e5e5;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  align-items: center;
+  justify-content: space-between;
+  /* background-color: rgb(241, 241, 241); */
+  /* */
+
+}
+.TlC > view {
+  display: flex;
+  align-items: center;
 }
 .dianzannum {
   display: flex;
   flex-wrap: row;
+}
+.zan-name-view{
+  background-color: rgb(241, 241, 241);
+  width: 90%;
+  margin:0 auto ;
+  padding-bottom: 10rpx;
+  margin-bottom: 10rpx;
+  overflow-wrap: break-word;
+}
+.zan-user {
+  font-size: 12px;
+  line-height: 40rpx;
+  height: 40rpx;
+  color: rgb(88, 103, 138);
 }
 .input-view {
   display: flex;

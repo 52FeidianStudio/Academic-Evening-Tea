@@ -75,7 +75,7 @@ const getA = async () => {
   const res = await getAudit()
   console.log(res)
   isPastTargetDate.value = res.data
-   if (!isPastTargetDate.value) {
+  if (!isPastTargetDate.value) {
     uni.showToast({
       title: '意见反馈部分功能尚未实现，敬请期待~',
       icon: 'none',
@@ -95,7 +95,6 @@ onLoad(() => {
 })
 onShow(() => {
   console.log(isPastTargetDate.value)
-
 })
 type img = {
   now: string

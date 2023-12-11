@@ -5,7 +5,8 @@
     v-for="(item, index) in columnContents"
     :key="item.id"
   >
-    <image class="post-image" :src="item.img"></image>
+    <!--  -->
+    <image class="post-image" :src="item.img" mode="heightFix"></image>
     <text class="post-title">{{ item.title }}</text>
     <text class="post-content">{{ item.summary }}</text>
     <view class="post-like">
@@ -119,6 +120,9 @@ onMounted(() => {
   console.log(props.kind)
   getColumns(props.kind)
 })
+onShow(() => {
+  getColumns(props.kind)
+})
 </script>
 
 <style lang="scss">
@@ -134,12 +138,6 @@ onMounted(() => {
   padding-bottom: 5px;
 }
 
-.post-author {
-  width: 60rpx;
-  height: 60rpx;
-  vertical-align: middle;
-}
-
 .post-title {
   font-size: 36rpx;
   font-weight: 600;
@@ -149,9 +147,9 @@ onMounted(() => {
 }
 
 .post-image {
-  width: 100%;
-  height: 340rpx;
-  margin: auto 0;
+  max-width: 90vw;
+  height: 400rpx;
+  margin: 0 auto;
   margin-bottom: 15px;
   border-radius: 5rpx;
 }

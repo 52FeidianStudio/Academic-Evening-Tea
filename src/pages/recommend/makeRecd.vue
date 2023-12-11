@@ -15,7 +15,7 @@
     <view v-if="isPastTargetDate" class="text-view">请输入推荐内容</view>
     <view v-else class="text-view">Content</view>
     <textarea auto-height="true" class="desc" placeholder="Content" @input="getInput" />
-    <view class="b-view" :style="{ bottom: safeAreaInsets?.bottom!+ 0 + 'px' }">
+    <view class="b-view" :style="{ bottom: safeAreaInsets?.bottom!+ 30 + 'px' }">
       <button type="primary" @click="publish">发布推荐</button>
     </view>
   </view>

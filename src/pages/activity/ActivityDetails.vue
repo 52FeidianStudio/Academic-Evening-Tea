@@ -40,9 +40,10 @@
     </view>
     <view class="footer">
       <view class="activity-btn">
+        <button type="default" v-if="data0.isClose === 0" class="btn">报名未开始</button>
         <button
           type="primary"
-          v-if="data0.isApplication.length === 0 && data0.isEnd === '进行中'"
+          v-else-if="data0.isApplication.length === 0 && data0.isClose === 1"
           class="btn"
           @click="applyon"
         >
@@ -50,12 +51,12 @@
         </button>
         <button
           type="default"
-          v-else-if="data0.isApplication.length > 0 && data0.isEnd === '进行中'"
+          v-else-if="data0.isApplication.length > 0 && data0.isClose === 1"
           class="btn"
         >
           已报名
         </button>
-        <button type="default" v-else class="btn">活动已结束</button>
+        <button type="default" v-else class="btn">报名截止</button>
       </view>
     </view>
   </view>
@@ -69,6 +70,7 @@ type DataProps = {
   id: number
   userImg2: string
   isEnd: string
+  isClose: number
   hbNum: number
   hot: number
   hbKeyword: string
@@ -101,7 +103,7 @@ const getDetails = async (url: string) => {
   const res = await getDetailsAPI(url)
   console.log(res)
   data0.value = res.data
-  data0.value.isEnd = res.data.isEnd === 1 ? '进行中' : '已结束'
+  data0.value.isEnd = res.data.isEnd == 1 ? '进行中' : '已结束'
   data0.value.isApplication = res.data.isApplication === null ? [] : res.data.isApplication
 }
 const apply = async (data: any) => {
@@ -179,7 +181,6 @@ const applyon = () => {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100vh;
   width: 90%;
   margin: 0 auto;
 
@@ -226,7 +227,7 @@ const applyon = () => {
   }
 
   .middle {
-    height: 30%;
+    height: 400rpx;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
@@ -312,6 +313,7 @@ const applyon = () => {
 
       .btn {
         width: 40%;
+        margin-top: 50rpx;
         font-size: 38rpx;
       }
     }

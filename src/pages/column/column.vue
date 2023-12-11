@@ -25,7 +25,7 @@ export default {
       const res = await getAudit()
       console.log(res)
       isPastTargetDate.value = res.data
-     if (!isPastTargetDate.value) {
+      if (!isPastTargetDate.value) {
         uni.showToast({
           title: '推荐部分功能尚未实现，敬请期待~',
           icon: 'none',
@@ -43,7 +43,6 @@ export default {
 
     onMounted(() => {
       getA()
-
     })
 
     return {
@@ -106,6 +105,7 @@ button {
 .main {
   height: calc(100% - 90rpx);
   overflow-y: auto;
+  overflow-x: hidden;
   width: 100%;
 }
 .Moments {

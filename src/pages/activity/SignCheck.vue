@@ -20,8 +20,9 @@
       <div class="message">{{ message[result - 1] }}</div>
 
       <view class="tag-view">
-        <uni-tag v-if="result === 1" @click="toapply" text="未报名 点击报名" />
-        <uni-tag v-else-if="result === 4" text="不在报名时间" />
+        <uni-tag  type="warning"  v-if="result === 1" @click="toapply" text="未报名 点击报名" />
+        <uni-tag type="error" v-else-if="result === 4" text="活动已结束" />
+        <uni-tag type="error" v-else-if="result === 5" text="报名未开始" />
       </view>
     </div>
   </div>
@@ -37,7 +38,7 @@ const props = defineProps<{
   id: number
 }>()
 console.log(props.id)
-const message = ref<string[]>(['签到失败', '请勿重复签到', '签到成功', '签到失败'])
+const message = ref<string[]>(['签到失败', '请勿重复签到', '签到成功', '签到截止', '签到失败'])
 
 const postFeedbackAPI = (data: any) => {
   return http<any>({
@@ -67,7 +68,22 @@ const toapply = () => {
   })
 }
 onLoad(() => {
-  postFeedback(AId)
+  if (uni.getStorageSync('token')) {
+    postFeedback(AId)
+  } else {
+    uni.showToast({
+      title: '您尚未登录，请先登录',
+      icon: 'none',
+      duration: 1000,
+      complete: () => {
+        setTimeout(() => {
+          uni.navigateTo({
+            url: '/pages/login/login',
+          })
+        }, 1000)
+      },
+    })
+  }
 })
 </script>
 

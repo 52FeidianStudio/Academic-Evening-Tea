@@ -57,22 +57,22 @@ const getPersonal = async () => {
   my.value.img = res.data.avatar === '' ? '../../static/my/headpic.png' : res.data.avatar
 }
 onLoad(() => {
-  if (uni.getStorageSync('token')) {
-    getPersonal()
-  } else {
-    wx.showToast({
-      title: '您尚未登录，请先登录',
-      icon: 'none',
-      duration: 1000,
-      complete: () => {
-        setTimeout(() => {
-          uni.navigateTo({
-            url: '/pages/login/login',
-          })
-        }, 1000)
-      },
-    })
-  }
+  // if (uni.getStorageSync('token')) {
+  getPersonal()
+  // } else {
+  //   wx.showToast({
+  //     title: '您尚未登录，请先登录',
+  //     icon: 'none',
+  //     duration: 1000,
+  //     complete: () => {
+  //       setTimeout(() => {
+  //         uni.navigateTo({
+  //           url: '/pages/login/login',
+  //         })
+  //       }, 1000)
+  //     },
+  //   })
+  // }
 })
 
 onShow(() => {
@@ -127,6 +127,15 @@ onShow(() => {
         <view class="personal-content-item-left">
           <image class="personal-content-item-left-img" src="../../static/my/user-integral.png" />
           <view class="personal-content-item-left-text"> 积分规则 </view>
+        </view>
+        <view class="personal-content-item-right">
+          <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />
+        </view>
+      </navigator>
+      <navigator class="personal-content-item" url="/pages/my/components/history">
+        <view class="personal-content-item-left">
+          <image class="personal-content-item-left-img" src="../../static/my/yysj.png" />
+          <view class="personal-content-item-left-text"> 积分记录 </view>
         </view>
         <view class="personal-content-item-right">
           <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />

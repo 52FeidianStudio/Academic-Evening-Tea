@@ -68,9 +68,10 @@
 
 <script setup lang="ts">
 import { getHomeContentAPI } from '@/services/HomeContent'
-import { onLoad, onShow } from '@dcloudio/uni-app'
+import { onLoad, onShow, onHide } from '@dcloudio/uni-app'
 import { ref, reactive } from 'vue'
 const status = ref<string>('全部')
+const statusN = ref<Number>(0)
 const statusList = ref([
   { value: 0, text: '全部' },
   { value: 1, text: '进行中' },
@@ -80,12 +81,16 @@ const statusList = ref([
 const change = (e: any) => {
   console.log(e)
   if (e === 0) {
+    statusN.value = 0
     getHomeContent(0, 0, 0)
   } else if (e === 1) {
+    statusN.value = 1
     getHomeContent(1, 2, 1)
   } else if (e === 2) {
+    statusN.value = 2
     getHomeContent(1, 2, 2)
   } else {
+    statusN.value = 3
     getHomeContent(2, 2, 1)
   }
 }
@@ -125,7 +130,7 @@ const items = ref<Category[]>([
     url: '/pages/gift/giftCenter',
   },
   {
-    id: 4,
+    id: 3,
     text: '我要推荐',
     icon: '../../../static/home/sy-video.png',
     url: '/pages/recommend/recommend',
@@ -168,6 +173,7 @@ const getHomeContent = async (type: number, state: number, isEnd: number) => {
 }
 
 onLoad(() => {
+  console.log('onLoad!!!')
   uni.onNetworkStatusChange((res) => {
     if (!res.isConnected) {
       uni.showToast({
@@ -178,9 +184,22 @@ onLoad(() => {
   })
   getHomeContent(0, 0, 0)
 })
-
+onHide(() => {
+  uni.setStorageSync('status_key', statusN.value)
+  console.log(statusN.value)
+})
 onShow(() => {
-  getHomeContent(0, 0, 0)
+  console.log(uni.getStorageSync('status_key'))
+  statusN.value = uni.getStorageSync('status_key')
+  if (statusN.value === 0) {
+    getHomeContent(0, 0, 0)
+  } else if (statusN.value === 1) {
+    getHomeContent(1, 2, 1)
+  } else if (statusN.value === 2) {
+    getHomeContent(1, 2, 2)
+  } else {
+    getHomeContent(2, 2, 1)
+  }
 })
 </script>
 

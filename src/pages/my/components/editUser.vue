@@ -36,7 +36,9 @@
       <view>电话</view>
       <view class="texts">
         <text class="text1" v-if="!isDisabled">{{ user.phonenumber }}</text>
-        <uni-easyinput class="text2" v-else v-model="editedUser.phonenumber" />
+
+        <uni-easyinput v-else class="text2" v-model="editedUser.phonenumber" />
+
       </view>
     </view>
     <view class="btns">
@@ -86,6 +88,7 @@ onShow(() => {
 })
 
 const changeUserInfo = () => {
+  getPersonal()
   isDisabled.value = !isDisabled.value
 }
 
@@ -149,7 +152,7 @@ const logout = () => {
 }
 const editPassword = () => {
   uni.navigateTo({
-    url: '/pages/my/components/editPassword'
+    url: '/pages/my/components/editPassword',
   })
 }
 </script>
@@ -167,6 +170,7 @@ const editPassword = () => {
     border-bottom: 1px solid #e5e3e3;
 
     .texts {
+      max-width:65%;
       display: flex;
       justify-content: space-between;
       flex-wrap: nowrap;
@@ -176,6 +180,7 @@ const editPassword = () => {
         margin-right: 5rpx;
         color: #8e8d8d;
       }
+
 
       image {
         width: 40rpx;

@@ -33,7 +33,7 @@ const onChange: UniHelper.SwiperOnChange = (e) => {
     <swiper :circular="true" :autoplay="false" :interval="3000" @change="onChange">
       <swiper-item v-for="(item, index) in List" :key="index">
         <navigator @click="gotoColumn(item.specialId)" hover-class="none" class="navigator">
-          <image mode="aspectFill" class="image" :src="item.img"></image>
+          <image class="image" :src="item.img" mode="heightFix"></image>
         </navigator>
       </swiper-item>
     </swiper>

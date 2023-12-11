@@ -1,21 +1,33 @@
 <template>
   <div :style="{ paddingBottom: safeAreaInsets?.bottom!+ 0 + 'px' }">
     <view class="ad_popError" v-if="mycredit == 0">您的积分为零</view>
-    <swiper
+    <!-- <swiper
       :indicator-dots="indicatorDots"
       :autoplay="autoplay"
       :interval="interval"
       :duration="duration"
-    >
-      <swiper-item v-for="(url, index) in goodsdata.imgs" :key="index">
-        <image :src="url" :data-src="url" @click="previewImage" />
-      </swiper-item>
-    </swiper>
+    > -->
+    <!-- <swiper-item v-for="(url, index) in goodsdata.imgs" :key="index"> :data-src="url" @click="previewImage" -->
+    <view class="goodsimg">
+      <image :src="goodsdata.coverPicture" mode="heightFix" />
+    </view>
+
+    <!-- </swiper-item> -->
+    <!-- </swiper> -->
 
     <scroll-view :scroll-y="true">
       <view class="detail">
         <text class="price">{{ goodsdata.price }}积分</text>
-        <text class="title">{{ goodsdata.name }}</text>
+        <view class="title-view">
+          <text class="title">{{ goodsdata.name }}</text>
+          <uni-tag
+            :text="`总库存：${goodsdata.allnums}`"
+            size="mini"
+            :inverted="true"
+            type="success"
+          />
+          <!-- <text >总库存：{{ goodsdata.allnums }}</text> -->
+        </view>
         <text class="text-remark">{{ goodsdata.introduce }}</text>
       </view>
 
@@ -23,24 +35,28 @@
       <!-- sku选择 -->
       <view class="num-box">
         <text bindtap="toggleDialog">请选择兑换数量</text>
-        <uni-number-box class="numchooseBox" :max="maxNum" v-model="goodsnum"></uni-number-box>
+        <uni-number-box
+          class="numchooseBox"
+          @blur="blur"
+          :max="maxNum"
+          v-model="goodsnum"
+        ></uni-number-box>
       </view>
 
       <view class="separate"></view>
-      <text>礼品详情图：</text>
       <image
-        style="width: 100%; height: 500rpx"
+        mode="widthFix"
+        class="goodsdimg"
         v-for="(url, index) in goodsdata.imgs"
         :key="index"
         :src="url"
+        @click="previewImage"
       />
       <view class="temp"></view>
     </scroll-view>
 
     <view class="detail-nav" :style="{ bottom: safeAreaInsets?.bottom!+ 0 + 'px' }">
-      <!-- <image bindtap="toCar" src="../../static/gifts/R-C.jpg" /> -->
       <view class="line_nav" :style="{ height: safeAreaInsets?.bottom!+ 1 + 'px' }"></view>
-      <!-- <image bindtap="addLike" src="../../static/gifts/R-C.jpg" /> -->
       <view class="score-box">
         <view class="scorenum">所需积分：</view>
         <image
@@ -98,12 +114,24 @@ const getMyCredit = async () => {
   mycredit.value = res.data.credit
 }
 const mycredit = ref<number>(0)
+const blur = (e) => {
+  console.log(e)
+  if (e.detail.value > goodsdata.value.allnums) {
+    uni.showToast({
+      title: '兑换数量超出库存',
+      icon: 'none',
+      duration: 1000,
+    })
+  }
+}
 const maxNum = computed(() => {
-  // 假设商品价格为200，这里做整除计算
-  return Math.floor(mycredit.value / goodsdata.value.price)
+  if (mycredit.value == 0) {
+    return 0
+  }
+  return goodsdata.value.allnums
 })
 const scoreres = computed(() => {
-  return goodsnum.value * goodsdata.value.price
+  return (goodsnum.value * goodsdata.value.price).toFixed(2)
 })
 // watch([goodsnum.value, () => goodsdata.value.price], ([newgoodsnum]) => {
 //   scoreres.value = newgoodsnum * goodsdata.value.price;
@@ -161,9 +189,12 @@ const applyExchange = async (data) => {
         duration: 2000,
         complete: function () {
           setTimeout(function () {
-            uni.navigateTo({
-              url: '/pages/gift/giftCenter',
-            })
+            getGiftDetails(props.id)
+            getMyCredit()
+            goodsnum.value = 0
+            // uni.navigateTo({
+            //   url: '/pages/gift/giftCenter',
+            // })
           }, 2000) // 在弹窗关闭后，延迟2秒执行页面跳转
         },
       })
@@ -186,6 +217,14 @@ const applyExchange = async (data) => {
 }
 const immeBuy = () => {
   console.log('购买')
+  if (mycredit.value < goodsnum.value * goodsdata.value.price) {
+    uni.showToast({
+      title: '剩余积分不足',
+      icon: 'error',
+      duration: 1000,
+    })
+    return
+  }
   wx.showModal({
     title: '确认兑换',
     content: '确定要兑换吗？',
@@ -204,27 +243,6 @@ const immeBuy = () => {
     },
   })
 }
-//   // 收藏
-//   addLike() {
-//     this.setData({
-//       isLike: !this.data.isLike
-//     });
-//   },
-//   // 跳到购物车
-//   toCar() {
-//     wx.switchTab({
-//       url: '/pages/cart/cart'
-//     })
-//   },
-//   // 立即购买
-//   immeBuy() {
-//     wx.showToast({
-//       title: '购买成功',
-//       icon: 'success',
-//       duration: 2000
-//     });
-//   },
-// })
 </script>
 <style scoped>
 page {
@@ -243,7 +261,7 @@ swiper-item image {
 .separate {
   height: 20rpx;
   background-color: whitesmoke;
-  margin: 10rpx 0;
+  margin-top: 10rpx;
   width: 100%;
 }
 .ad_popError {
@@ -258,6 +276,12 @@ swiper-item image {
   left: 0;
   width: 100%;
   z-index: 3;
+}
+.goodsimg {
+  height: 600rpx;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
 }
 .detail {
   display: flex;
@@ -274,6 +298,10 @@ swiper-item image {
   font-size: 40rpx;
   margin: 10rpx;
   margin-top: 30rpx;
+}
+.title-view {
+  display: flex;
+  justify-content: space-between;
 }
 .line_flag {
   width: 80rpx;
@@ -304,7 +332,9 @@ swiper-item image {
   width: 100%;
   height: 100rpx;
 }
-
+.goodsdimg {
+  margin-bottom: 7px;
+}
 .button-red {
   background-color: #f44336; /* 红色 */
 }
@@ -339,7 +369,7 @@ button {
 }
 text {
   display: block;
-  height: 50rpx;
+  /* height: 50rpx; */
   line-height: 50rpx;
   /* font-size: 30rpx; */
   margin: 10rpx;

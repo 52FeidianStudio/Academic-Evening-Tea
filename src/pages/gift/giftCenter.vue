@@ -98,7 +98,7 @@ const getA = async () => {
   const res = await getAudit()
   console.log(res)
   isPastTargetDate.value = res.data
-   if (!isPastTargetDate.value) {
+  if (!isPastTargetDate.value) {
     uni.showToast({
       title: '推荐礼品功能尚未实现，敬请期待~',
       icon: 'none',
@@ -126,10 +126,10 @@ onLoad(() => {
       navScrollLeft.value = (currentTab.value - 2) * singleNavWidth
     },
   })
-
-
 })
-
+onShow(() => {
+  getA()
+})
 //页面滑动切换
 const screenW = ref<number>()
 const navScrollLeft = ref(0)
@@ -145,12 +145,14 @@ const switchNav = (idx: number) => {
   } else {
     currentTab.value = idx
   }
+  getA()
 }
 const switchTab = (e: any) => {
   const cur = e.detail.current
   const singleNavWidth = screenW.value / 2
   currentTab.value = cur
   navScrollLeft.value = (cur - 2) * singleNavWidth
+  getA()
 }
 
 const getGiftLists = async () => {
@@ -161,26 +163,26 @@ const getGiftLists = async () => {
 
 const list = ref([])
 const goToGoodsDetail = (id) => {
-  if (uni.getStorageSync('token')) {
-    console.log(id)
-    console.log('去商品详情页')
-    uni.navigateTo({
-      url: '/pages/gift/gift?id=' + id,
-    })
-  } else {
-    uni.showToast({
-      title: '您尚未登录，请先登录',
-      icon: 'none',
-      duration: 1000,
-      complete: () => {
-        setTimeout(() => {
-          uni.navigateTo({
-            url: '/pages/login/login',
-          })
-        }, 1000)
-      },
-    })
-  }
+  // if (uni.getStorageSync('token')) {
+  //   console.log(id)
+  //   console.log('去商品详情页')
+  uni.navigateTo({
+    url: '/pages/gift/gift?id=' + id,
+  })
+  // } else {
+  //   uni.showToast({
+  //     title: '您尚未登录，请先登录',
+  //     icon: 'none',
+  //     duration: 1000,
+  //     complete: () => {
+  //       setTimeout(() => {
+  //         uni.navigateTo({
+  //           url: '/pages/login/login',
+  //         })
+  //       }, 1000)
+  //     },
+  //   })
+  // }
 }
 </script>
 
@@ -231,7 +233,7 @@ page {
 }
 
 .nav-item.active {
-  color: green;
+  color:#a6def0;
 }
 
 .tab-box {

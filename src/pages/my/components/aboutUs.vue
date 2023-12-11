@@ -27,7 +27,7 @@ import { ref, reactive } from 'vue'
     image {
       width: 200rpx;
       height: 200rpx;
-      background: rgb(25, 178, 243);
+      // background: rgb(25, 178, 243);
       opacity: 1;
       border-radius: 16px;
     }

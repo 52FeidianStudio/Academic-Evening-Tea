@@ -16,7 +16,7 @@
   </view>
 </template>
 
-<script setup lang='ts'>
+<script setup lang="ts">
 import { ref, reactive } from 'vue'
 import { changePassword } from '@/services/personalInf'
 
@@ -25,31 +25,31 @@ const newPassword = ref('')
 
 const editPassword = async () => {
   const res = await changePassword({
-    oldPassword: usedPassword.value,
-    password: newPassword.value
+    oldpassword: usedPassword.value,
+    password: newPassword.value,
   })
-  if (res.code === 200 && res.msg !== "密码错误") {
+  if (res.code === 200 && res.msg !== '密码错误') {
     uni.showToast({
       title: '修改成功',
       icon: 'success',
-      duration: 1000
+      duration: 1000,
     })
     setTimeout(() => {
       uni.switchTab({
-        url: '/pages/index/index'
+        url: '/pages/index/index',
       })
     }, 1000)
-  } else if (res.msg === "密码错误") {
+  } else if (res.msg === '密码错误') {
     uni.showToast({
       title: '原密码错误',
       icon: 'error',
-      duration: 1000
+      duration: 1000,
     })
   } else {
     uni.showToast({
       title: '修改失败',
       icon: 'error',
-      duration: 1000
+      duration: 1000,
     })
   }
 }
@@ -67,10 +67,15 @@ const edit = () => {
       icon: 'error',
     })
     return
+  } else if (newPassword.value === usedPassword.value) {
+    uni.showToast({
+      title: '新旧密码相同',
+      icon: 'error',
+    })
+    return
   } else {
     editPassword()
   }
-
 }
 </script>
 <style scoped lang="scss">
@@ -141,7 +146,6 @@ page {
 
   .wechat {
     background-color: #06c05f;
-
 
     .options {
       display: flex;

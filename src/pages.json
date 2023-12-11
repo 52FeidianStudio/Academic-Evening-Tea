@@ -121,6 +121,12 @@
       }
     },
     {
+      "path": "pages/my/components/history",
+      "style": {
+        "navigationBarTitleText": "积分记录"
+      }
+    },
+    {
       "path": "pages/my/components/aboutUs",
       "style": {
         "navigationBarTitleText": "关于我们"

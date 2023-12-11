@@ -18,8 +18,8 @@ export const changePersonalInf = (data: any) => {
 // 修改密码
 export const changePassword = (data: any) => {
   return http<any>({
-      method: "PUT",
+    method: 'PUT',
     url: '/user/resetPwd',
-      data
+    data,
   })
 }

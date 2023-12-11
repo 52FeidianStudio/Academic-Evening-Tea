@@ -38,9 +38,7 @@ const getA = async () => {
     })
   }
 }
-onLoad(() => {
-
-})
+onLoad(() => {})
 const rules = {
   studentId: {
     rules: [{ required: true, errorMessage: '学号不能为空' }],
@@ -49,6 +47,10 @@ const rules = {
     rules: [
       { required: true, errorMessage: '电话不能为空' },
       { minLength: 11, maxLength: 11, errorMessage: '电话必须为11位数字' },
+      {
+        pattern: /^\d+$/,
+        errorMessage: '电话号码必须为数字',
+      },
     ],
   },
   population: {
@@ -57,6 +59,10 @@ const rules = {
       {
         required: true,
         errorMessage: '人数不能为空',
+      },
+      {
+        pattern: /^\d+$/,
+        errorMessage: '人数必须为数字',
       },
     ],
   },
@@ -71,6 +77,9 @@ const rules = {
   },
   time: {
     rules: [{ required: true, errorMessage: '时间不能为空' }],
+  },
+  startTime: {
+    rules: [{ required: true, errorMessage: '报名开始时间不能为空' }],
   },
   address: {
     rules: [{ required: true, errorMessage: '地点不能为空' }],
@@ -101,6 +110,7 @@ type form = {
   college: string
   studentId: string
   time: string
+  startTime: string
   address: string
   population: string
   onlineAddress: string
@@ -121,6 +131,7 @@ const content = ref<form>({
   college: '',
   studentId: '',
   time: '',
+  startTime: '',
   address: '',
   population: '',
   onlineAddress: '',
@@ -134,6 +145,8 @@ const selectedColleges = ref<string[]>([])
 // 选中学院
 const selectedCollegeChange: UniHelper.UniDataCheckboxMultipleOnChange = (e) => {
   console.log(e)
+  console.log(selectedColleges.value)
+  console.log(populationLimit.value)
 }
 
 const populationLimit = ref<limit[]>([])
@@ -189,35 +202,31 @@ const submit = debounce(() => {
         sum += item.population
       })
       console.log(res)
-      if (parseInt(res.population) === 0) {
-        uni.showToast({
-          title: '人数不能为0',
-          icon: 'none',
-        })
-        return
-      }
       if (res) {
         if (selectedColleges.value.length === 0) {
           newLimit.value = []
-        } else if (populationLimit.value.every((item) => item.population === 0)) {
-          uni.showToast({
-            title: '学院限制人数不能为0',
-            icon: 'none',
-          })
-          return
-        } else if (sum > parseInt(content.value.population)) {
-          uni.showToast({
-            title: '学院限制人数之和不能超过总限制人数',
-            icon: 'none',
-          })
-          return
-        } else {
-          console.log('快显示！')
+        }
+        //  else if (populationLimit.value.every((item) => item.population === 0)) {
+        //   uni.showToast({
+        //     title: '学院限制人数不能为0',
+        //     icon: 'none',
+        //   })
+        //   return
+        // }
+        // else if (sum > parseInt(content.value.population)) {
+        //   uni.showToast({
+        //     title: '学院限制人数之和不能超过总限制人数',
+        //     icon: 'none',
+        //   })
+        //   return
+        // }
+        else {
           uni.showLoading({
             title: '提交中...',
           })
           populationLimit.value.forEach((item) => {
-            if (item.population !== 0) {
+            if (selectedColleges.value.some((college) => college === item.college)) {
+              console.log(item.college)
               newLimit.value.push({
                 deptId: item.id,
                 maxNum: item.population,
@@ -233,6 +242,9 @@ const submit = debounce(() => {
           hbKeyword: content.value.college,
           userTel: content.value.studentId,
           lat: content.value.time,
+          //报名开始时间
+          startTime: content.value.startTime,
+          //
           address: content.value.address,
           hot: parseInt(content.value.population),
           qphone: content.value.phone,
@@ -262,6 +274,7 @@ const reset = () => {
     college: '',
     studentId: '',
     time: '',
+    startTime: '',
     address: '',
     population: '',
     onlineAddress: '',
@@ -312,7 +325,7 @@ const getLaunchPermission = async () => {
       uni.switchTab({
         url: '/pages/index/index',
       })
-    }, 1000)
+    }, 800)
   } else {
     getCollegeList()
     if (uni.getStorageSync('content')) {
@@ -376,6 +389,9 @@ onShow(() => {
           <uni-forms-item required label="举办时间" name="time">
             <uni-datetime-picker v-model="content.time" type="datetime" />
           </uni-forms-item>
+          <uni-forms-item required label="报名开始时间" name="startTime">
+            <uni-datetime-picker v-model="content.startTime" type="datetime" />
+          </uni-forms-item>
           <uni-forms-item required label="举办地点" name="address">
             <!-- <uni-data-picker :localdata="addresses" popup-title="请选择举办地点" v-model="content.address" /> -->
             <uni-easyinput v-model="content.address" placeholder="请输入举办地点"></uni-easyinput>
@@ -429,16 +445,16 @@ onShow(() => {
           </uni-forms-item>
 
           <view class="btns">
-            <button @tap="submit" class="btn" type="primary">提交</button>
+            <button @tap="submit" style="color: #fff; background-color: #c3ddfe" class="btn" type="primary">提交</button>
             <button
               @tap="save"
               class="btn"
-              style="color: #fff; background-color: rgba(12, 194, 240, 0.925)"
+              style="color: #a6d1f0; background-color: #f7f3db"
               type="default"
             >
               保存
             </button>
-            <button @tap="reset" class="btn" type="warn">重置</button>
+            <button @tap="reset" style="color: #fff; background-color: #f1ddac" class="btn" type="warn">重置</button>
           </view>
         </uni-forms>
       </view>

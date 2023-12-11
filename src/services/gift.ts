@@ -25,3 +25,9 @@ export const getGiftHistory = () => {
     url: '/system/usergoods/list?type=1',
   })
 }
+export const getCreidHistory = () => {
+  return http<any>({
+    method: 'GET',
+    url: '/system/credituser/list',
+  })
+}

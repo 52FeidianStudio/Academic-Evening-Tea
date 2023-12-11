@@ -16,8 +16,8 @@
             </view>
             <!-- 内容 -->
             <view class="user-content-view">
-              <text class="theme">主题:{{ item0.theme }}</text>
-              <text class="lecturename">主讲人:{{ item0.lecturerName }}</text>
+              <text class="user-content">主题:{{ item0.theme }}</text>
+              <text class="user-content">主讲人:{{ item0.lecturerName }}</text>
               <text class="user-content">{{ item0.content }}</text>
             </view>
 
@@ -30,7 +30,7 @@
             <view class="zan-view">
               <view class="trigon-view">
                 <view class="zhuanfa">
-                  <uni-icons v-if="item0.status == 1" type="email-filled" size="20"></uni-icons>
+                  <uni-icons v-if="item0.status == 1"  type="email-filled" size="20"></uni-icons>
                   <uni-icons v-if="item0.status == 2" type="auth" size="20"></uni-icons>
                   <uni-icons v-else-if="item0.status == 3" type="vip-filled" size="20"></uni-icons>
 
@@ -52,16 +52,17 @@
               </view>
 
               <!-- 点赞 -->
-              <view class="zan-bg-view" v-if="item0.likes.length !== 0">
-                <uni-icons class="zan-icon-view" type="heart-filled" size="15"></uni-icons>
-                <view class="zan-user-view" v-for="(item2, index2) in item0.likes" :key="index2">
-                  <label bindtap="TouchZanUser" :data-name="item2.nickName" class="zan-user"
-                    >{{ item2.nickName }},</label
-                  >
-                </view>
-              </view>
+              <view class="zan-name-view" v-if="item0.likes.length !== 0">
+              <uni-icons type="heart-filled" size="20"></uni-icons>
+                <block  v-for="(item2, index2) in item0.likes" :key="index2">
+                  <text bindtap="TouchZanUser" :data-name="item2.nickName" class="zan-user">{{
+                    item2.nickName
+                  }}</text>
+                  <text class="zan-user" v-if="index2 !== item0.likes.length - 1">,</text>
+                </block>
+            </view>
 
-              <view class="line"></view>
+              <!-- <view class="line"></view> -->
               <!-- 评论 -->
               <view class="discuss-view">
                 <view
@@ -74,9 +75,14 @@
                     bindtap="TouchZanUser"
                     :data-name="item3.nickName"
                     class="discuss-user"
-                    >{{ item3.nickName }}</label
+                    >{{ item3.nickName }}:</label
                   >
                   <label v-if="index3 < 4" class="content">{{ item3.comment }}</label>
+                </view>
+                <view class="discuss" v-if="item0.tblRecommendCommnets.length>=3">
+                  <label class="discuss-user">更多评论
+                     <uni-icons  class="icons"  color="rgb(88, 103, 138)" type="right" size="13"></uni-icons></label>
+
                 </view>
               </view>
             </view>
@@ -169,25 +175,25 @@ onShow(() => {
 })
 //去详情页
 const rclick = () => {
-  if (uni.getStorageSync('token')) {
-    console.log('我要推荐')
-    uni.navigateTo({
-      url: '/pages/recommend/makeRecd',
-    })
-  } else {
-    wx.showToast({
-      title: '您尚未登录，请先登录',
-      icon: 'none',
-      duration: 1000,
-      complete: () => {
-        setTimeout(() => {
-          uni.navigateTo({
-            url: '/pages/login/login',
-          })
-        }, 1000)
-      },
-    })
-  }
+  // if (uni.getStorageSync('token')) {
+  //   console.log('我要推荐')
+  uni.navigateTo({
+    url: '/pages/recommend/makeRecd',
+  })
+  // } else {
+  //   wx.showToast({
+  //     title: '您尚未登录，请先登录',
+  //     icon: 'none',
+  //     duration: 1000,
+  //     complete: () => {
+  //       setTimeout(() => {
+  //         uni.navigateTo({
+  //           url: '/pages/login/login',
+  //         })
+  //       }, 1000)
+  //     },
+  //   })
+  // }
 }
 //点赞
 const sendLikeTo = async (id) => {
@@ -312,7 +318,7 @@ page {
   background: white;
   margin-bottom: 1px;
   border-bottom: 1px solid whitesmoke;
-  border-top: 1px solid whitesmoke;
+  padding-bottom: 40rpx;
 }
 
 .body-view {
@@ -339,7 +345,7 @@ page {
   display: flex;
   height: 50rpx;
   line-height: 50rpx;
-  font-size: 16px;
+  font-size: 32rpx;
   color: rgb(88, 103, 138);
   margin-top: 30rpx;
   margin-left: 10rpx;
@@ -350,10 +356,10 @@ page {
 .lecturename,
 .user-content {
   display: flex;
-  font-size: 18px;
+  font-size: 30rpx;
   line-height: 50rpx;
   margin-left: 10rpx;
-  font-family: 'Verdana', sans-serif;
+  /* font-family: 'Verdana', sans-serif; */
 }
 .theme {
   font-family: 'Times New Roman', serif;
@@ -390,28 +396,14 @@ page {
   font-size: 13px;
   margin-left: 10rpx;
 }
-/*  .TDD-view button{
-    font-size: 13px;
-    margin-left: 20rpx;
-    color: black;
-    background: white;
 
-  } */
-/*  .TDD-view button::after{
-    border: white;
-  } */
-/*  .TDD-view image{
-    width: 50rpx;
-    height: 40rpx;
-    margin-right: 20rpx;
-  } */
-
-/* 点赞 */
 .zan-view {
   margin-top: 20rpx;
   width: 100%;
-  background: white;
-  margin-bottom: 20rpx;
+  padding-bottom: 10rpx;
+  background: rgb(241, 241, 241);
+  border-radius: 10rpx;
+  /* margin-bottom: 20rpx; */
 }
 /* .zan-view{
     width:100%;
@@ -423,51 +415,42 @@ page {
   padding: 3rpx 10rpx;
   width: 100%;
   justify-content: space-between;
-  background-color: rgb(235, 235, 235);
+  border-radius: 10rpx;
+  background-color: rgb(241, 241, 241);
 }
 .zhuanfa {
+  width: fit-content;
   display: flex;
   flex-direction: row;
-
+  justify-content: flex-start;
+  align-items: center;
   height: 50rpx;
   /* width:50rpx; */
 }
 .dianzan {
+  flex: 1;
   display: flex;
   flex-direction: row;
+  justify-content: center;
+  align-items: center;
   font-size: 13px;
 }
 .dianzannum {
   margin: auto 0 auto 15rpx;
 }
-.trigon {
+.pinglun {
   display: flex;
-  width: 40rpx;
-  height: 20rpx;
-  margin-top: 10rpx;
-  margin-left: 10rpx;
+  width: 15%;
+  justify-content: center;
+  align-items: center;
 }
-.zan-bg-view {
-  display: inline-block;
-  width: 100%;
-  background: rgb(235, 235, 235);
-  margin-right: 20rpx;
-  margin-bottom: -11rpx;
-  border-top-left-radius: 7rpx;
-  border-top-right-radius: 7rpx;
-}
-.zan-icon-view {
-  display: flex;
-  float: left;
-  margin-right: 3rpx;
-}
-.zan-user-view {
-  display: flex;
-  float: left;
-  height: 40rpx;
-  margin-left: 10rpx;
-  /* margin-top: 5rpx; */
-  align-content: center;
+.zan-name-view{
+  width: 97%;
+  margin:0 auto;
+  padding-bottom: 10rpx;
+  margin-bottom: 10rpx;
+  overflow-wrap: break-word;
+  border-bottom: 1px solid rgb(213, 213, 213);
 }
 .zan-user {
   font-size: 12px;
@@ -476,11 +459,11 @@ page {
   color: rgb(88, 103, 138);
 }
 
-.line {
+/* .line {
   width: 97%;
   height: 1px;
   background: white;
-}
+} */
 
 /* 评论 */
 .discuss-view {
@@ -489,8 +472,9 @@ page {
 }
 
 .discuss {
-  background: rgb(235, 235, 235);
+  background: rgb(241, 241, 241);
   line-height: 35rpx;
+  padding-left: 10rpx;
 }
 
 .discuss label {
