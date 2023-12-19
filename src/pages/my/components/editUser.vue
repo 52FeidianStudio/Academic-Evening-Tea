@@ -1,5 +1,5 @@
 <template>
-  <view class="user">
+  <view v-if="isPastTargetDate" class="user">
     <navigator class="avatar item" :url="`/pages/my/components/userImage?userAvatar=${user.img}`">
       <view>头像</view>
       <view class="user-avatar texts">
@@ -38,7 +38,6 @@
         <text class="text1" v-if="!isDisabled">{{ user.phonenumber }}</text>
 
         <uni-easyinput v-else class="text2" v-model="editedUser.phonenumber" />
-
       </view>
     </view>
     <view class="btns">
@@ -64,6 +63,13 @@ import { getPersonalInf, changePersonalInf } from '@/services/personalInf'
 //   // 学院
 //   college: string
 // }
+import { getAudit } from '@/services/Audit'
+const isPastTargetDate = ref<boolean>(false)
+const getA = async () => {
+  const res = await getAudit()
+  console.log(res)
+  isPastTargetDate.value = res.data
+}
 const isDisabled = ref<Boolean>(false)
 const user = ref<any>({})
 
@@ -82,8 +88,11 @@ const getPersonal = async () => {
   user.value.img = res.data.avatar === '' ? '../../../static/my/headpic.png' : res.data.avatar
   editedUser.value = res.data
 }
-
+onLoad(() => {
+  getA()
+})
 onShow(() => {
+  getA()
   getPersonal()
 })
 
@@ -170,7 +179,7 @@ const editPassword = () => {
     border-bottom: 1px solid #e5e3e3;
 
     .texts {
-      max-width:65%;
+      max-width: 65%;
       display: flex;
       justify-content: space-between;
       flex-wrap: nowrap;
@@ -180,7 +189,6 @@ const editPassword = () => {
         margin-right: 5rpx;
         color: #8e8d8d;
       }
-
 
       image {
         width: 40rpx;

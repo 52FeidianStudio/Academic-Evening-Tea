@@ -70,23 +70,24 @@ const targetDate = new Date('2023-11-23')
 
 // 判断当前时间是否已经过了2023年11月17号
 import { getAudit } from '@/services/Audit'
-const isPastTargetDate = ref<boolean>(true)
+const isPastTargetDate = ref<boolean>(false)
 const getA = async () => {
   const res = await getAudit()
   console.log(res)
   isPastTargetDate.value = res.data
-  if (!isPastTargetDate.value) {
+  console.log(isPastTargetDate.value)
+  // if (!isPastTargetDate.value) {
+  //   uni.showToast({
+  //     title: '意见反馈部分功能尚未实现，敬请期待~',
+  //     icon: 'none',
+  //     duration: 1000
+  //   })
+  // }
+  if (!uni.getStorageSync('token')) {
     uni.showToast({
-      title: '意见反馈部分功能尚未实现，敬请期待~',
+      title: '您未登录！',
       icon: 'none',
       duration: 1000,
-      complete: function () {
-        setTimeout(function () {
-          uni.switchTab({
-            url: '/pages/index/index',
-          })
-        }, 2000) // 在弹窗关闭后，延迟2秒执行页面跳转
-      },
     })
   }
 }
@@ -94,7 +95,8 @@ onLoad(() => {
   getA()
 })
 onShow(() => {
-  console.log(isPastTargetDate.value)
+  // getA()
+  // console.log(isPastTargetDate.value)
 })
 type img = {
   now: string

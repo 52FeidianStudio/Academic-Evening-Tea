@@ -67,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { getHomeContentAPI } from '@/services/HomeContent'
+import { getHomeContentAPI, giftIsShow } from '@/services/HomeContent'
 import { onLoad, onShow, onHide } from '@dcloudio/uni-app'
 import { ref, reactive } from 'vue'
 const status = ref<string>('全部')
@@ -123,12 +123,12 @@ const items = ref<Category[]>([
     icon: '../../../static/home/sy-sign_in.png',
     url: '/pages/activity/ActivitySignIn',
   },
-  {
-    id: 3,
-    text: '礼品中心',
-    icon: '../../../static/home/sy-article.png',
-    url: '/pages/gift/giftCenter',
-  },
+  // {
+  //   id: 3,
+  //   text: '礼品中心',
+  //   icon: '../../../static/home/sy-article.png',
+  //   url: '/pages/gift/giftCenter',
+  // },
   {
     id: 3,
     text: '我要推荐',
@@ -136,6 +136,34 @@ const items = ref<Category[]>([
     url: '/pages/recommend/recommend',
   },
 ])
+const gIsShow = ref(false)
+const giftShow = async () => {
+  const res = await giftIsShow()
+  console.log(res)
+  gIsShow.value = res.data
+  if (gIsShow.value) {
+    items.value = [
+      {
+        id: 2,
+        text: '活动签到',
+        icon: '../../../static/home/sy-sign_in.png',
+        url: '/pages/activity/ActivitySignIn',
+      },
+      {
+        id: 3,
+        text: '礼品中心',
+        icon: '../../../static/home/sy-article.png',
+        url: '/pages/gift/giftCenter',
+      },
+      {
+        id: 4,
+        text: '我要推荐',
+        icon: '../../../static/home/sy-video.png',
+        url: '/pages/recommend/recommend',
+      },
+    ]
+  }
+}
 const activities = ref<Activity[]>([])
 
 const getHomeContent = async (type: number, state: number, isEnd: number) => {
@@ -173,6 +201,7 @@ const getHomeContent = async (type: number, state: number, isEnd: number) => {
 }
 
 onLoad(() => {
+  giftShow()
   console.log('onLoad!!!')
   uni.onNetworkStatusChange((res) => {
     if (!res.isConnected) {

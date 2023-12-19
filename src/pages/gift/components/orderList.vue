@@ -27,6 +27,7 @@ import { getGiftHistory } from '@/services/gift'
 import { onLoad, onShow } from '@dcloudio/uni-app'
 import { ref } from 'vue'
 onLoad(() => {
+  console.log('onload??')
   if (uni.getStorageSync('token')) {
     getHistory()
   } else {
@@ -59,41 +60,49 @@ const orders = ref([])
 }
 
 .order-item {
-  padding: 5rpx;
   width: 95vw;
+  min-height: 17vh;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
-  margin-bottom: 1.5vh;
+  padding: 10rpx;
+  margin-bottom: 2vh;
 }
 
 .order-image {
-  width: 150rpx;
-  height: 150rpx;
-  margin-right: 10rpx;
+  width: 200rpx;
+  height: 200rpx;
+  margin-right: 5%;
 }
 
 .order-details {
+  max-width: 65%;
+  height: 200rpx;
   display: flex;
   flex-direction: column;
-  flex: 1;
+  justify-content: space-around;
+  text-overflow: ellipsis;
+  word-break: break-all;
 }
 
 .order-name {
-  font-size: 24rpx;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+  white-space: nowrap;
+  display: block;
+  line-height: 32rpx;
+  font-size: 32rpx;
   font-weight: bold;
-  padding-bottom: 5rpx;
 }
 
 .order-time {
   color: gray;
-  font-size: 16rpx;
-  margin-bottom: 5rpx;
+  font-size: 26rpx;
 }
 
 .order-status {
   font-size: 24rpx;
-  margin-bottom: 5rpx;
 }
 
 .order-amount {

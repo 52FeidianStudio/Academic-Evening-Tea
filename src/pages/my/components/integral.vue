@@ -12,10 +12,9 @@
       </view>
       <view class="content title">-------积分规则-------</view>
       <view class="content">签到后获得1积分</view>
-      <view class="content">填写详细信息后可以获得1积分</view>
-
-      <view class="content"> 完成一次意见反馈可以获得1 积分</view>
-      <view class="content">有效推荐可积1分，内容采纳再积2分</view>
+      <view class="content"> 意见反馈可积1分</view>
+      <view class="content">有效推荐可积1分</view>
+      <view class="content">内容采纳再积2分</view>
     </view>
   </div>
 </template>
@@ -47,6 +46,14 @@ const getPersonal = async () => {
   credit.value = res.data.credit
 }
 onLoad(() => {
+  if (!uni.getStorageSync('token')) {
+    uni.showToast({
+      title: '您未登录！',
+      icon: 'none',
+      duration: 1000,
+    })
+    return
+  }
   getPersonal()
 })
 </script>
@@ -82,7 +89,7 @@ onLoad(() => {
   color: black;
   text-align: justify;
   font-weight: bold;
-  text-shadow: #558abb 1px 0 10px;
+  text-shadow: #558abb 1px 0 20rpx;
 }
 .myCredit {
   display: flex;
@@ -94,7 +101,7 @@ onLoad(() => {
   line-height: 200rpx;
 }
 .creditNum {
-  font-size: 25px;
-  text-shadow: 1px 1px 2px #558abb, 0 0 1em #558abb, 0 0 0.2em #558abb;
+  font-size: 50rpx;
+  text-shadow: 2rpx 2rpx 4rpx #558abb, 0 0 1em #558abb, 0 0 0.2em #558abb;
 }
 </style>

@@ -3,7 +3,7 @@
     <view class="contact-item" v-for="item in content" :key-="item.name">
       <view class="person">
         <view class="name">{{ item.name }}</view>
-        <view class="phone">{{ item.phone }}</view>
+        <view class="phone">{{ item.number }}</view>
       </view>
       <view class="email"> {{ item.email }} </view>
     </view>
@@ -12,23 +12,22 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { getConnect } from '@/services/my'
+import { onLoad } from '@dcloudio/uni-app'
 type contactContent = {
   name: string
   phone: string
   email: string
 }
-const content = ref<contactContent[]>([
-  {
-    name: '张三',
-    phone: '123456789',
-    email: '1256151263@qq.com',
-  },
-  {
-    name: '李四',
-    phone: '123456789',
-    email: '32649238@yeah.net',
-  },
-])
+const content = ref<contactContent[]>([])
+const getConnection = async () => {
+  const res = await getConnect()
+  console.log(res.rows)
+  content.value = res.rows
+}
+onLoad(() => {
+  getConnection()
+})
 </script>
 <style lang="scss">
 .contact {

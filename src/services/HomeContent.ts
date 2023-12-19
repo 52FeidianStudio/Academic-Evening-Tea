@@ -1,5 +1,12 @@
 import { http } from '@/utils/http'
 
+export const giftIsShow = () => {
+  return http<any>({
+    method: 'POST',
+    url: '/system/xswc',
+  })
+}
+
 type HomeContent = {
   /**
    * 1是活动进行中2是活动已结束

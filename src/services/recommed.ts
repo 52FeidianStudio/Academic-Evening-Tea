@@ -1,9 +1,9 @@
 import { http } from '@/utils/http'
 
-export const getRecommedList = () => {
+export const getRecommedList = (query) => {
   return http<any>({
     method: 'GET',
-    url: '/system/recommend/list',
+    url: `/system/recommend/list/?pageNum=${query.pageNum}&pageSize=${query.pageSize}`,
   })
 }
 

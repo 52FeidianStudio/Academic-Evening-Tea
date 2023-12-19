@@ -113,7 +113,7 @@ const getMyCredit = async () => {
   console.log(res.data.credit)
   mycredit.value = res.data.credit
 }
-const mycredit = ref<number>(0)
+const mycredit = ref<number>(1)
 const blur = (e) => {
   console.log(e)
   if (e.detail.value > goodsdata.value.allnums) {
@@ -342,6 +342,7 @@ swiper-item image {
   width: 100%;
 }
 button {
+  z-index: 999;
   color: white;
   text-align: center;
   text-decoration: none;
@@ -379,6 +380,7 @@ text {
   font-size: 27rpx;
 }
 .num-box {
+  font-size: 27rpx;
   display: flex;
   flex-direction: row;
   justify-content: center;
@@ -394,6 +396,6 @@ text {
   margin: 10rpx;
 }
 .numchooseBox {
-  margin-top: 10rpx;
+  margin: auto 0;
 }
 </style>

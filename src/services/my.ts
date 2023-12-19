@@ -6,3 +6,9 @@ export const getMyActivityAPI = () => {
     url: '/system/useractivity/myactivity',
   })
 }
+export const getConnect = () => {
+  return http<any>({
+    method: 'GET',
+    url: '/system/head/list',
+  })
+}

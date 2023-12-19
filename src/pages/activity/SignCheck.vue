@@ -20,7 +20,7 @@
       <div class="message">{{ message[result - 1] }}</div>
 
       <view class="tag-view">
-        <uni-tag  type="warning"  v-if="result === 1" @click="toapply" text="未报名 点击报名" />
+        <uni-tag type="warning" v-if="result === 1" @click="toapply" text="未报名 点击报名" />
         <uni-tag type="error" v-else-if="result === 4" text="活动已结束" />
         <uni-tag type="error" v-else-if="result === 5" text="报名未开始" />
       </view>
@@ -56,7 +56,7 @@ const postFeedback = async (AId: number) => {
   result.value = res.data
 }
 
-const AId = props.id
+let AId = props.id
 
 const toapply = () => {
   console.log('去报名！')
@@ -67,7 +67,29 @@ const toapply = () => {
     url: '/pages/activity/ActivityDetails?id=' + AId,
   })
 }
-onLoad(() => {
+onLoad((options) => {
+  let obj = wx.getLaunchOptionsSync()
+  let query = null
+
+  if (options.scene || obj.query.scene) {
+    console.log('options.scene', options)
+    console.log('obj.query.scene', obj.query)
+    // 这里是用开发者工具模拟的时候要先用 encodeURIComponent 编译，模拟真实传递参数的效果，项目发布审核的时候这句话要注释掉
+    // query = options ? encodeURIComponent(options.scene) : encodeURIComponent(obj.query.scene);
+    query = options ? decodeURIComponent(options.scene) : decodeURIComponent(obj.query.scene)
+    console.log(query)
+    const aNo = query
+    console.log('aNo', aNo)
+    AId = Number(aNo)
+  }
+  // const scene = decodeURIComponent(options.scene)
+  // console.log("query",scene)
+  // if(options.scene){
+  //   const aNo = scene.split('=')[1]
+  //   console.log("aNo",aNo)
+  //   AId =Number(aNo)
+  // }
+  console.log('props', props)
   if (uni.getStorageSync('token')) {
     postFeedback(AId)
   } else {

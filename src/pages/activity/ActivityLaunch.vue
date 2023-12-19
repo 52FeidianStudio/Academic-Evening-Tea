@@ -18,27 +18,12 @@ import debounce from '@/utils/tool'
 
 // 判断当前时间是否已经过了2023年11月17号
 import { getAudit } from '@/services/Audit'
-const isPastTargetDate = ref<boolean>(true)
+const isPastTargetDate = ref<boolean>(false)
 const getA = async () => {
   const res = await getAudit()
   console.log(res)
   isPastTargetDate.value = res.data
-  if (!isPastTargetDate.value) {
-    uni.showToast({
-      title: '发起活动部分功能尚未实现，敬请期待~',
-      icon: 'none',
-      duration: 1000,
-      complete: function () {
-        setTimeout(function () {
-          uni.switchTab({
-            url: '/pages/index/index',
-          })
-        }, 2000) // 在弹窗关闭后，延迟2秒执行页面跳转
-      },
-    })
-  }
 }
-onLoad(() => {})
 const rules = {
   studentId: {
     rules: [{ required: true, errorMessage: '学号不能为空' }],
@@ -445,16 +430,16 @@ onShow(() => {
           </uni-forms-item>
 
           <view class="btns">
-            <button @tap="submit" style="color: #fff; background-color: #c3ddfe" class="btn" type="primary">提交</button>
+            <button @tap="submit" class="btn" type="primary">提交</button>
             <button
               @tap="save"
               class="btn"
-              style="color: #a6d1f0; background-color: #f7f3db"
+              style="color: #fff; background-color: #5c99ef"
               type="default"
             >
               保存
             </button>
-            <button @tap="reset" style="color: #fff; background-color: #f1ddac" class="btn" type="warn">重置</button>
+            <button @tap="reset" class="btn" type="warn">重置</button>
           </view>
         </uni-forms>
       </view>

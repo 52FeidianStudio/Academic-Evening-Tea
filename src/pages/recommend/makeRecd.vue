@@ -1,7 +1,6 @@
 <template>
-  <view class="container">
-    <view v-if="isPastTargetDate" class="text-view">请输入活动主题</view>
-    <view v-else class="text-view">Theme</view>
+  <view v-if="isPastTargetDate" class="container">
+    <view class="text-view">请输入活动主题</view>
     <textarea
       auto-focus="true"
       auto-height="true"
@@ -9,12 +8,18 @@
       placeholder="Theme"
       @input="getTInput"
     />
-    <view v-if="isPastTargetDate" class="text-view">请输入活动主讲人</view>
-    <view v-else class="text-view">Presenter</view>
+    <view class="text-view">请输入活动主讲人</view>
+
     <textarea auto-height="true" class="person" placeholder="Presenter" @input="getPInput" />
-    <view v-if="isPastTargetDate" class="text-view">请输入推荐内容</view>
-    <view v-else class="text-view">Content</view>
-    <textarea auto-height="true" class="desc" placeholder="Content" @input="getInput" />
+    <view class="text-view">请输入推荐内容</view>
+
+    <textarea
+      maxlength="-1"
+      auto-height="true"
+      class="desc"
+      placeholder="Content"
+      @input="getInput"
+    />
     <view class="b-view" :style="{ bottom: safeAreaInsets?.bottom!+ 30 + 'px' }">
       <button type="primary" @click="publish">发布推荐</button>
     </view>
@@ -34,7 +39,7 @@ const targetDate = new Date('2023-11-25')
 
 // 判断当前时间是否已经过了2023年11月18号
 import { getAudit } from '@/services/Audit'
-const isPastTargetDate = ref<boolean>(true)
+const isPastTargetDate = ref<boolean>(false)
 const getA = async () => {
   const res = await getAudit()
   console.log(res)
@@ -80,19 +85,23 @@ const sendC = async () => {
       duration: 1000,
       complete: () => {
         setTimeout(() => {
-          uni.navigateBack({
-            delta: 1,
-          })
+          uni.reLaunch({ url: '/pages/recommend/recommend' })
           title.value = ''
           person.value = ''
           desc.value = ''
         }, 1000)
       },
     })
+  } else {
+    console.log('提交失败！')
+    uni.showToast({
+      title: '提交失败！',
+      icon: 'error',
+      duration: 1000,
+    })
   }
 }
 const publish = () => {
-  console.log('fabutyuijian')
   if (title.value === '') {
     uni.showToast({
       title: '请填写活动主题！',
@@ -117,6 +126,7 @@ const publish = () => {
 <style>
 .container {
   padding-top: 20rpx;
+  padding-bottom: 40%;
 }
 textarea {
   margin: 30rpx auto;
@@ -132,7 +142,7 @@ textarea {
   height: 90rpx !important;
 }
 .desc {
-  height: 300rpx !important;
+  min-height: 300rpx;
 }
 .text-view {
   font-family: 'Times New Roman', serif;
@@ -141,6 +151,7 @@ textarea {
   font-weight: bold;
 }
 .b-view {
+  z-index: 99;
   width: 90%;
   position: fixed;
   bottom: 30rpx;

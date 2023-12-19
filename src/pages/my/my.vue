@@ -35,17 +35,17 @@ const my = ref<person>({
 })
 
 const handleNavigate = () => {
-  if (isPastTargetDate.value) {
-    if (uni.getStorageSync('token')) {
-      uni.navigateTo({
-        url: '/pages/my/components/editUser',
-      })
-    } else {
-      uni.navigateTo({
-        url: '/pages/login/login',
-      })
-    }
+  // if (isPastTargetDate.value) {
+  if (uni.getStorageSync('token')) {
+    uni.navigateTo({
+      url: '/pages/my/components/editUser',
+    })
+  } else {
+    uni.navigateTo({
+      url: '/pages/login/login',
+    })
   }
+  // }
 }
 
 const getPersonal = async () => {
@@ -109,7 +109,7 @@ onShow(() => {
           <view class="personal-header-left-text-college"> 去登陆！ </view>
         </view>
       </view>
-      <view v-if="isPastTargetDate" class="personal-header-right">
+      <view class="personal-header-right">
         <image class="personal-header-right-img" src="../../static/my/arrow-right.png" />
       </view>
     </navigator>
@@ -134,7 +134,7 @@ onShow(() => {
       </navigator>
       <navigator class="personal-content-item" url="/pages/my/components/history">
         <view class="personal-content-item-left">
-          <image class="personal-content-item-left-img" src="../../static/my/yysj.png" />
+          <image class="personal-content-item-left-img" src="../../static/my/set_admin.png" />
           <view class="personal-content-item-left-text"> 积分记录 </view>
         </view>
         <view class="personal-content-item-right">
@@ -159,7 +159,11 @@ onShow(() => {
           <image class="personal-content-item-right-img" src="../../static/my/arrow-right.png" />
         </view>
       </navigator>
-      <navigator class="personal-content-item" url="/pages/my/components/feedBack">
+      <navigator
+        v-if="isPastTargetDate"
+        class="personal-content-item"
+        url="/pages/my/components/feedBack"
+      >
         <view class="personal-content-item-left">
           <image class="personal-content-item-left-img" src="../../static/my/user-email.png" />
           <view class="personal-content-item-left-text"> 意见反馈 </view>
@@ -204,6 +208,7 @@ onShow(() => {
       }
 
       .personal-header-left-text {
+        max-width: 70%;
         display: flex;
         flex-direction: column;
         justify-content: center;

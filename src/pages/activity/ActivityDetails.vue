@@ -81,11 +81,12 @@ type DataProps = {
   isApplication: Array<any>
   is_close: number
 }
-const AId = ref<number>()
+
 const data0 = ref<DataProps>()
 const props = defineProps<{
   id: number
 }>()
+
 const getDetailsAPI = (data: any) => {
   return http<any>({
     url: data,
@@ -130,11 +131,9 @@ const apply = async (data: any) => {
     })
   }
 }
-console.log(props.id)
 
-onLoad(async (options) => {
-  AId.value = props.id
-  const url = `/system/activity/${AId.value}`
+onLoad(async () => {
+  const url = `/system/activity/${props.id}`
   getDetails(url)
 })
 onHide(() => {})
@@ -148,9 +147,9 @@ const applyon = () => {
         if (res.confirm) {
           //用户点击了确认按钮
           apply({
-            activityId: AId.value,
+            activityId: props.id,
           })
-          const url = `/system/activity/${AId.value}`
+          const url = `/system/activity/${props.id}`
           getDetails(url)
         } else if (res.cancel) {
           // 用户点击了取消按钮

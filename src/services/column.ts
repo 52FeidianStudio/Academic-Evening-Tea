@@ -22,9 +22,9 @@ export const likeDownAPI = (id: number) => {
   })
 }
 
-export const getColumnsDetailAPI = (id: number) => {
+export const getColumnsDetailAPI = (id: number, type: number = 2) => {
   return http<any>({
-    url: `/system/column/${id}/${2}`,
+    url: `/system/column/${id}/${type}`,
     method: 'GET',
   })
 }

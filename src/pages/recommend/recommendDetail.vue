@@ -3,13 +3,12 @@
     <!--pages/posts/post-detail/post-detail.wxml-->
     <view class="container">
       <view class="author-date">
-
         <image class="avatar" :src="details.avatar"></image>
         <view class="author-view">
-        <text class="author">{{ details.nickName }}</text>
-        <text class="const-text">推荐于</text>
-        <text class="date">{{ details.createTime }}</text>
-      </view>
+          <text class="author">{{ details.nickName }}</text>
+          <text class="const-text">推荐于</text>
+          <text class="date">{{ details.createTime }}</text>
+        </view>
       </view>
 
       <view class="activityD">
@@ -47,13 +46,13 @@
         </view>
 
         <view class="zan-name-view" v-if="details.likes.length !== 0">
-              <uni-icons type="heart-filled" size="20"></uni-icons>
-                <block  v-for="(item2, index2) in details.likes" :key="index2">
-                  <text bindtap="TouchZanUser" :data-name="item2.nickName" class="zan-user">{{
-                    item2.nickName
-                  }}</text>
-                  <text class="zan-user" v-if="index2 !== details.likes.length - 1">,</text>
-                </block>
+          <uni-icons type="heart-filled" size="20"></uni-icons>
+          <block v-for="(item2, index2) in details.likes" :key="index2">
+            <text bindtap="TouchZanUser" :data-name="item2.nickName" class="zan-user">{{
+              item2.nickName
+            }}</text>
+            <text class="zan-user" v-if="index2 !== details.likes.length - 1">,</text>
+          </block>
         </view>
 
         <view class="discuss-view">
@@ -200,7 +199,7 @@ const hideInput = () => {
   width: 100%;
   display: flex;
   flex-direction: column;
-  justify-content:center;
+  justify-content: center;
 }
 .head-container {
   width: 100%;
@@ -227,19 +226,20 @@ const hideInput = () => {
   margin: 3vh auto 0;
   width: 100%;
 }
-.author-view{
+.author-view {
   display: flex;
   flex-direction: column;
-  width:75%;
-  margin-left:5%;
+  width: 75%;
+  margin-left: 5%;
 }
 .avatar {
   /* height:100%; */
-  width:80rpx;
-  height:80rpx;
+  width: 100rpx;
+  height: 100rpx;
   overflow: hidden;
   vertical-align: middle;
   margin-left: 20rpx;
+  border-radius: 15%;
 }
 .author {
   font-size: 30rpx;
@@ -253,7 +253,7 @@ const hideInput = () => {
 }
 
 .date {
-  margin-top:2rpx;
+  margin-top: 2rpx;
   font-size: 24rpx;
   vertical-align: middle;
   color: #999;
@@ -268,6 +268,9 @@ const hideInput = () => {
 .tool {
   width: 90%;
   margin: 3vh auto 0;
+  font-size: 34rpx;
+  word-break: break-all;
+  overflow: hidden;
 }
 .circle-img {
   float: right;
@@ -315,18 +318,24 @@ const hideInput = () => {
   width: 100%;
   margin-top: 10rpx;
   border-top: 1px solid rgb(213, 213, 213);
+  min-height: 20rpx;
+  border-bottom-left-radius: 10rpx;
+  border-bottom-right-radius: 10rpx;
 }
 
 .discuss {
   background: rgb(241, 241, 241);
-  width:90%;
-  margin:0 auto;
+  width: 90%;
+  margin: 0 auto;
   padding-top: 10rpx;
   padding-bottom: 8rpx;
+  word-break: break-all;
+  white-space: normal;
+  overflow: hidden;
 }
 
 .discuss label {
-  font-size: 32rpx;
+  font-size: 30rpx;
 }
 
 .discuss-user {
@@ -339,12 +348,13 @@ const hideInput = () => {
 .wrapper {
   border-radius: 10rpx;
   width: 90%;
-  margin:3vh auto;
+  margin: 3vh auto;
   background-color: rgb(241, 241, 241);
 }
 .TLC {
-  width:90%;
-  margin:0 auto;
+  font-size: 29rpx;
+  width: 90%;
+  margin: 0 auto;
   padding-bottom: 10rpx;
   /* border-bottom: 1px solid rgb(213, 213, 213); */
   height: 70rpx;
@@ -355,7 +365,6 @@ const hideInput = () => {
   justify-content: space-between;
   /* background-color: rgb(241, 241, 241); */
   /* */
-
 }
 .TlC > view {
   display: flex;
@@ -365,16 +374,16 @@ const hideInput = () => {
   display: flex;
   flex-wrap: row;
 }
-.zan-name-view{
+.zan-name-view {
   background-color: rgb(241, 241, 241);
   width: 90%;
-  margin:0 auto ;
+  margin: 0 auto;
   padding-bottom: 10rpx;
   margin-bottom: 10rpx;
   overflow-wrap: break-word;
 }
 .zan-user {
-  font-size: 12px;
+  font-size: 24rpx;
   line-height: 40rpx;
   height: 40rpx;
   color: rgb(88, 103, 138);

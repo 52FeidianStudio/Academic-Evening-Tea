@@ -1,6 +1,6 @@
 <script>
 import newsItem from './components/newsItem.vue'
-
+import { onLoad, onShow } from '@dcloudio/uni-app'
 import { ref, computed, onMounted } from 'vue'
 import { getAudit } from '@/services/Audit'
 export default {
@@ -10,47 +10,78 @@ export default {
   setup() {
     const showMoments = ref(true)
 
-    const isShowMoments = () => {
-      showMoments.value = true
-      console.log(showMoments.value)
+    // const isShowMoments = () => {
+    //   showMoments.value = true
+    //   console.log(showMoments.value)
+    // }
+
+    // const isShowTimes = () => {
+    //   showMoments.value = false
+    //   console.log(showMoments.value)
+    // }
+
+    const isPastTargetDate = ref(false)
+    const navScrollLeft = ref(0)
+    const screenW = ref()
+    const currentTab = ref(0)
+    const navData = ref([{ text: '精彩瞬间' }, { text: '科普时间' }])
+    const tabData = ref([0, 1])
+    const singleNavWidth = ref()
+
+    const switchNav = (idx) => {
+      console.log(idx)
+      singleNavWidth.value = screenW.value / 2
+      navScrollLeft.value = (idx - 2) * singleNavWidth.value
+      if (currentTab.value === idx) {
+        return false
+      } else {
+        currentTab.value = idx
+      }
     }
 
-    const isShowTimes = () => {
-      showMoments.value = false
-      console.log(showMoments.value)
+    const switchTab = (e) => {
+      const cur = e.detail.current
+      singleNavWidth.value = screenW.value / 2
+      currentTab.value = cur
+      console.log(currentTab.value)
+      navScrollLeft.value = (cur - 2) * singleNavWidth.value
     }
 
-    const isPastTargetDate = ref(true)
     const getA = async () => {
       const res = await getAudit()
       console.log(res)
       isPastTargetDate.value = res.data
-      if (!isPastTargetDate.value) {
-        uni.showToast({
-          title: '推荐部分功能尚未实现，敬请期待~',
-          icon: 'none',
-          duration: 2000,
-          complete: function () {
-            setTimeout(function () {
-              uni.switchTab({
-                url: '/pages/index/index',
-              })
-            }, 2000) // 在弹窗关闭后，延迟2秒执行页面跳转
-          },
-        })
-      }
     }
-
+    onShow(() => {
+      console.log('column!!!')
+      getA()
+      uni.switchTab({
+        url: '/pages/column/column',
+      })
+    })
     onMounted(() => {
       getA()
+      wx.getSystemInfo({
+        success(res) {
+          screenW.value = res.windowWidth
+          console.log(res.windowWidth) // 屏幕宽度
+          singleNavWidth.value = res.windowWidth / 5
+          navScrollLeft.value = (currentTab.value - 2) * singleNavWidth.value
+        },
+      })
     })
 
     return {
       showMoments,
-      isShowMoments,
-      isShowTimes,
       isPastTargetDate,
-      getA,
+      navScrollLeft,
+      screenW,
+      navData,
+      tabData,
+      singleNavWidth,
+      switchNav,
+      switchTab,
+      currentTab,
     }
   },
 }
@@ -58,60 +89,81 @@ export default {
 </script>
 
 <template>
-  <view v-if="isPastTargetDate" class="container">
-    <view class="main">
-      <view v-if="showMoments" class="Moments">
-        <news-item :kind="1"></news-item>
+  <view class="container" v-if="isPastTargetDate">
+    <scroll-view
+      scroll-x="true"
+      class="nav"
+      :scroll-left="navScrollLeft"
+      scroll-with-animation="true"
+    >
+      <view
+        v-for="(navItem, id) in navData"
+        :key="id"
+        class="nav-item"
+        :class="{ active: currentTab === id }"
+        @click="switchNav(id)"
+      >
+        {{ navItem.text }}
       </view>
-      <view v-else class="Times">
-        <news-item :kind="2"></news-item>
-      </view>
-    </view>
+    </scroll-view>
 
-    <view class="buttons">
-      <button :class="{ selected: showMoments }" @tap="isShowMoments()">精彩瞬间</button>
-      <button :class="{ selected: !showMoments }" @tap="isShowTimes()">科普时间</button>
-    </view>
+    <swiper :current="currentTab" duration="300" @change="switchTab" class="main">
+      <swiper-item v-for="(tabItem, id) in tabData" :key="id" class="content">
+        <view v-if="id === 0" class="Moments">
+          <news-item :kind="1"></news-item>
+        </view>
+
+        <view v-else-if="id === 1" class="Times">
+          <news-item :kind="2"></news-item>
+        </view>
+      </swiper-item>
+    </swiper>
   </view>
 </template>
 
 <style lang="scss">
 .container {
   width: 100%;
-  padding-bottom: 90rpx;
+  height: 100vh;
+  padding-top: 7vh;
 }
-.buttons {
-  position: fixed;
-  display: flex;
-  flex-direction: row;
-  top: 0;
+.nav {
+  /* 设置tab-nav宽高度 */
+  height: 7vh;
   width: 100%;
-  height: 90rpx;
-  line-height: 90rpx;
-  background-color: #f8f8f8;
-  button {
-    height: 80rpx;
-  }
-}
-.selected {
-  background-color: #007bff;
-  color: #f8f8f8;
-}
-button {
-  width: 45%;
+
+  /* 假如您需要并排放置两个带边框的框，
+  可通过将 box-sizing 设置为 "border-box"。 */
+  box-sizing: border-box;
+
+  overflow: hidden;
+
+  /* 居中 */
+  line-height: 7vh;
+
+  background: #f7f7f7;
+
   font-size: 32rpx;
+
+  /* 规定段落中的文本不进行换行： */
+  white-space: nowrap;
+
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 99;
 }
 
-.main {
-  height: calc(100% - 90rpx);
-  overflow-y: auto;
-  overflow-x: hidden;
-  width: 100%;
+.nav-item {
+  width: 50%;
+  display: inline-block;
+  text-align: center;
 }
-.Moments {
-  margin-top: 105rpx;
+
+.nav-item.active {
+  color: #428ffb;
 }
-.Times {
-  margin-top: 105rpx;
+.content {
+  overflow-y: scroll;
 }
 </style>

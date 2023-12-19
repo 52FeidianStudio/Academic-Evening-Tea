@@ -1,5 +1,5 @@
 <template>
-  <view v-if="isPastTargetDate" class="container">
+  <view class="container">
     <!-- tab导航栏 -->
     <scroll-view
       scroll-x="true"
@@ -86,38 +86,39 @@ import { onLoad, onShow } from '@dcloudio/uni-app'
 
 //过审
 // 获取当前时间点
-const currentTime = ref(new Date())
+// const currentTime = ref(new Date())
 
 // 计算2023年11月17号的时间点
-const targetDate = new Date('2023-11-23')
+// const targetDate = new Date('2023-11-23')
 
 // 判断当前时间是否已经过了2023年11月18号
-import { getAudit } from '@/services/Audit'
-const isPastTargetDate = ref<boolean>(true)
-const getA = async () => {
-  const res = await getAudit()
-  console.log(res)
-  isPastTargetDate.value = res.data
-  if (!isPastTargetDate.value) {
-    uni.showToast({
-      title: '推荐礼品功能尚未实现，敬请期待~',
-      icon: 'none',
-      duration: 2000,
-      complete: function () {
-        setTimeout(function () {
-          uni.switchTab({
-            url: '/pages/index/index',
-          })
-        }, 2000) // 在弹窗关闭后，延迟2秒执行页面跳转
-      },
-    })
-  } else {
-    getGiftLists()
-  }
-}
+// import { getAudit } from '@/services/Audit'
+// const isPastTargetDate = ref<boolean>(true)
+// const getA = async () => {
+//   const res = await getAudit()
+//   console.log(res)
+//   isPastTargetDate.value = res.data
+//   if (!isPastTargetDate.value) {
+//     uni.showToast({
+//       title: '推荐礼品功能尚未实现，敬请期待~',
+//       icon: 'none',
+//       duration: 2000,
+//       complete: function () {
+//         setTimeout(function () {
+//           uni.switchTab({
+//             url: '/pages/index/index',
+//           })
+//         }, 2000) // 在弹窗关闭后，延迟2秒执行页面跳转
+//       },
+//     })
+//   } else {
+//     getGiftLists()
+//   }
+// }
 onLoad(() => {
-  getA()
+  // getA()
   // 获取宽度
+  getGiftLists()
   wx.getSystemInfo({
     success(res) {
       screenW.value = res.windowWidth
@@ -128,7 +129,8 @@ onLoad(() => {
   })
 })
 onShow(() => {
-  getA()
+  // getA()
+  getGiftLists()
 })
 //页面滑动切换
 const screenW = ref<number>()
@@ -145,14 +147,16 @@ const switchNav = (idx: number) => {
   } else {
     currentTab.value = idx
   }
-  getA()
+  // getA()
+  getGiftLists()
 }
 const switchTab = (e: any) => {
   const cur = e.detail.current
   const singleNavWidth = screenW.value / 2
   currentTab.value = cur
   navScrollLeft.value = (cur - 2) * singleNavWidth
-  getA()
+  // getA()
+  getGiftLists()
 }
 
 const getGiftLists = async () => {
@@ -233,7 +237,7 @@ page {
 }
 
 .nav-item.active {
-  color:#a6def0;
+  color: #428ffb;
 }
 
 .tab-box {

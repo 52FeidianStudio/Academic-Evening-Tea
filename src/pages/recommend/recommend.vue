@@ -1,6 +1,6 @@
 <template v-if="isPastTargetDate">
   <view v-if="isPastTargetDate">
-    <view class="page" :style="{ paddingBottom: safeAreaInsets?.bottom!+ 40+ 'px' }">
+    <view class="page" :style="{ paddingBottom: safeAreaInsets?.bottom!+ 100+ 'rpx' }">
       <!-- 列表 -->
       <view class="CircleList" v-for="(item0, index0) in DataSource" :key="index0">
         <!-- 头像、昵称、内容 -->
@@ -16,8 +16,10 @@
             </view>
             <!-- 内容 -->
             <view class="user-content-view">
-              <text class="user-content">主题:{{ item0.theme }}</text>
-              <text class="user-content">主讲人:{{ item0.lecturerName }}</text>
+              <view class="theme-view">
+                <text class="user-content">主题:{{ item0.theme }}</text>
+                <text class="user-content">主讲人:{{ item0.lecturerName }}</text>
+              </view>
               <text class="user-content">{{ item0.content }}</text>
             </view>
 
@@ -30,7 +32,7 @@
             <view class="zan-view">
               <view class="trigon-view">
                 <view class="zhuanfa">
-                  <uni-icons v-if="item0.status == 1"  type="email-filled" size="20"></uni-icons>
+                  <uni-icons v-if="item0.status == 1" type="email-filled" size="20"></uni-icons>
                   <uni-icons v-if="item0.status == 2" type="auth" size="20"></uni-icons>
                   <uni-icons v-else-if="item0.status == 3" type="vip-filled" size="20"></uni-icons>
 
@@ -53,14 +55,12 @@
 
               <!-- 点赞 -->
               <view class="zan-name-view" v-if="item0.likes.length !== 0">
-              <uni-icons type="heart-filled" size="20"></uni-icons>
-                <block  v-for="(item2, index2) in item0.likes" :key="index2">
-                  <text bindtap="TouchZanUser" :data-name="item2.nickName" class="zan-user">{{
-                    item2.nickName
-                  }}</text>
+                <uni-icons type="heart-filled" size="20"></uni-icons>
+                <block v-for="(item2, index2) in item0.likes" :key="index2">
+                  <text :data-name="item2.nickName" class="zan-user">{{ item2.nickName }}</text>
                   <text class="zan-user" v-if="index2 !== item0.likes.length - 1">,</text>
                 </block>
-            </view>
+              </view>
 
               <!-- <view class="line"></view> -->
               <!-- 评论 -->
@@ -70,19 +70,21 @@
                   v-for="(item3, index3) in item0.tblRecommendCommnets"
                   :key="index3"
                 >
-                  <label
-                    v-if="index3 < 4"
-                    bindtap="TouchZanUser"
-                    :data-name="item3.nickName"
-                    class="discuss-user"
+                  <label v-if="index3 < 4" :data-name="item3.nickName" class="discuss-user"
                     >{{ item3.nickName }}:</label
                   >
                   <label v-if="index3 < 4" class="content">{{ item3.comment }}</label>
                 </view>
-                <view class="discuss" v-if="item0.tblRecommendCommnets.length>=3">
-                  <label class="discuss-user">更多评论
-                     <uni-icons  class="icons"  color="rgb(88, 103, 138)" type="right" size="13"></uni-icons></label>
-
+                <view class="discuss" v-if="item0.tblRecommendCommnets.length >= 3">
+                  <label class="discuss-user"
+                    >更多评论
+                    <uni-icons
+                      class="icons"
+                      color="rgb(88, 103, 138)"
+                      type="right"
+                      size="13"
+                    ></uni-icons
+                  ></label>
                 </view>
               </view>
             </view>
@@ -112,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { onLaunch, onLoad, onPullDownRefresh, onShow } from '@dcloudio/uni-app'
+import { onLaunch, onLoad, onPullDownRefresh, onShow, onReachBottom } from '@dcloudio/uni-app'
 import { ref, reactive, computed } from 'vue'
 import {
   getRecommedList,
@@ -121,7 +123,7 @@ import {
   sendcommen,
   getRecommedDetail,
 } from '@/services/recommed'
-
+import debounce from '@/utils/tool'
 //过审
 // 获取当前时间点
 const currentTime = ref(new Date())
@@ -139,40 +141,68 @@ const getA = async () => {
   console.log(isPastTargetDate.value)
   if (isPastTargetDate.value) {
     getRecommed()
-  } else {
-    console.log(isPastTargetDate.value)
-    uni.showToast({
-      title: '推荐部分功能尚未实现，敬请期待~',
-      icon: 'none',
-      duration: 2000,
-      complete: function () {
-        setTimeout(function () {
-          uni.switchTab({
-            url: '/pages/index/index',
-          })
-        }, 2000) // 在弹窗关闭后，延迟2秒执行页面跳转
-      },
-    })
   }
+  // else {
+  //   console.log(isPastTargetDate.value)
+  //   uni.showToast({
+  //     title: '推荐部分功能尚未实现，敬请期待~',
+  //     icon: 'none',
+  //     duration: 2000,
+  //     complete: function () {
+  //       setTimeout(function () {
+  //         uni.switchTab({
+  //           url: '/pages/index/index',
+  //         })
+  //       }, 2000) // 在弹窗关闭后，延迟2秒执行页面跳转
+  //     },
+  //   })
+  // }
 }
 
 onLoad(() => {
   getA()
 })
-
-// 获取屏幕边界到安全区域距离
-const { safeAreaInsets } = uni.getSystemInfoSync()
-
-//获取页面初始数据
-const DataSource = ref([])
-const getRecommed = async () => {
-  const res = await getRecommedList()
-  console.log(res.rows)
-  DataSource.value = res.rows
-}
-onShow(() => {
+onReachBottom(() => {
+  console.log('触发上拉')
   getRecommed()
 })
+// 获取屏幕边界到安全区域距离
+const { safeAreaInsets } = uni.getSystemInfoSync()
+let pageNum = 1
+const total = ref()
+//获取页面初始数据
+const DataSource = ref([])
+const getRecommed = debounce(async () => {
+  if (pageNum == 1) {
+    const res = await getRecommedList({
+      pageNum: pageNum,
+      pageSize: 10,
+    })
+    console.log(res.rows)
+    total.value = res.total
+    DataSource.value = res.rows
+    pageNum = pageNum + 1
+  } else {
+    if (DataSource.value.length >= total.value) {
+      console.log('没数据了')
+      uni.showToast({
+        title: '已经到底啦',
+        icon: 'none',
+        durationL: 800,
+      })
+      return
+    }
+    const res = await getRecommedList({
+      pageNum: pageNum,
+      pageSize: 10,
+    })
+    console.log(res.rows)
+    total.value = res.total
+    DataSource.value = [...DataSource.value, ...res.rows]
+    pageNum = pageNum + 1
+  }
+})
+
 //去详情页
 const rclick = () => {
   // if (uni.getStorageSync('token')) {
@@ -196,18 +226,28 @@ const rclick = () => {
   // }
 }
 //点赞
+const exchangeObject = async (objId) => {
+  console.log(objId)
+  let index = DataSource.value.findIndex((obj) => obj.id === objId)
+  console.log(index)
+  const res = await getRecommedDetail(objId)
+  console.log(res)
+  if (index !== -1) {
+    DataSource.value.splice(index, 1, res.data)
+  }
+}
 const sendLikeTo = async (id) => {
   const res = await sendLike(id)
   console.log(res)
   if (res.code == 200) {
-    getRecommed()
+    exchangeObject(id)
   }
 }
 const delLike = async (id) => {
   const res = await deletLike(id)
   console.log(res)
   if (res.code == 200) {
-    getRecommed()
+    exchangeObject(id)
   }
 }
 const iLike = (id, tblLike) => {
@@ -273,7 +313,7 @@ const sendC = async () => {
     showInput.value = false
     // 清空评论内容
     comment.value = ''
-    getRecommed()
+    exchangeObject(currentItemId.value)
   }
 }
 const sendcomment = () => {
@@ -288,8 +328,18 @@ const hideInput = () => {
 }
 
 // 去recommend详情
+const goRDid = ref()
+onShow(() => {
+  console.log(uni.getStorageSync('goRD_id'))
+  goRDid.value = uni.getStorageSync('goRD_id')
+  if (goRDid.value) {
+    console.log('刷新！！！')
+    exchangeObject(goRDid.value)
+  }
+})
 const goRD = async (id) => {
   const res = await getRecommedDetail(id)
+  uni.setStorageSync('goRD_id', id)
   console.log(res)
   uni.navigateTo({
     url: '/pages/recommend/recommendDetail?id=' + id,
@@ -335,6 +385,7 @@ page {
 .user-icon {
   width: 100rpx;
   height: 100rpx;
+  border-radius: 50%;
   margin-left: 20rpx;
   margin-top: 30rpx;
   margin-right: 20rpx;
@@ -343,14 +394,18 @@ page {
 /* 昵称 */
 .user-name {
   display: flex;
-  height: 50rpx;
+  /* height: 50rpx; */
   line-height: 50rpx;
   font-size: 32rpx;
   color: rgb(88, 103, 138);
   margin-top: 30rpx;
   margin-left: 10rpx;
 }
-
+.theme-view {
+  margin: 2vh 0;
+  color: #999;
+  /* font-weight: 600; */
+}
 /* 内容 */
 .theme,
 .lecturename,
@@ -359,6 +414,8 @@ page {
   font-size: 30rpx;
   line-height: 50rpx;
   margin-left: 10rpx;
+  word-break: break-all;
+  overflow: hidden;
   /* font-family: 'Verdana', sans-serif; */
 }
 .theme {
@@ -433,9 +490,10 @@ page {
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-size: 13px;
+  font-size: 30rpx;
 }
 .dianzannum {
+  font-size: 30rpx;
   margin: auto 0 auto 15rpx;
 }
 .pinglun {
@@ -444,16 +502,16 @@ page {
   justify-content: center;
   align-items: center;
 }
-.zan-name-view{
+.zan-name-view {
   width: 97%;
-  margin:0 auto;
+  margin: 0 auto;
   padding-bottom: 10rpx;
   margin-bottom: 10rpx;
   overflow-wrap: break-word;
   border-bottom: 1px solid rgb(213, 213, 213);
 }
 .zan-user {
-  font-size: 12px;
+  font-size: 24rpx;
   line-height: 40rpx;
   height: 40rpx;
   color: rgb(88, 103, 138);
@@ -468,17 +526,20 @@ page {
 /* 评论 */
 .discuss-view {
   background: white;
-  width: 100%;
+  width: 97%;
+  margin: 0 auto;
 }
 
 .discuss {
   background: rgb(241, 241, 241);
   line-height: 35rpx;
-  padding-left: 10rpx;
+  word-break: break-all;
+  white-space: normal;
+  overflow: hidden;
 }
 
 .discuss label {
-  font-size: 12px;
+  font-size: 26rpx;
 }
 
 .discuss-user {
