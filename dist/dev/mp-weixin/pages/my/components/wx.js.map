@@ -1,0 +1,1 @@
+{"version":3,"file":"wx.js","sources":["../../../../../../uniPage:/cGFnZXMvbXkvY29tcG9uZW50cy93eC52dWU"],"sourcesContent":["import MiniProgramPage from '/Users/Shared/Files From d.localized/项目储存/Academic-Evening-Tea-zhy_demo/Academic-Evening-Tea-zhy_demo/src/pages/my/components/wx.vue'\nwx.createPage(MiniProgramPage)"],"names":[],"mappings":";;;;;;;;;;;AACA,GAAG,WAAW,eAAe;"}

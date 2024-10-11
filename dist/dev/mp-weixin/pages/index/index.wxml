@@ -1,0 +1,1 @@
+<custom-navbar u-i="104857a4-0" bind:__l="__l"/><scroll-view bindscrolltolower="{{a}}" class="scroll-view" scroll-y><xs-swiper class="swiper" u-i="104857a4-1" bind:__l="__l"></xs-swiper><home-content u-i="104857a4-2" bind:__l="__l"/></scroll-view>

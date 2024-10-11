@@ -1,0 +1,69 @@
+{
+  "pages": [
+    "pages/index/index",
+    "pages/login/login",
+    "pages/my/my",
+    "pages/column/column",
+    "pages/column/components/article",
+    "pages/activity/ActivityLaunch",
+    "pages/activity/ActivityEdit",
+    "pages/activity/ActivitySignIn",
+    "pages/gift/giftCenter",
+    "pages/gift/gift",
+    "pages/my/components/editPassword",
+    "pages/recommend/recommend",
+    "pages/recommend/recommendDetail",
+    "pages/activity/ActivityDetails",
+    "pages/my/components/myactivity/activity",
+    "pages/my/components/integral",
+    "pages/recommend/makeRecd",
+    "pages/my/components/wx",
+    "pages/my/components/contactUs",
+    "pages/my/components/history",
+    "pages/my/components/aboutUs",
+    "pages/my/components/feedBack",
+    "pages/my/components/editUser",
+    "pages/my/components/userImage",
+    "pages/activity/SignCheck"
+  ],
+  "window": {
+    "navigationBarTextStyle": "black",
+    "navigationBarTitleText": "",
+    "navigationBarBackgroundColor": "#F8F8F8",
+    "backgroundColor": "#F8F8F8"
+  },
+  "tabBar": {
+    "color": "#333",
+    "selectedColor": "#428ffb",
+    "backgroundColor": "#fff",
+    "borderStyle": "white",
+    "list": [
+      {
+        "text": "首页",
+        "pagePath": "pages/index/index",
+        "iconPath": "static/bottomBar/home.png",
+        "selectedIconPath": "static/bottomBar/active-home.png"
+      },
+      {
+        "text": "发起活动",
+        "pagePath": "pages/activity/ActivityLaunch",
+        "iconPath": "static/bottomBar/activity.png",
+        "selectedIconPath": "static/bottomBar/active-activity.png"
+      },
+      {
+        "text": "精彩专栏",
+        "pagePath": "pages/column/column",
+        "iconPath": "static/bottomBar/horn.png",
+        "selectedIconPath": "static/bottomBar/active-horn.png"
+      },
+      {
+        "text": "个人中心",
+        "pagePath": "pages/my/my",
+        "iconPath": "static/bottomBar/personal.png",
+        "selectedIconPath": "static/bottomBar/active-personal.png"
+      }
+    ]
+  },
+  "usingComponents": {},
+  "lazyCodeLoading": "requiredComponents"
+}
